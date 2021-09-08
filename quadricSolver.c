@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include <math.h>
 
+
+
 #define KEY_ESCAPE  0x001b
 #define KEY_ENTER   0x000a
 #define KEY_UP      0x0105
@@ -17,15 +19,14 @@
 #define CURBACKWARD(n) printf("\033[%dD", (n))
 
 static const double TOL = 1e-3;
-
  
-static const size_t HISTORY_LEN = 64;   //TODO add history support for the terminal
+static const size_t HISTORY_LEN = 64;   //TODO add Makefile; add `make install` option; add history save support
 static const size_t HISTORY_SIZE = 128; 
 
 
 struct history
 {
-    char* log[HISTORY_LEN];
+    char** log;
     
     size_t end;
     size_t cur;
@@ -38,6 +39,8 @@ void history_construct(struct history *h)
 {
     h->isActive = true;
     h->isEmpty = true;
+    h->log = malloc(sizeof(char*) * HISTORY_LEN);
+
     for (size_t i = 0; i < HISTORY_LEN; ++i) {
         h->log[i] = malloc(sizeof(char) * HISTORY_SIZE);
         if (!h->log[i]) {
@@ -70,10 +73,22 @@ char* history_get(struct history *h, size_t n)
     if (!h->isActive || n > HISTORY_LEN)
         return NULL;
 
-    if (h->log[(h->end - n) % HISTORY_LEN ][0])
-        return h->log[(h->end - n) % HISTORY_LEN];
-    else 
+    //if (h->log[(h->end - n) % HISTORY_LEN ][0])
+    return h->log[(h->end - n) % HISTORY_LEN];
+    // else 
         return NULL;
+}
+
+void history_list(struct history *h)
+{
+    if (!h->isActive)
+        return;
+
+    size_t i = 1;
+    while (h->log[(h->end - i) % HISTORY_LEN][0]) {
+        printf("%d: %s\n", i, h->log[(h->end - i) % HISTORY_LEN]);
+        ++i;
+    }
 }
 
 
@@ -94,6 +109,7 @@ bool doubleCheck(size_t num, ...)
     return true;
 }
 
+
 int main() 
 {
     printf("==============================\n");
@@ -101,19 +117,51 @@ int main()
     printf("==============================\n");
 
     char keyword[32];
+    char input[HISTORY_SIZE];
+
+    struct history *h = malloc(sizeof(struct history));
+    history_construct(h);
+
     while (true) {
         printf(">>> ");
-        scanf("%s", &keyword);
-        
+
+        gets(input);
+
+
+        sscanf(input, "%s", keyword);
+
         if (strcmp(keyword, "help") == 0)
-            printf("This is a (very usefull) help.\n"); //TODO write reasonable help
+            printf("This is a (very usefull) help message.\n"); //TODO write reasonable help
+
+        else if (strcmp(keyword, "history") == 0) {
+            char select[32];
+            int num;
+            if ((sscanf(input, "%s %s %d", keyword, select, &num) == 3) && (strcmp(select, "select") == 0)) {
+                char* command = history_get(h, num);
+                if (command)
+                    printf("%s", command);
+                
+            }
+            else {
+                history_list(h);
+            }
+            
+            printf("`%s` should equal `select`\n", select);                                                             //TODO finish select option
+
+            
+
+
+
+
+        }
+
 
         else if (strcmp(keyword, "exit") == 0) 
-            break;                                  // breaking because I want to use gprintf.flush()
+            break;                                  
         
         else if (strcmp(keyword, "solve") == 0) {
             double a = 0, b = 0, c = 0;
-            scanf("%lf %lf %lf", &a, &b, &c);
+            sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c);
 
             if (!doubleCheck(3,  a, b, c)) {
                 printf("Bad input. Type 'help' for additional info.\n");
@@ -149,7 +197,9 @@ int main()
             else 
                 printf("{ %lf, %lf }\n", result_1, result_2);
         }
+
+        history_put(h, input);
     }
-
-
+    history_list(h);
+    history_destruct(h);
 }
