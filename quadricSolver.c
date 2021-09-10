@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <stdbool.h>        //TODO delete if unused
+#include <stdbool.h>        
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>
@@ -97,9 +97,9 @@ char* history_get(struct history *h, size_t n)
     if (!h->isActive || n > HISTORY_LEN)
         return NULL;
 
-    //if (h->log[(h->end - n) % HISTORY_LEN ][0])
-    return h->log[(h->end - n) % HISTORY_LEN];
-    // else 
+    if (h->log[(h->end - n) % HISTORY_LEN ][0])
+        return h->log[(h->end - n) % HISTORY_LEN];
+    else 
         return NULL;
 }
 
@@ -136,47 +136,52 @@ bool doubleCheck(size_t num, ...)
 void printGraph(double a, double b, double c)
 {
     double dimentionsDiff = 2.3;
-    long long windowHight = 41;
+    long long windowHight = 31;
     long long windowWidth = dimentionsDiff * windowHight;
-    
-    addstr("\n");
-    for (size_t i = 0; i < windowHight; ++i) {          // Printing coordinate grid
-        if (i == windowHight / 2) {
-            for (size_t j = 0; j < windowWidth / 2; ++j)
-                addstr("-");
-            addstr("+");
-            for (size_t j = 0; j < windowWidth / 2; ++j)
-                addstr("-");
-            addstr("\n");
-        }
-        printw("%*s|", windowWidth / 2, "");            //TODO change '|', '-' for actual borders
-        printw("%*s\n", windowWidth / 2, "");
-    }
+    printw("\n\nPlot: y = %.2f x^2 + %.2f x + %.2f \n\n", a, b, c);
 
-
-    long long xCorrection = 3;                          // TMP? for getting above previous outp
+    long long xCorrection = 3;                          // TMP? for getting below previous outp
     for (int i = 0; i < windowHight; ++i) {             // Printing the graph
-        double y = i - windowHight / 2;
+        double y = -(i - windowHight / 2);
         for (int j = 0; j < windowWidth; ++j) {
             double x = j - windowWidth / 2;
             x /= dimentionsDiff;
-            if (fabs(x*x*a + x*b + c - y) < GRAPH_EPS) {
-                mvaddch(windowHight - i + xCorrection, windowWidth - j, '.');
+            if (i == 0 && j == windowWidth / 2 - 1) {
+                printw("Y");
             }
-            /*
+            else if (i == windowHight / 2 + 1 && j == windowWidth - 1) {
+                printw("X");
+            }
+            else if (fabs(x*x*a + x*b + c - y) < GRAPH_EPS) {
+                // mvaddch(windowHight - i + xCorrection, windowWidth - j, '.');
+                printw(".");
+            }
             else if (i != windowHight / 2 && j != windowWidth / 2) {
                 printw(" ");
             }
             else if (i == windowHight / 2 && j != windowWidth / 2) {
-                printw("|");
+                if (j == windowWidth - 1)
+                    printw(">");
+                else
+                    printw("-");
             }
-            */
+            else if (i != windowHight / 2 && j == windowWidth / 2) {
+                if (i == 0)
+                    printw("^");
+                else
+                   printw("|");
+                
+            }
+            else if (i == windowHight / 2 && j == windowWidth / 2) {
+                printw("+");
+            }
+            if (j == windowWidth - 1)
+                printw("\n");
+            
         }
     }
-    mvaddch(windowHight, windowWidth, ' ');
 
     refresh();
-    getch();                // TMP, so the window doesn't close
 }
 
 
@@ -216,8 +221,7 @@ int main()
             if ((sscanf(input, "%s %s %d", keyword, select, &num) == 3) && (strcmp(select, "select") == 0)) {   //TODO finish autocomplit/history-complit
                 char* command = history_get(h, num);
                 if (command)
-                    addstr(command);
-                
+                    addstr(command);               
             }
             else {
                 history_list(h);
