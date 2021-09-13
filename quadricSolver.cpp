@@ -27,30 +27,11 @@ int main()
 
         mvwprintw(inputWin, 2, 2, ">>> ");
         wrefresh(inputWin);
-        keypad(inputWin, TRUE);
 
-        //wgetnstr(inputWin, input, MAX_CMD_LENGHT);
-        mvwreadline(inputWin, 2, 6, input, MAX_CMD_LENGHT);
+        mvwreadline(inputWin, h, 2, 6, input, MAX_CMD_LENGHT);
 
         wprintw(logWin, ">>> %s\n", input);
         
-        /*
-        int num;
-        char select[MAX_CMD_LENGHT];
-        if ((sscanf(input, "%s %s %d", keyword, select, &num) == 3) && (strcmp(select, "select") == 0)) {   //TODO finish autocomplit/history-complit
-            char* command = history_get(h, num);
-            if (command) {
-                printf("Here!\n");
-                mvwprintw(inputWin, 2, 2, ">>> %s", command);
-                wmove(inputWin, 2, 6);
-                // waddstr(inputWin, command);     
-                wgetch(inputWin);
-                mvwgetnstr(inputWin, 2, 6, input, MAX_CMD_LENGHT);
-            }
-        }
-        */
-
-
         sscanf(input, "%s", keyword);
 
         if (strcmp(keyword, "help") == 0)

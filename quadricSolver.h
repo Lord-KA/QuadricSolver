@@ -77,7 +77,7 @@ struct history
  * @param h pointer to history struct to write results in
  * @param historyWin pointer to NCurses WINDOW in which log is shown
  */
-void history_construct(struct history *h, WINDOW *historyWin)
+void history_construct(struct history *h, WINDOW *historyWin)                       //TODO should history_* funcs be static?
 {
     h->localWin = historyWin;
     h->isActive = true;
@@ -151,7 +151,7 @@ void history_list(struct history *h)
 // WINDOW management
 
 /**
- * @fn WINDOW* createWin(int height, int width, int starty, int startx)
+ * @fn static WINDOW* createWin(int height, int width, int starty, int startx)
  * @brief creates new window
  * Creates new NCurses window with specified parameters
  * @param height height of the window
@@ -160,7 +160,7 @@ void history_list(struct history *h)
  * @param startx x coordinate of starting of the window
  * @return pointer to the new window
  */
-WINDOW *createWin(int height, int width, int starty, int startx)
+static WINDOW *createWin(int height, int width, int starty, int startx)
 {	WINDOW *localWin;
 
 	localWin = newwin(height, width, starty, startx);
@@ -173,11 +173,11 @@ WINDOW *createWin(int height, int width, int starty, int startx)
 }
 
 /**
- * @fn void destroyWin(WINDOW *localWin)
+ * @fn static void destroyWin(WINDOW *localWin)
  * @brief destroys a window
  * Destroys an NCurses window and clears its insides
  */
-void destroyWin(WINDOW *localWin)
+static void destroyWin(WINDOW *localWin)
 {	
 	wborder(localWin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
 
@@ -197,24 +197,33 @@ void destroyWin(WINDOW *localWin)
 	delwin(localWin);
 }
 
-/**     //TODO write doxygen-style comments
+/**     //TODO update this
+ * @fn static void mvwreadline(WINDOW *localWin, history *h, size_t y, size_t x, char *buffer, size_t buflen) 
+ * @brief smart readline function with keybind support
+ * Smart readline function with KEY_*, BACKSPACE, ENTER etc support
+ * Read up to buflen characters into `buffer`.
+ * A terminating '\0' character is added after the input.
+ * @param localWin NCurses WINDOW to read from
+ * @param starty y coordinate to read from
+ * @param startx x coordinate to read from
+ * @param buffer pointer to store input
+ * @param buflen size of the buffer
  */
-static void mvwreadline(WINDOW *localWin, size_t y, size_t x, char *buffer, int buflen)          //TODO refactor
-/* Read up to buflen-1 characters into `buffer`.
- * A terminating '\0' character is added after the input.  */
-{
+static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t startx, char *buffer, size_t buflen)          //TODO refactor
+{                               //TODO emplement saving unentered command
     keypad(localWin, TRUE);
-    int old_curs = curs_set(1);
-    int pos = 0;
-    int len = 0;
+    ++buflen;       
+    size_t old_curs = curs_set(1);
+    size_t pos = 0;
+    size_t len = 0;
+    size_t historyPos = 0;
 
-    //getyx(localWin, y, x);
     while (true) {
         int c;
 
         buffer[len] = ' ';
-        mvwaddnstr(localWin, y, x, buffer, len+1);
-        wmove(localWin, y, x+pos);
+        mvwaddnstr(localWin, starty, startx, buffer, len+1);
+        wmove(localWin, starty, startx + pos);
         c = wgetch(localWin);
 
         if (c == KEY_ENTER || c == '\n' || c == '\r') {
@@ -236,6 +245,26 @@ static void mvwreadline(WINDOW *localWin, size_t y, size_t x, char *buffer, int 
             else 
                 beep();
         } 
+        else if (c == KEY_UP) {
+            char *command;
+            if (command = history_get(h, historyPos + 1)) {
+                memset(buffer, 0, buflen);
+                strncpy(buffer, command, MAX_CMD_LENGHT);
+                len = strlen(command);
+                pos = strlen(command);
+                ++historyPos;
+            }
+        }
+        else if (c == KEY_DOWN) {
+            char *command;
+            if (historyPos - 1 != -1 && (command = history_get(h, historyPos - 1))) {
+                memset(buffer, 0, buflen);
+                strncpy(buffer, command, MAX_CMD_LENGHT);
+                len = strlen(command);
+                pos = strlen(command);
+                --historyPos;
+            }
+        }
         else if (c == KEY_RIGHT) {
             if (pos < len)
                 pos += 1;
