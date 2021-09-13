@@ -4,6 +4,9 @@ int main()
 {
     initscr();
 
+    cbreak();
+    noecho();
+
     WINDOW* logWin = createWin(LINES - 5, COLS / 2, 0, 0);
     wborder(logWin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
 
@@ -18,17 +21,35 @@ int main()
     struct history *h = (history*)malloc(sizeof(struct history));
     history_construct(h, logWin);
 
-    WINDOW *intputWin;
+    WINDOW *inputWin;
     while (true) { 
-        intputWin = createWin(5, COLS, LINES - 5, 0);
+        inputWin = createWin(5, COLS, LINES - 5, 0);
 
-        mvwprintw(intputWin, 2, 2, ">>> ");
-        wrefresh(intputWin);
+        mvwprintw(inputWin, 2, 2, ">>> ");
+        wrefresh(inputWin);
+        keypad(inputWin, TRUE);
 
-        wgetnstr(intputWin, input, MAX_CMD_LENGHT);
+        //wgetnstr(inputWin, input, MAX_CMD_LENGHT);
+        mvwreadline(inputWin, 2, 6, input, MAX_CMD_LENGHT);
 
-        destroyWin(intputWin);
         wprintw(logWin, ">>> %s\n", input);
+        
+        /*
+        int num;
+        char select[MAX_CMD_LENGHT];
+        if ((sscanf(input, "%s %s %d", keyword, select, &num) == 3) && (strcmp(select, "select") == 0)) {   //TODO finish autocomplit/history-complit
+            char* command = history_get(h, num);
+            if (command) {
+                printf("Here!\n");
+                mvwprintw(inputWin, 2, 2, ">>> %s", command);
+                wmove(inputWin, 2, 6);
+                // waddstr(inputWin, command);     
+                wgetch(inputWin);
+                mvwgetnstr(inputWin, 2, 6, input, MAX_CMD_LENGHT);
+            }
+        }
+        */
+
 
         sscanf(input, "%s", keyword);
 
@@ -36,16 +57,7 @@ int main()
             wprintw(logWin, "This is a (very usefull) help message.\n"); //TODO write reasonable help
 
         else if (strcmp(keyword, "history") == 0) {
-            char select[32];
-            int num;
-            if ((sscanf(input, "%s %s %d", keyword, select, &num) == 3) && (strcmp(select, "select") == 0)) {   //TODO finish autocomplit/history-complit
-                char* command = history_get(h, num);
-                if (command)
-                    waddstr(logWin, command);               
-            }
-            else {
-                history_list(h);
-            }
+            history_list(h);
        }
 
 
@@ -59,9 +71,10 @@ int main()
             double a = 0, b = 0, c = 0;
             if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleCheck(3,  a, b, c)) {
                 wprintw(logWin, "Bad input. Type 'help' for additional info.\n");
-                continue;
             }
-            printGraph(a, b, c);
+            else {
+                printGraph(a, b, c);
+            }
         }
             
 
@@ -69,30 +82,30 @@ int main()
             double a = 0, b = 0, c = 0;
             if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleCheck(3,  a, b, c)) {
                 wprintw(logWin, "Bad input. Type 'help' for additional info.\n");
-                continue;
             }
-
-            
-            double result_1 = NAN;
-            double result_2 = NAN;
-            bool result_eq_inf = false;
+            else {
+                double result_1 = NAN;
+                double result_2 = NAN;
+                bool result_eq_inf = false;
            
-            quadricSolver(a, b, c, &result_1, &result_2, &result_eq_inf);
+                quadricSolver(a, b, c, &result_1, &result_2, &result_eq_inf);
 
-            wprintw(logWin, "%.2f x^2 + %.2f x + %.2f = 0  <=>  x \\in ", a, b, c);
-            if (result_eq_inf)
-                wprintw(logWin, "\\R \n");
-            else if (isnan(result_1))
-                wprintw(logWin, "\\emptyset\n");
-            else if(isnan(result_2))
-                wprintw(logWin, "{ %lf }\n", result_1);
-            else 
-                wprintw(logWin, "{ %lf, %lf }\n", result_1, result_2);
+                wprintw(logWin, "%.2f x^2 + %.2f x + %.2f = 0  <=>  x \\in ", a, b, c);
+                if (result_eq_inf)
+                    wprintw(logWin, "\\R \n");
+                else if (isnan(result_1))
+                    wprintw(logWin, "\\emptyset\n");
+                else if(isnan(result_2))
+                    wprintw(logWin, "{ %lf }\n", result_1);
+                else 
+                    wprintw(logWin, "{ %lf, %lf }\n", result_1, result_2);
+            }
         }
         else {
             wprintw(logWin, "Bad input. Type 'help' for additional info.\n");
         }
-
+        
+        destroyWin(inputWin);
         wrefresh(logWin);
         history_put(h, input);
     }

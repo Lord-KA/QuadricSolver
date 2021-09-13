@@ -27,6 +27,12 @@ TEST(History, Manual)
 
     history_list(h);
 
+    char *command = history_get(h, 2);
+    if (command)
+        printw("%s\n", command);
+    else
+        printw("NULL\n");
+ 
     history_destruct(h);
 
     // getch();

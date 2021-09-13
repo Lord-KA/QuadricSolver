@@ -1,6 +1,10 @@
 #ifndef QUADRICSOLVER_H
 #define QUADRICSOLVER_H
 
+/**
+ * @file Header for quadricSolver application
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -9,6 +13,14 @@
 #include <stdarg.h>
 #include <math.h>
 #include <ncurses.h>
+#include <ctype.h>
+#include <locale.h>
+
+/**
+ * @fn double sign(double x)
+ * @brief return sign of double x
+ * @param x a double number
+ */
 
 double sign(double x) { 
     if (x < 0) return -1; 
@@ -23,56 +35,106 @@ static const size_t HISTORY_LENGHT = 64;   //TODO add Makefile; add `make instal
 static const size_t MAX_CMD_LENGHT = 64; 
 
 
+#define ALT_BACKSPACE 127
+
 //==========================================
 // Command history struct
+/**
+ * @struct history
+ * @brief logs commands run in app
+ */
 
 struct history
 {
-    WINDOW *localWin;
+    /** 
+     * @brief pointer to log window
+     */
+    WINDOW *localWin; /** pointer to log window */
 
-    char (*log)[HISTORY_LENGHT][MAX_CMD_LENGHT + 1];
+
+    /** 
+     * @brief pointer to char* that is interpreted as char[HISTORY_LENGHT][MAX_CMD_LENGHT + 1] for comfy usage
+     */
+    char (*log)[HISTORY_LENGHT][MAX_CMD_LENGHT + 1]; /** pointer to char* that is interpreted as char[HISTORY_LENGHT][MAX_CMD_LENGHT + 1] for comfy usage */
     
-    size_t end;
-    size_t cur;
+    
+    /** 
+     * @brief index of string after the last
+     */
+    size_t end; /** index of string after the last */
 
-    bool isActive;
-    bool isEmpty;
+
+    /** 
+     * @brief bool flag states that history-saving is active
+     */
+    bool isActive; /** bool flag states that history-saving is active */
 };
 
-void history_construct(struct history *h, WINDOW* historyWin)
+/**
+ * @fn void history_construct(struct history *h, WINDOW *historyWin)
+ * @brief creates new history struct
+ * Creates new history struct, if failes to allocate memory, sets isActive to false
+ * @param h pointer to history struct to write results in
+ * @param historyWin pointer to NCurses WINDOW in which log is shown
+ */
+void history_construct(struct history *h, WINDOW *historyWin)
 {
     h->localWin = historyWin;
     h->isActive = true;
-    h->isEmpty = true;
     h->log = (char (*)[HISTORY_LENGHT][MAX_CMD_LENGHT + 1])calloc(HISTORY_LENGHT * (MAX_CMD_LENGHT + 1), sizeof(char));
 
     h->end = 0;
-    h->cur = 0;
 }
 
+/**
+ * @fn void history_destruct(struct history *h)
+ * @brief destroys history struct
+ * @param h pointer to history struct to destroy
+ */
 void history_destruct(struct history *h)
 {
     if (h->log)
        free(h->log);
 }
 
-void history_put(struct history *h, char* elem)
+/**
+ * @fn void history_put(struct history *h, char *elem)
+ * @brief adds new entry to history 
+ * Adds new entry to history log, rewrites the oldest entry if nessesary
+ * @param h pointer to history struct to write results in   
+ * @param elem pointer to string with command to log
+ */
+void history_put(struct history *h, char *elem)
 {
     strcpy((*h->log)[h->end], elem);
     h->end = (h->end + 1) % HISTORY_LENGHT;
 }
 
+/**
+ * @fn char* history_get(struct history *h, size_t n)
+ * @brief gets an entry from history
+ * Gets an entry from history log, returns NULL on failure
+ * @param h pointer to history struct to write results in   
+ * @param n serial number of needed entry in log
+ * @return pointer to string if succeeds, NULL otherwise
+ */
 char* history_get(struct history *h, size_t n) 
 {
     if (!h->isActive || n > HISTORY_LENGHT)
         return NULL;
 
-    if (*h->log[(h->end - n) % HISTORY_LENGHT ][0])
+    if ((*h->log)[(h->end - n) % HISTORY_LENGHT ][0])
         return ((*h->log)[(h->end - n) % HISTORY_LENGHT]);
     else 
         return NULL;
 }
 
+/**
+ * @fn void history_list(struct history *h)
+ * @brief lists all history log
+ * Lists all history log in localWin window
+ * @param h pointer to history struct to write results in   
+ */
 void history_list(struct history *h)
 {
     if (!h->isActive)
@@ -80,7 +142,6 @@ void history_list(struct history *h)
 
     size_t i = 1;
     while ((*h->log)[(h->end - i) % HISTORY_LENGHT][0] && i != HISTORY_LENGHT) {
-        // printf("Here %d times!\n", i);
         wprintw(h->localWin, "%d: %s\n", i, (*h->log)[(h->end - i) % HISTORY_LENGHT]);
         ++i;
     }
@@ -89,6 +150,16 @@ void history_list(struct history *h)
 //==========================================
 // WINDOW management
 
+/**
+ * @fn WINDOW* createWin(int height, int width, int starty, int startx)
+ * @brief creates new window
+ * Creates new NCurses window with specified parameters
+ * @param height height of the window
+ * @param width  width of the window
+ * @param starty y coordinate of starting of the window
+ * @param startx x coordinate of starting of the window
+ * @return pointer to the new window
+ */
 WINDOW *createWin(int height, int width, int starty, int startx)
 {	WINDOW *localWin;
 
@@ -101,6 +172,11 @@ WINDOW *createWin(int height, int width, int starty, int startx)
 	return localWin;
 }
 
+/**
+ * @fn void destroyWin(WINDOW *localWin)
+ * @brief destroys a window
+ * Destroys an NCurses window and clears its insides
+ */
 void destroyWin(WINDOW *localWin)
 {	
 	wborder(localWin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
@@ -116,14 +192,93 @@ void destroyWin(WINDOW *localWin)
 	 * 8. bl: character to be used for the bottom left corner of the window 
 	 * 9. br: character to be used for the bottom right corner of the window
 	 */
-	
+	wclear(localWin);
     wrefresh(localWin);
 	delwin(localWin);
+}
+
+/**     //TODO write doxygen-style comments
+ */
+static void mvwreadline(WINDOW *localWin, size_t y, size_t x, char *buffer, int buflen)          //TODO refactor
+/* Read up to buflen-1 characters into `buffer`.
+ * A terminating '\0' character is added after the input.  */
+{
+    keypad(localWin, TRUE);
+    int old_curs = curs_set(1);
+    int pos = 0;
+    int len = 0;
+
+    //getyx(localWin, y, x);
+    while (true) {
+        int c;
+
+        buffer[len] = ' ';
+        mvwaddnstr(localWin, y, x, buffer, len+1);
+        wmove(localWin, y, x+pos);
+        c = wgetch(localWin);
+
+        if (c == KEY_ENTER || c == '\n' || c == '\r') {
+            break;
+        } 
+        else if (isprint(c)) {
+            if (pos < buflen-1) {
+                memmove(buffer + pos + 1, buffer + pos, len - pos);
+                buffer[pos++] = c;
+                len += 1;
+            } 
+            else
+                beep();
+        }
+        else if (c == KEY_LEFT) {
+            if (pos > 0) {
+                pos -= 1;
+            }
+            else 
+                beep();
+        } 
+        else if (c == KEY_RIGHT) {
+            if (pos < len)
+                pos += 1;
+            else 
+                beep();
+        }
+        else if (c == ALT_BACKSPACE) {
+            if (pos > 0) {
+                memmove(buffer+pos-1, buffer+pos, len-pos);
+                pos -= 1;
+                len -= 1;
+            } 
+            else 
+                beep();
+        }     
+        else if (c == KEY_DC) {
+            if (pos < len) {
+                memmove(buffer+pos, buffer+pos+1, len-pos-1);
+                len -= 1;
+            }
+            else 
+                beep();
+        }
+        else 
+            beep();
+
+    }
+    buffer[len] = '\0';
+    if (old_curs != ERR)
+        curs_set(old_curs);
 }
 
 //==========================================
 // Main 
 
+/**
+ * @fn bool doubleCheck(size_t num, ...)
+ * @brief checks correctness of all num of doubles
+ * Checks correctness of all num of doubles 
+ * @param num the number of entered doubles
+ * @param ... va_list of doubles
+ * @return true if all doubles are fine, false otherwise
+ */
 bool doubleCheck(size_t num, ...)
 {
     va_list args;
@@ -141,6 +296,15 @@ bool doubleCheck(size_t num, ...)
     return true;
 }
 
+/**
+ * @fn void printGraph(double a, double b, double c)
+ * @brief prints parabola y == a * x^2 + b * x + c
+ * Creates NCurses windows and prints parabola y == a * x^2 + b * x + c there.
+ * Uses GRAPH_EPS when compares doubles
+ * @param a coefficient at x^2
+ * @param b coefficient at x
+ * @param c intercept
+ */
 void printGraph(double a, double b, double c)
 {
     WINDOW* sideWin = createWin(LINES - 5, COLS / 2 + 1,  0, COLS / 2);
@@ -150,7 +314,6 @@ void printGraph(double a, double b, double c)
     double dimentionsDiff = 2.3;
     long long windowHight = LINES - 15;
     long long windowWidth = COLS / 2 - 10;
-    //mvwprintw(plotWin, 5, 10, "Plot: y = %.2f x^2 + %.2f x + %.2f \n\n", a, b, c);
 
     for (int i = 0; i < windowHight; ++i) {             // Printing the graph
         double y = -(i - windowHight / 2);
@@ -195,6 +358,17 @@ void printGraph(double a, double b, double c)
     delwin(sideWin);
 }
 
+/**
+ * @fn void quadricSolver(double a, double b, double c, double *result_1, double *result_2, bool *result_eq_inf)
+ * @brief solves quadric equasion
+ * Solves quadric equasion and puts results in pointers
+ * @param a coefficient at x^2
+ * @param b coefficient at x
+ * @param c intercept
+ * @param result_1 pointer to result value one, before execution *result_1 == NAN
+ * @param result_2 pointer to result value two, before execution *result_2 == NAN
+ * @param result_eq_inf pointer to flag which states if there is inf num of solutions
+ */
 void quadricSolver(double a, double b, double c, double *result_1, double *result_2, bool *result_eq_inf)
 {
     if (fabs(a) < TOL) {
