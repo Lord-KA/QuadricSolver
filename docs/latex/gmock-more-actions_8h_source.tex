@@ -1,0 +1,252 @@
+\hypertarget{gmock-more-actions_8h_source}{}\doxysection{gmock-\/more-\/actions.h}
+\label{gmock-more-actions_8h_source}\index{build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/more-\/actions.h@{build/\_deps/googletest-\/src/googlemock/include/gmock/gmock-\/more-\/actions.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2007, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: wan@google.com (Zhanyong Wan)}}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{comment}{// Google Mock -\/ a framework for writing C++ mock classes.}}
+\DoxyCodeLine{33 \textcolor{comment}{//}}
+\DoxyCodeLine{34 \textcolor{comment}{// This file implements some actions that depend on gmock-\/generated-\/actions.h.}}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#ifndef GMOCK\_INCLUDE\_GMOCK\_GMOCK\_MORE\_ACTIONS\_H\_}}
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#define GMOCK\_INCLUDE\_GMOCK\_GMOCK\_MORE\_ACTIONS\_H\_}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{41 \textcolor{preprocessor}{\#include "{}gmock/gmock-\/generated-\/actions.h"{}}}
+\DoxyCodeLine{42 }
+\DoxyCodeLine{43 \textcolor{keyword}{namespace }testing \{}
+\DoxyCodeLine{44 \textcolor{keyword}{namespace }internal \{}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46 \textcolor{comment}{// Implements the Invoke(f) action.  The template argument}}
+\DoxyCodeLine{47 \textcolor{comment}{// FunctionImpl is the implementation type of f, which can be either a}}
+\DoxyCodeLine{48 \textcolor{comment}{// function pointer or a functor.  Invoke(f) can be used as an}}
+\DoxyCodeLine{49 \textcolor{comment}{// Action<F> as long as f's type is compatible with F (i.e. f can be}}
+\DoxyCodeLine{50 \textcolor{comment}{// assigned to a tr1::function<F>).}}
+\DoxyCodeLine{51 \textcolor{keyword}{template} <\textcolor{keyword}{typename} FunctionImpl>}
+\DoxyCodeLine{52 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_action}{InvokeAction}} \{}
+\DoxyCodeLine{53  \textcolor{keyword}{public}:}
+\DoxyCodeLine{54   \textcolor{comment}{// The c'tor makes a copy of function\_impl (either a function}}
+\DoxyCodeLine{55   \textcolor{comment}{// pointer or a functor).}}
+\DoxyCodeLine{56   \textcolor{keyword}{explicit} \mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_action}{InvokeAction}}(FunctionImpl function\_impl)}
+\DoxyCodeLine{57       : function\_impl\_(function\_impl) \{\}}
+\DoxyCodeLine{58 }
+\DoxyCodeLine{59   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Result, \textcolor{keyword}{typename} ArgumentTuple>}
+\DoxyCodeLine{60   Result Perform(\textcolor{keyword}{const} ArgumentTuple\& args) \{}
+\DoxyCodeLine{61     \textcolor{keywordflow}{return} \mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_helper}{InvokeHelper<Result, ArgumentTuple>::Invoke}}(function\_impl\_, args);}
+\DoxyCodeLine{62   \}}
+\DoxyCodeLine{63 }
+\DoxyCodeLine{64  \textcolor{keyword}{private}:}
+\DoxyCodeLine{65   FunctionImpl function\_impl\_;}
+\DoxyCodeLine{66 }
+\DoxyCodeLine{67   GTEST\_DISALLOW\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_action}{InvokeAction}});}
+\DoxyCodeLine{68 \};}
+\DoxyCodeLine{69 }
+\DoxyCodeLine{70 \textcolor{comment}{// Implements the Invoke(object\_ptr, \&Class::Method) action.}}
+\DoxyCodeLine{71 \textcolor{keyword}{template} <\textcolor{keyword}{class} Class, \textcolor{keyword}{typename} MethodPtr>}
+\DoxyCodeLine{72 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_method_action}{InvokeMethodAction}} \{}
+\DoxyCodeLine{73  \textcolor{keyword}{public}:}
+\DoxyCodeLine{74   \mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_method_action}{InvokeMethodAction}}(Class* obj\_ptr, MethodPtr method\_ptr)}
+\DoxyCodeLine{75       : method\_ptr\_(method\_ptr), obj\_ptr\_(obj\_ptr) \{\}}
+\DoxyCodeLine{76 }
+\DoxyCodeLine{77   \textcolor{keyword}{template} <\textcolor{keyword}{typename} Result, \textcolor{keyword}{typename} ArgumentTuple>}
+\DoxyCodeLine{78   Result Perform(\textcolor{keyword}{const} ArgumentTuple\& args)\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{79     \textcolor{keywordflow}{return} \mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_helper}{InvokeHelper<Result, ArgumentTuple>::InvokeMethod}}(}
+\DoxyCodeLine{80         obj\_ptr\_, method\_ptr\_, args);}
+\DoxyCodeLine{81   \}}
+\DoxyCodeLine{82 }
+\DoxyCodeLine{83  \textcolor{keyword}{private}:}
+\DoxyCodeLine{84   \textcolor{comment}{// The order of these members matters.  Reversing the order can trigger}}
+\DoxyCodeLine{85   \textcolor{comment}{// warning C4121 in MSVC (see}}
+\DoxyCodeLine{86   \textcolor{comment}{// http://computer-\/programming-\/forum.com/7-\/vc.net/6fbc30265f860ad1.htm ).}}
+\DoxyCodeLine{87   \textcolor{keyword}{const} MethodPtr method\_ptr\_;}
+\DoxyCodeLine{88   Class* \textcolor{keyword}{const} obj\_ptr\_;}
+\DoxyCodeLine{89 }
+\DoxyCodeLine{90   GTEST\_DISALLOW\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1internal_1_1_invoke_method_action}{InvokeMethodAction}});}
+\DoxyCodeLine{91 \};}
+\DoxyCodeLine{92 }
+\DoxyCodeLine{93 \textcolor{comment}{// An internal replacement for std::copy which mimics its behavior. This is}}
+\DoxyCodeLine{94 \textcolor{comment}{// necessary because Visual Studio deprecates ::std::copy, issuing warning 4996.}}
+\DoxyCodeLine{95 \textcolor{comment}{// However Visual Studio 2010 and later do not honor \#pragmas which disable that}}
+\DoxyCodeLine{96 \textcolor{comment}{// warning.}}
+\DoxyCodeLine{97 \textcolor{keyword}{template}<\textcolor{keyword}{typename} InputIterator, \textcolor{keyword}{typename} OutputIterator>}
+\DoxyCodeLine{98 \textcolor{keyword}{inline} OutputIterator CopyElements(InputIterator first,}
+\DoxyCodeLine{99                                    InputIterator last,}
+\DoxyCodeLine{100                                    OutputIterator output) \{}
+\DoxyCodeLine{101   \textcolor{keywordflow}{for} (; first != last; ++first, ++output) \{}
+\DoxyCodeLine{102     *output = *first;}
+\DoxyCodeLine{103   \}}
+\DoxyCodeLine{104   \textcolor{keywordflow}{return} output;}
+\DoxyCodeLine{105 \}}
+\DoxyCodeLine{106 }
+\DoxyCodeLine{107 \}  \textcolor{comment}{// namespace internal}}
+\DoxyCodeLine{108 }
+\DoxyCodeLine{109 \textcolor{comment}{// Various overloads for Invoke().}}
+\DoxyCodeLine{110 }
+\DoxyCodeLine{111 \textcolor{comment}{// Creates an action that invokes 'function\_impl' with the mock}}
+\DoxyCodeLine{112 \textcolor{comment}{// function's arguments.}}
+\DoxyCodeLine{113 \textcolor{keyword}{template} <\textcolor{keyword}{typename} FunctionImpl>}
+\DoxyCodeLine{114 PolymorphicAction<internal::InvokeAction<FunctionImpl> > Invoke(}
+\DoxyCodeLine{115     FunctionImpl function\_impl) \{}
+\DoxyCodeLine{116   \textcolor{keywordflow}{return} MakePolymorphicAction(}
+\DoxyCodeLine{117       internal::InvokeAction<FunctionImpl>(function\_impl));}
+\DoxyCodeLine{118 \}}
+\DoxyCodeLine{119 }
+\DoxyCodeLine{120 \textcolor{comment}{// Creates an action that invokes the given method on the given object}}
+\DoxyCodeLine{121 \textcolor{comment}{// with the mock function's arguments.}}
+\DoxyCodeLine{122 \textcolor{keyword}{template} <\textcolor{keyword}{class} Class, \textcolor{keyword}{typename} MethodPtr>}
+\DoxyCodeLine{123 PolymorphicAction<internal::InvokeMethodAction<Class, MethodPtr> > Invoke(}
+\DoxyCodeLine{124     Class* obj\_ptr, MethodPtr method\_ptr) \{}
+\DoxyCodeLine{125   \textcolor{keywordflow}{return} MakePolymorphicAction(}
+\DoxyCodeLine{126       internal::InvokeMethodAction<Class, MethodPtr>(obj\_ptr, method\_ptr));}
+\DoxyCodeLine{127 \}}
+\DoxyCodeLine{128 }
+\DoxyCodeLine{129 \textcolor{comment}{// WithoutArgs(inner\_action) can be used in a mock function with a}}
+\DoxyCodeLine{130 \textcolor{comment}{// non-\/empty argument list to perform inner\_action, which takes no}}
+\DoxyCodeLine{131 \textcolor{comment}{// argument.  In other words, it adapts an action accepting no}}
+\DoxyCodeLine{132 \textcolor{comment}{// argument to one that accepts (and ignores) arguments.}}
+\DoxyCodeLine{133 \textcolor{keyword}{template} <\textcolor{keyword}{typename} InnerAction>}
+\DoxyCodeLine{134 \textcolor{keyword}{inline} internal::WithArgsAction<InnerAction>}
+\DoxyCodeLine{135 WithoutArgs(\textcolor{keyword}{const} InnerAction\& action) \{}
+\DoxyCodeLine{136   \textcolor{keywordflow}{return} internal::WithArgsAction<InnerAction>(action);}
+\DoxyCodeLine{137 \}}
+\DoxyCodeLine{138 }
+\DoxyCodeLine{139 \textcolor{comment}{// WithArg<k>(an\_action) creates an action that passes the k-\/th}}
+\DoxyCodeLine{140 \textcolor{comment}{// (0-\/based) argument of the mock function to an\_action and performs}}
+\DoxyCodeLine{141 \textcolor{comment}{// it.  It adapts an action accepting one argument to one that accepts}}
+\DoxyCodeLine{142 \textcolor{comment}{// multiple arguments.  For convenience, we also provide}}
+\DoxyCodeLine{143 \textcolor{comment}{// WithArgs<k>(an\_action) (defined below) as a synonym.}}
+\DoxyCodeLine{144 \textcolor{keyword}{template} <\textcolor{keywordtype}{int} k, \textcolor{keyword}{typename} InnerAction>}
+\DoxyCodeLine{145 \textcolor{keyword}{inline} internal::WithArgsAction<InnerAction, k>}
+\DoxyCodeLine{146 WithArg(\textcolor{keyword}{const} InnerAction\& action) \{}
+\DoxyCodeLine{147   \textcolor{keywordflow}{return} internal::WithArgsAction<InnerAction, k>(action);}
+\DoxyCodeLine{148 \}}
+\DoxyCodeLine{149 }
+\DoxyCodeLine{150 \textcolor{comment}{// The ACTION*() macros trigger warning C4100 (unreferenced formal}}
+\DoxyCodeLine{151 \textcolor{comment}{// parameter) in MSVC with -\/W4.  Unfortunately they cannot be fixed in}}
+\DoxyCodeLine{152 \textcolor{comment}{// the macro definition, as the warnings are generated when the macro}}
+\DoxyCodeLine{153 \textcolor{comment}{// is expanded and macro expansion cannot contain \#pragma.  Therefore}}
+\DoxyCodeLine{154 \textcolor{comment}{// we suppress them here.}}
+\DoxyCodeLine{155 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{156 \textcolor{preprocessor}{\# pragma warning(push)}}
+\DoxyCodeLine{157 \textcolor{preprocessor}{\# pragma warning(disable:4100)}}
+\DoxyCodeLine{158 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{159 }
+\DoxyCodeLine{160 \textcolor{comment}{// Action ReturnArg<k>() returns the k-\/th argument of the mock function.}}
+\DoxyCodeLine{161 ACTION\_TEMPLATE(ReturnArg,}
+\DoxyCodeLine{162                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{163                 AND\_0\_VALUE\_PARAMS()) \{}
+\DoxyCodeLine{164   return ::testing::get<k>(args);}
+\DoxyCodeLine{165 \}}
+\DoxyCodeLine{166 }
+\DoxyCodeLine{167 \textcolor{comment}{// Action SaveArg<k>(pointer) saves the k-\/th (0-\/based) argument of the}}
+\DoxyCodeLine{168 \textcolor{comment}{// mock function to *pointer.}}
+\DoxyCodeLine{169 ACTION\_TEMPLATE(SaveArg,}
+\DoxyCodeLine{170                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{171                 AND\_1\_VALUE\_PARAMS(pointer)) \{}
+\DoxyCodeLine{172   *pointer = ::testing::get<k>(args);}
+\DoxyCodeLine{173 \}}
+\DoxyCodeLine{174 }
+\DoxyCodeLine{175 \textcolor{comment}{// Action SaveArgPointee<k>(pointer) saves the value pointed to}}
+\DoxyCodeLine{176 \textcolor{comment}{// by the k-\/th (0-\/based) argument of the mock function to *pointer.}}
+\DoxyCodeLine{177 ACTION\_TEMPLATE(SaveArgPointee,}
+\DoxyCodeLine{178                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{179                 AND\_1\_VALUE\_PARAMS(pointer)) \{}
+\DoxyCodeLine{180   *pointer = *::testing::get<k>(args);}
+\DoxyCodeLine{181 \}}
+\DoxyCodeLine{182 }
+\DoxyCodeLine{183 \textcolor{comment}{// Action SetArgReferee<k>(value) assigns 'value' to the variable}}
+\DoxyCodeLine{184 \textcolor{comment}{// referenced by the k-\/th (0-\/based) argument of the mock function.}}
+\DoxyCodeLine{185 ACTION\_TEMPLATE(SetArgReferee,}
+\DoxyCodeLine{186                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{187                 AND\_1\_VALUE\_PARAMS(value)) \{}
+\DoxyCodeLine{188   \textcolor{keyword}{typedef} typename ::testing::tuple\_element<k, args\_type>::type argk\_type;}
+\DoxyCodeLine{189   \textcolor{comment}{// Ensures that argument \#k is a reference.  If you get a compiler}}
+\DoxyCodeLine{190   \textcolor{comment}{// error on the next line, you are using SetArgReferee<k>(value) in}}
+\DoxyCodeLine{191   \textcolor{comment}{// a mock function whose k-\/th (0-\/based) argument is not a reference.}}
+\DoxyCodeLine{192   GTEST\_COMPILE\_ASSERT\_(internal::is\_reference<argk\_type>::value,}
+\DoxyCodeLine{193                         SetArgReferee\_must\_be\_used\_with\_a\_reference\_argument);}
+\DoxyCodeLine{194   ::testing::get<k>(args) = value;}
+\DoxyCodeLine{195 \}}
+\DoxyCodeLine{196 }
+\DoxyCodeLine{197 \textcolor{comment}{// Action SetArrayArgument<k>(first, last) copies the elements in}}
+\DoxyCodeLine{198 \textcolor{comment}{// source range [first, last) to the array pointed to by the k-\/th}}
+\DoxyCodeLine{199 \textcolor{comment}{// (0-\/based) argument, which can be either a pointer or an}}
+\DoxyCodeLine{200 \textcolor{comment}{// iterator. The action does not take ownership of the elements in the}}
+\DoxyCodeLine{201 \textcolor{comment}{// source range.}}
+\DoxyCodeLine{202 ACTION\_TEMPLATE(SetArrayArgument,}
+\DoxyCodeLine{203                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{204                 AND\_2\_VALUE\_PARAMS(first, last)) \{}
+\DoxyCodeLine{205   \textcolor{comment}{// Visual Studio deprecates ::std::copy, so we use our own copy in that case.}}
+\DoxyCodeLine{206 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{207   internal::CopyElements(first, last, ::testing::get<k>(args));}
+\DoxyCodeLine{208 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{209   ::std::copy(first, last, ::testing::get<k>(args));}
+\DoxyCodeLine{210 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{211 \}}
+\DoxyCodeLine{212 }
+\DoxyCodeLine{213 \textcolor{comment}{// Action DeleteArg<k>() deletes the k-\/th (0-\/based) argument of the mock}}
+\DoxyCodeLine{214 \textcolor{comment}{// function.}}
+\DoxyCodeLine{215 ACTION\_TEMPLATE(DeleteArg,}
+\DoxyCodeLine{216                 HAS\_1\_TEMPLATE\_PARAMS(\textcolor{keywordtype}{int}, k),}
+\DoxyCodeLine{217                 AND\_0\_VALUE\_PARAMS()) \{}
+\DoxyCodeLine{218   delete ::testing::get<k>(args);}
+\DoxyCodeLine{219 \}}
+\DoxyCodeLine{220 }
+\DoxyCodeLine{221 \textcolor{comment}{// This action returns the value pointed to by 'pointer'.}}
+\DoxyCodeLine{222 ACTION\_P(ReturnPointee, pointer) \{ \textcolor{keywordflow}{return} *pointer; \}}
+\DoxyCodeLine{223 }
+\DoxyCodeLine{224 \textcolor{comment}{// Action Throw(exception) can be used in a mock function of any type}}
+\DoxyCodeLine{225 \textcolor{comment}{// to throw the given exception.  Any copyable value can be thrown.}}
+\DoxyCodeLine{226 \textcolor{preprocessor}{\#if GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{227 }
+\DoxyCodeLine{228 \textcolor{comment}{// Suppresses the 'unreachable code' warning that VC generates in opt modes.}}
+\DoxyCodeLine{229 \textcolor{preprocessor}{\# ifdef \_MSC\_VER}}
+\DoxyCodeLine{230 \textcolor{preprocessor}{\#  pragma warning(push)          }\textcolor{comment}{// Saves the current warning state.}}
+\DoxyCodeLine{231 \textcolor{preprocessor}{\#  pragma warning(disable:4702)  }\textcolor{comment}{// Temporarily disables warning 4702.}}
+\DoxyCodeLine{232 \textcolor{preprocessor}{\# endif}}
+\DoxyCodeLine{233 ACTION\_P(Throw, exception) \{ \textcolor{keywordflow}{throw} exception; \}}
+\DoxyCodeLine{234 \textcolor{preprocessor}{\# ifdef \_MSC\_VER}}
+\DoxyCodeLine{235 \textcolor{preprocessor}{\#  pragma warning(pop)           }\textcolor{comment}{// Restores the warning state.}}
+\DoxyCodeLine{236 \textcolor{preprocessor}{\# endif}}
+\DoxyCodeLine{237 }
+\DoxyCodeLine{238 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{239 }
+\DoxyCodeLine{240 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{241 \textcolor{preprocessor}{\# pragma warning(pop)}}
+\DoxyCodeLine{242 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{243 }
+\DoxyCodeLine{244 \}  \textcolor{comment}{// namespace testing}}
+\DoxyCodeLine{245 }
+\DoxyCodeLine{246 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GMOCK\_INCLUDE\_GMOCK\_GMOCK\_MORE\_ACTIONS\_H\_}}
+
+\end{DoxyCode}

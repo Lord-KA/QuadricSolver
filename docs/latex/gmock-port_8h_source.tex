@@ -1,0 +1,97 @@
+\hypertarget{gmock-port_8h_source}{}\doxysection{gmock-\/port.h}
+\label{gmock-port_8h_source}\index{build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/port.h@{build/\_deps/googletest-\/src/googlemock/include/gmock/internal/gmock-\/port.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2008, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: vadimb@google.com (Vadim Berman)}}
+\DoxyCodeLine{31 \textcolor{comment}{//}}
+\DoxyCodeLine{32 \textcolor{comment}{// Low-\/level types and utilities for porting Google Mock to various}}
+\DoxyCodeLine{33 \textcolor{comment}{// platforms.  All macros ending with \_ and symbols defined in an}}
+\DoxyCodeLine{34 \textcolor{comment}{// internal namespace are subject to change without notice.  Code}}
+\DoxyCodeLine{35 \textcolor{comment}{// outside Google Mock MUST NOT USE THEM DIRECTLY.  Macros that don't}}
+\DoxyCodeLine{36 \textcolor{comment}{// end with \_ are part of Google Mock's public API and can be used by}}
+\DoxyCodeLine{37 \textcolor{comment}{// code outside Google Mock.}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#ifndef GMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+\DoxyCodeLine{40 \textcolor{preprocessor}{\#define GMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42 \textcolor{preprocessor}{\#include <assert.h>}}
+\DoxyCodeLine{43 \textcolor{preprocessor}{\#include <stdlib.h>}}
+\DoxyCodeLine{44 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46 \textcolor{comment}{// Most of the utilities needed for porting Google Mock are also}}
+\DoxyCodeLine{47 \textcolor{comment}{// required for Google Test and are defined in gtest-\/port.h.}}
+\DoxyCodeLine{48 \textcolor{comment}{//}}
+\DoxyCodeLine{49 \textcolor{comment}{// Note to maintainers: to reduce code duplication, prefer adding}}
+\DoxyCodeLine{50 \textcolor{comment}{// portability utilities to Google Test's gtest-\/port.h instead of}}
+\DoxyCodeLine{51 \textcolor{comment}{// here, as Google Mock depends on Google Test.  Only add a utility}}
+\DoxyCodeLine{52 \textcolor{comment}{// here if it's truly specific to Google Mock.}}
+\DoxyCodeLine{53 \textcolor{preprocessor}{\#include "{}gtest/internal/gtest-\/linked\_ptr.h"{}}}
+\DoxyCodeLine{54 \textcolor{preprocessor}{\#include "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{55 \textcolor{preprocessor}{\#include "{}gmock/internal/custom/gmock-\/port.h"{}}}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{57 \textcolor{comment}{// To avoid conditional compilation everywhere, we make it}}
+\DoxyCodeLine{58 \textcolor{comment}{// gmock-\/port.h's responsibility to \#include the header implementing}}
+\DoxyCodeLine{59 \textcolor{comment}{// tr1/tuple.  gmock-\/port.h does this via gtest-\/port.h, which is}}
+\DoxyCodeLine{60 \textcolor{comment}{// guaranteed to pull in the tuple header.}}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62 \textcolor{comment}{// For MS Visual C++, check the compiler version. At least VS 2003 is}}
+\DoxyCodeLine{63 \textcolor{comment}{// required to compile Google Mock.}}
+\DoxyCodeLine{64 \textcolor{preprocessor}{\#if defined(\_MSC\_VER) \&\& \_MSC\_VER < 1310}}
+\DoxyCodeLine{65 \textcolor{preprocessor}{\# error "{}At least Visual C++ 2003 (7.1) is required to compile Google Mock."{}}}
+\DoxyCodeLine{66 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{67 }
+\DoxyCodeLine{68 \textcolor{comment}{// Macro for referencing flags.  This is public as we want the user to}}
+\DoxyCodeLine{69 \textcolor{comment}{// use this syntax to reference Google Mock flags.}}
+\DoxyCodeLine{70 \textcolor{preprocessor}{\#define GMOCK\_FLAG(name) FLAGS\_gmock\_\#\#name}}
+\DoxyCodeLine{71 }
+\DoxyCodeLine{72 \textcolor{preprocessor}{\#if !defined(GMOCK\_DECLARE\_bool\_)}}
+\DoxyCodeLine{73 }
+\DoxyCodeLine{74 \textcolor{comment}{// Macros for declaring flags.}}
+\DoxyCodeLine{75 \textcolor{preprocessor}{\#define GMOCK\_DECLARE\_bool\_(name) extern GTEST\_API\_ bool GMOCK\_FLAG(name)}}
+\DoxyCodeLine{76 \textcolor{preprocessor}{\#define GMOCK\_DECLARE\_int32\_(name) \(\backslash\)}}
+\DoxyCodeLine{77 \textcolor{preprocessor}{    extern GTEST\_API\_ ::testing::internal::Int32 GMOCK\_FLAG(name)}}
+\DoxyCodeLine{78 \textcolor{preprocessor}{\#define GMOCK\_DECLARE\_string\_(name) \(\backslash\)}}
+\DoxyCodeLine{79 \textcolor{preprocessor}{    extern GTEST\_API\_ ::std::string GMOCK\_FLAG(name)}}
+\DoxyCodeLine{80 }
+\DoxyCodeLine{81 \textcolor{comment}{// Macros for defining flags.}}
+\DoxyCodeLine{82 \textcolor{preprocessor}{\#define GMOCK\_DEFINE\_bool\_(name, default\_val, doc) \(\backslash\)}}
+\DoxyCodeLine{83 \textcolor{preprocessor}{    GTEST\_API\_ bool GMOCK\_FLAG(name) = (default\_val)}}
+\DoxyCodeLine{84 \textcolor{preprocessor}{\#define GMOCK\_DEFINE\_int32\_(name, default\_val, doc) \(\backslash\)}}
+\DoxyCodeLine{85 \textcolor{preprocessor}{    GTEST\_API\_ ::testing::internal::Int32 GMOCK\_FLAG(name) = (default\_val)}}
+\DoxyCodeLine{86 \textcolor{preprocessor}{\#define GMOCK\_DEFINE\_string\_(name, default\_val, doc) \(\backslash\)}}
+\DoxyCodeLine{87 \textcolor{preprocessor}{    GTEST\_API\_ ::std::string GMOCK\_FLAG(name) = (default\_val)}}
+\DoxyCodeLine{88 }
+\DoxyCodeLine{89 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// !defined(GMOCK\_DECLARE\_bool\_)}}
+\DoxyCodeLine{90 }
+\DoxyCodeLine{91 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GMOCK\_INCLUDE\_GMOCK\_INTERNAL\_GMOCK\_PORT\_H\_}}
+
+\end{DoxyCode}

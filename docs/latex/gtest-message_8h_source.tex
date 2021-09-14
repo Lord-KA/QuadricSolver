@@ -1,0 +1,256 @@
+\hypertarget{gtest-message_8h_source}{}\doxysection{gtest-\/message.h}
+\label{gtest-message_8h_source}\index{build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/message.h@{build/\_deps/googletest-\/src/googletest/include/gtest/gtest-\/message.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2005, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: wan@google.com (Zhanyong Wan)}}
+\DoxyCodeLine{31 \textcolor{comment}{//}}
+\DoxyCodeLine{32 \textcolor{comment}{// The Google C++ Testing Framework (Google Test)}}
+\DoxyCodeLine{33 \textcolor{comment}{//}}
+\DoxyCodeLine{34 \textcolor{comment}{// This header file defines the Message class.}}
+\DoxyCodeLine{35 \textcolor{comment}{//}}
+\DoxyCodeLine{36 \textcolor{comment}{// IMPORTANT NOTE: Due to limitation of the C++ language, we have to}}
+\DoxyCodeLine{37 \textcolor{comment}{// leave some internal implementation details in this header file.}}
+\DoxyCodeLine{38 \textcolor{comment}{// They are clearly marked by comments like this:}}
+\DoxyCodeLine{39 \textcolor{comment}{//}}
+\DoxyCodeLine{40 \textcolor{comment}{//   // INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{41 \textcolor{comment}{//}}
+\DoxyCodeLine{42 \textcolor{comment}{// Such code is NOT meant to be used by a user directly, and is subject}}
+\DoxyCodeLine{43 \textcolor{comment}{// to CHANGE WITHOUT NOTICE.  Therefore DO NOT DEPEND ON IT in a user}}
+\DoxyCodeLine{44 \textcolor{comment}{// program!}}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46 \textcolor{preprocessor}{\#ifndef GTEST\_INCLUDE\_GTEST\_GTEST\_MESSAGE\_H\_}}
+\DoxyCodeLine{47 \textcolor{preprocessor}{\#define GTEST\_INCLUDE\_GTEST\_GTEST\_MESSAGE\_H\_}}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49 \textcolor{preprocessor}{\#include <limits>}}
+\DoxyCodeLine{50 }
+\DoxyCodeLine{51 \textcolor{preprocessor}{\#include "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{53 \textcolor{comment}{// Ensures that there is at least one operator<< in the global namespace.}}
+\DoxyCodeLine{54 \textcolor{comment}{// See Message\& operator<<(...) below for why.}}
+\DoxyCodeLine{55 \textcolor{keywordtype}{void} operator<<(\textcolor{keyword}{const} testing::internal::Secret\&, \textcolor{keywordtype}{int});}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{57 \textcolor{keyword}{namespace }testing \{}
+\DoxyCodeLine{58 }
+\DoxyCodeLine{59 \textcolor{comment}{// The Message class works like an ostream repeater.}}
+\DoxyCodeLine{60 \textcolor{comment}{//}}
+\DoxyCodeLine{61 \textcolor{comment}{// Typical usage:}}
+\DoxyCodeLine{62 \textcolor{comment}{//}}
+\DoxyCodeLine{63 \textcolor{comment}{//   1. You stream a bunch of values to a Message object.}}
+\DoxyCodeLine{64 \textcolor{comment}{//      It will remember the text in a stringstream.}}
+\DoxyCodeLine{65 \textcolor{comment}{//   2. Then you stream the Message object to an ostream.}}
+\DoxyCodeLine{66 \textcolor{comment}{//      This causes the text in the Message to be streamed}}
+\DoxyCodeLine{67 \textcolor{comment}{//      to the ostream.}}
+\DoxyCodeLine{68 \textcolor{comment}{//}}
+\DoxyCodeLine{69 \textcolor{comment}{// For example;}}
+\DoxyCodeLine{70 \textcolor{comment}{//}}
+\DoxyCodeLine{71 \textcolor{comment}{//   testing::Message foo;}}
+\DoxyCodeLine{72 \textcolor{comment}{//   foo << 1 << "{} != "{} << 2;}}
+\DoxyCodeLine{73 \textcolor{comment}{//   std::cout << foo;}}
+\DoxyCodeLine{74 \textcolor{comment}{//}}
+\DoxyCodeLine{75 \textcolor{comment}{// will print "{}1 != 2"{}.}}
+\DoxyCodeLine{76 \textcolor{comment}{//}}
+\DoxyCodeLine{77 \textcolor{comment}{// Message is not intended to be inherited from.  In particular, its}}
+\DoxyCodeLine{78 \textcolor{comment}{// destructor is not virtual.}}
+\DoxyCodeLine{79 \textcolor{comment}{//}}
+\DoxyCodeLine{80 \textcolor{comment}{// Note that stringstream behaves differently in gcc and in MSVC.  You}}
+\DoxyCodeLine{81 \textcolor{comment}{// can stream a NULL char pointer to it in the former, but not in the}}
+\DoxyCodeLine{82 \textcolor{comment}{// latter (it causes an access violation if you do).  The Message}}
+\DoxyCodeLine{83 \textcolor{comment}{// class hides this difference by treating a NULL char pointer as}}
+\DoxyCodeLine{84 \textcolor{comment}{// "{}(null)"{}.}}
+\DoxyCodeLine{85 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_message}{Message}} \{}
+\DoxyCodeLine{86  \textcolor{keyword}{private}:}
+\DoxyCodeLine{87   \textcolor{comment}{// The type of basic IO manipulators (endl, ends, and flush) for}}
+\DoxyCodeLine{88   \textcolor{comment}{// narrow streams.}}
+\DoxyCodeLine{89   \textcolor{keyword}{typedef} std::ostream\& (*BasicNarrowIoManip)(std::ostream\&);}
+\DoxyCodeLine{90 }
+\DoxyCodeLine{91  \textcolor{keyword}{public}:}
+\DoxyCodeLine{92   \textcolor{comment}{// Constructs an empty Message.}}
+\DoxyCodeLine{93   \mbox{\hyperlink{classtesting_1_1_message}{Message}}();}
+\DoxyCodeLine{94 }
+\DoxyCodeLine{95   \textcolor{comment}{// Copy constructor.}}
+\DoxyCodeLine{96   \mbox{\hyperlink{classtesting_1_1_message}{Message}}(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& msg) : ss\_(new ::std::stringstream) \{  \textcolor{comment}{// NOLINT}}
+\DoxyCodeLine{97     *ss\_ << msg.GetString();}
+\DoxyCodeLine{98   \}}
+\DoxyCodeLine{99 }
+\DoxyCodeLine{100   \textcolor{comment}{// Constructs a Message from a C-\/string.}}
+\DoxyCodeLine{101   \textcolor{keyword}{explicit} \mbox{\hyperlink{classtesting_1_1_message}{Message}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* str) : ss\_(new ::std::stringstream) \{}
+\DoxyCodeLine{102     *ss\_ << str;}
+\DoxyCodeLine{103   \}}
+\DoxyCodeLine{104 }
+\DoxyCodeLine{105 \textcolor{preprocessor}{\#if GTEST\_OS\_SYMBIAN}}
+\DoxyCodeLine{106   \textcolor{comment}{// Streams a value (either a pointer or not) to this object.}}
+\DoxyCodeLine{107   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{108   \textcolor{keyword}{inline} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(\textcolor{keyword}{const} T\& value) \{}
+\DoxyCodeLine{109     StreamHelper(\textcolor{keyword}{typename} \mbox{\hyperlink{structtesting_1_1internal_1_1bool__constant}{internal::is\_pointer<T>::type}}(), value);}
+\DoxyCodeLine{110     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{111   \}}
+\DoxyCodeLine{112 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{113   \textcolor{comment}{// Streams a non-\/pointer value to this object.}}
+\DoxyCodeLine{114   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{115   \textcolor{keyword}{inline} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(\textcolor{keyword}{const} T\& val) \{}
+\DoxyCodeLine{116     \textcolor{comment}{// Some libraries overload << for STL containers.  These}}
+\DoxyCodeLine{117     \textcolor{comment}{// overloads are defined in the global namespace instead of ::std.}}
+\DoxyCodeLine{118     \textcolor{comment}{//}}
+\DoxyCodeLine{119     \textcolor{comment}{// C++'s symbol lookup rule (i.e. Koenig lookup) says that these}}
+\DoxyCodeLine{120     \textcolor{comment}{// overloads are visible in either the std namespace or the global}}
+\DoxyCodeLine{121     \textcolor{comment}{// namespace, but not other namespaces, including the testing}}
+\DoxyCodeLine{122     \textcolor{comment}{// namespace which Google Test's Message class is in.}}
+\DoxyCodeLine{123     \textcolor{comment}{//}}
+\DoxyCodeLine{124     \textcolor{comment}{// To allow STL containers (and other types that has a << operator}}
+\DoxyCodeLine{125     \textcolor{comment}{// defined in the global namespace) to be used in Google Test}}
+\DoxyCodeLine{126     \textcolor{comment}{// assertions, testing::Message must access the custom << operator}}
+\DoxyCodeLine{127     \textcolor{comment}{// from the global namespace.  With this using declaration,}}
+\DoxyCodeLine{128     \textcolor{comment}{// overloads of << defined in the global namespace and those}}
+\DoxyCodeLine{129     \textcolor{comment}{// visible via Koenig lookup are both exposed in this function.}}
+\DoxyCodeLine{130     using ::operator <<;}
+\DoxyCodeLine{131     *ss\_ << val;}
+\DoxyCodeLine{132     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{133   \}}
+\DoxyCodeLine{134 }
+\DoxyCodeLine{135   \textcolor{comment}{// Streams a pointer value to this object.}}
+\DoxyCodeLine{136   \textcolor{comment}{//}}
+\DoxyCodeLine{137   \textcolor{comment}{// This function is an overload of the previous one.  When you}}
+\DoxyCodeLine{138   \textcolor{comment}{// stream a pointer to a Message, this definition will be used as it}}
+\DoxyCodeLine{139   \textcolor{comment}{// is more specialized.  (The C++ Standard, section}}
+\DoxyCodeLine{140   \textcolor{comment}{// [temp.func.order].)  If you stream a non-\/pointer, then the}}
+\DoxyCodeLine{141   \textcolor{comment}{// previous definition will be used.}}
+\DoxyCodeLine{142   \textcolor{comment}{//}}
+\DoxyCodeLine{143   \textcolor{comment}{// The reason for this overload is that streaming a NULL pointer to}}
+\DoxyCodeLine{144   \textcolor{comment}{// ostream is undefined behavior.  Depending on the compiler, you}}
+\DoxyCodeLine{145   \textcolor{comment}{// may get "{}0"{}, "{}(nil)"{}, "{}(null)"{}, or an access violation.  To}}
+\DoxyCodeLine{146   \textcolor{comment}{// ensure consistent result across compilers, we always treat NULL}}
+\DoxyCodeLine{147   \textcolor{comment}{// as "{}(null)"{}.}}
+\DoxyCodeLine{148   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{149   \textcolor{keyword}{inline} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(T* \textcolor{keyword}{const}\& pointer) \{  \textcolor{comment}{// NOLINT}}
+\DoxyCodeLine{150     \textcolor{keywordflow}{if} (pointer == NULL) \{}
+\DoxyCodeLine{151       *ss\_ << \textcolor{stringliteral}{"{}(null)"{}};}
+\DoxyCodeLine{152     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{153       *ss\_ << pointer;}
+\DoxyCodeLine{154     \}}
+\DoxyCodeLine{155     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{156   \}}
+\DoxyCodeLine{157 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_OS\_SYMBIAN}}
+\DoxyCodeLine{158 }
+\DoxyCodeLine{159   \textcolor{comment}{// Since the basic IO manipulators are overloaded for both narrow}}
+\DoxyCodeLine{160   \textcolor{comment}{// and wide streams, we have to provide this specialized definition}}
+\DoxyCodeLine{161   \textcolor{comment}{// of operator <<, even though its body is the same as the}}
+\DoxyCodeLine{162   \textcolor{comment}{// templatized version above.  Without this definition, streaming}}
+\DoxyCodeLine{163   \textcolor{comment}{// endl or other basic IO manipulators to Message will confuse the}}
+\DoxyCodeLine{164   \textcolor{comment}{// compiler.}}
+\DoxyCodeLine{165   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(BasicNarrowIoManip val) \{}
+\DoxyCodeLine{166     *ss\_ << val;}
+\DoxyCodeLine{167     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{168   \}}
+\DoxyCodeLine{169 }
+\DoxyCodeLine{170   \textcolor{comment}{// Instead of 1/0, we want to see true/false for bool values.}}
+\DoxyCodeLine{171   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(\textcolor{keywordtype}{bool} b) \{}
+\DoxyCodeLine{172     \textcolor{keywordflow}{return} *\textcolor{keyword}{this} << (b ? \textcolor{stringliteral}{"{}true"{}} : \textcolor{stringliteral}{"{}false"{}});}
+\DoxyCodeLine{173   \}}
+\DoxyCodeLine{174 }
+\DoxyCodeLine{175   \textcolor{comment}{// These two overloads allow streaming a wide C string to a Message}}
+\DoxyCodeLine{176   \textcolor{comment}{// using the UTF-\/8 encoding.}}
+\DoxyCodeLine{177   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(\textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* wide\_c\_str);}
+\DoxyCodeLine{178   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(\textcolor{keywordtype}{wchar\_t}* wide\_c\_str);}
+\DoxyCodeLine{179 }
+\DoxyCodeLine{180 \textcolor{preprocessor}{\#if GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{181   \textcolor{comment}{// Converts the given wide string to a narrow string using the UTF-\/8}}
+\DoxyCodeLine{182   \textcolor{comment}{// encoding, and streams the result to this Message object.}}
+\DoxyCodeLine{183   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(const ::std::wstring\& wstr);}
+\DoxyCodeLine{184 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{185 }
+\DoxyCodeLine{186 \textcolor{preprocessor}{\#if GTEST\_HAS\_GLOBAL\_WSTRING}}
+\DoxyCodeLine{187   \textcolor{comment}{// Converts the given wide string to a narrow string using the UTF-\/8}}
+\DoxyCodeLine{188   \textcolor{comment}{// encoding, and streams the result to this Message object.}}
+\DoxyCodeLine{189   \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& operator <<(const ::wstring\& wstr);}
+\DoxyCodeLine{190 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_GLOBAL\_WSTRING}}
+\DoxyCodeLine{191 }
+\DoxyCodeLine{192   \textcolor{comment}{// Gets the text streamed to this object so far as an std::string.}}
+\DoxyCodeLine{193   \textcolor{comment}{// Each '\(\backslash\)0' character in the buffer is replaced with "{}\(\backslash\)\(\backslash\)0"{}.}}
+\DoxyCodeLine{194   \textcolor{comment}{//}}
+\DoxyCodeLine{195   \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{196   std::string GetString() \textcolor{keyword}{const};}
+\DoxyCodeLine{197 }
+\DoxyCodeLine{198  \textcolor{keyword}{private}:}
+\DoxyCodeLine{199 }
+\DoxyCodeLine{200 \textcolor{preprocessor}{\#if GTEST\_OS\_SYMBIAN}}
+\DoxyCodeLine{201   \textcolor{comment}{// These are needed as the Nokia Symbian Compiler cannot decide between}}
+\DoxyCodeLine{202   \textcolor{comment}{// const T\& and const T* in a function template. The Nokia compiler \_can\_}}
+\DoxyCodeLine{203   \textcolor{comment}{// decide between class template specializations for T and T*, so a}}
+\DoxyCodeLine{204   \textcolor{comment}{// tr1::type\_traits-\/like is\_pointer works, and we can overload on that.}}
+\DoxyCodeLine{205   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{206   \textcolor{keyword}{inline} \textcolor{keywordtype}{void} StreamHelper(\mbox{\hyperlink{structtesting_1_1internal_1_1bool__constant}{internal::true\_type}} \textcolor{comment}{/*is\_pointer*/}, T* pointer) \{}
+\DoxyCodeLine{207     \textcolor{keywordflow}{if} (pointer == NULL) \{}
+\DoxyCodeLine{208       *ss\_ << \textcolor{stringliteral}{"{}(null)"{}};}
+\DoxyCodeLine{209     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{210       *ss\_ << pointer;}
+\DoxyCodeLine{211     \}}
+\DoxyCodeLine{212   \}}
+\DoxyCodeLine{213   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{214   \textcolor{keyword}{inline} \textcolor{keywordtype}{void} StreamHelper(\mbox{\hyperlink{structtesting_1_1internal_1_1bool__constant}{internal::false\_type}} \textcolor{comment}{/*is\_pointer*/},}
+\DoxyCodeLine{215                            \textcolor{keyword}{const} T\& value) \{}
+\DoxyCodeLine{216     \textcolor{comment}{// See the comments in Message\& operator <<(const T\&) above for why}}
+\DoxyCodeLine{217     \textcolor{comment}{// we need this using statement.}}
+\DoxyCodeLine{218     using ::operator <<;}
+\DoxyCodeLine{219     *ss\_ << value;}
+\DoxyCodeLine{220   \}}
+\DoxyCodeLine{221 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_OS\_SYMBIAN}}
+\DoxyCodeLine{222 }
+\DoxyCodeLine{223   \textcolor{comment}{// We'll hold the text streamed to this object here.}}
+\DoxyCodeLine{224   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr< ::std::stringstream>}} ss\_;}
+\DoxyCodeLine{225 }
+\DoxyCodeLine{226   \textcolor{comment}{// We declare (but don't implement) this to prevent the compiler}}
+\DoxyCodeLine{227   \textcolor{comment}{// from implementing the assignment operator.}}
+\DoxyCodeLine{228   \textcolor{keywordtype}{void} operator=(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\&);}
+\DoxyCodeLine{229 \};}
+\DoxyCodeLine{230 }
+\DoxyCodeLine{231 \textcolor{comment}{// Streams a Message to an ostream.}}
+\DoxyCodeLine{232 \textcolor{keyword}{inline} std::ostream\& operator <<(std::ostream\& os, \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& sb) \{}
+\DoxyCodeLine{233   \textcolor{keywordflow}{return} os << sb.GetString();}
+\DoxyCodeLine{234 \}}
+\DoxyCodeLine{235 }
+\DoxyCodeLine{236 \textcolor{keyword}{namespace }internal \{}
+\DoxyCodeLine{237 }
+\DoxyCodeLine{238 \textcolor{comment}{// Converts a streamable value to an std::string.  A NULL pointer is}}
+\DoxyCodeLine{239 \textcolor{comment}{// converted to "{}(null)"{}.  When the input value is a ::string,}}
+\DoxyCodeLine{240 \textcolor{comment}{// ::std::string, ::wstring, or ::std::wstring object, each NUL}}
+\DoxyCodeLine{241 \textcolor{comment}{// character in it is replaced with "{}\(\backslash\)\(\backslash\)0"{}.}}
+\DoxyCodeLine{242 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{243 std::string StreamableToString(\textcolor{keyword}{const} T\& streamable) \{}
+\DoxyCodeLine{244   \textcolor{keywordflow}{return} (Message() << streamable).GetString();}
+\DoxyCodeLine{245 \}}
+\DoxyCodeLine{246 }
+\DoxyCodeLine{247 \}  \textcolor{comment}{// namespace internal}}
+\DoxyCodeLine{248 \}  \textcolor{comment}{// namespace testing}}
+\DoxyCodeLine{249 }
+\DoxyCodeLine{250 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_INCLUDE\_GTEST\_GTEST\_MESSAGE\_H\_}}
+
+\end{DoxyCode}

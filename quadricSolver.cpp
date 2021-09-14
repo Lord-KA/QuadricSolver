@@ -15,11 +15,11 @@ int main()
     wprintw(logWin, "==============================\n");
     wrefresh(logWin);
 
-    char keyword[32];
-    char input[MAX_CMD_LENGHT];
+    char keyword[MAX_CMD_LENGHT];
+    char input  [MAX_CMD_LENGHT];
 
-    struct history *h = (history*)malloc(sizeof(struct history));
-    history_construct(h, logWin);
+    struct History *h = (History*)calloc(1, sizeof(struct History));
+    History_construct(h, logWin);
 
     WINDOW *inputWin;
     while (true) { 
@@ -34,15 +34,15 @@ int main()
         
         sscanf(input, "%s", keyword);
 
-        if (strcmp(keyword, "help") == 0)
+        if (strncmp(keyword, "help", MAX_CMD_LENGHT) == 0)
             wprintw(logWin, "This is a (very usefull) help message.\n"); //TODO write reasonable help
 
-        else if (strcmp(keyword, "history") == 0) {
-            history_list(h);
+        else if (strncmp(keyword, "history", MAX_CMD_LENGHT) == 0) {
+            History_list(h);
        }
 
 
-        else if (strcmp(keyword, "exit") == 0) 
+        else if (strncmp(keyword, "exit", MAX_CMD_LENGHT) == 0) 
             break;                                  
 
         else if (strcmp(keyword, "clear") == 0) 
@@ -50,7 +50,7 @@ int main()
         
         else if (strcmp(keyword, "plot") == 0) {
             double a = 0, b = 0, c = 0;
-            if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleCheck(3,  a, b, c)) {
+            if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleValidate(3,  a, b, c)) {
                 wprintw(logWin, "Bad input. Type 'help' for additional info.\n");
             }
             else {
@@ -61,7 +61,7 @@ int main()
 
         else if (strcmp(keyword, "solve") == 0) {
             double a = 0, b = 0, c = 0;
-            if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleCheck(3,  a, b, c)) {
+            if (sscanf(input, "%s %lf %lf %lf", keyword, &a, &b, &c) != 4 || !doubleValidate(3,  a, b, c)) {
                 wprintw(logWin, "Bad input. Type 'help' for additional info.\n");
             }
             else {
@@ -76,7 +76,7 @@ int main()
                     wprintw(logWin, "\\R \n");
                 else if (isnan(result_1))
                     wprintw(logWin, "\\emptyset\n");
-                else if(isnan(result_2))
+                else if(isnan(result_2) || fabs(result_1 - result_2) < TOL)
                     wprintw(logWin, "{ %lf }\n", result_1);
                 else 
                     wprintw(logWin, "{ %lf, %lf }\n", result_1, result_2);
@@ -88,10 +88,11 @@ int main()
         
         destroyWin(inputWin);
         wrefresh(logWin);
-        history_put(h, input);
+        History_put(h, input);
     }
-    history_list(h);
-    history_destruct(h);
+    History_list(h);
+    History_destruct(h);
+    free(h);
 
     destroyWin(logWin);
 

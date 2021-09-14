@@ -1,0 +1,675 @@
+\hypertarget{gmock__link__test_8h_source}{}\doxysection{gmock\+\_\+link\+\_\+test.\+h}
+\label{gmock__link__test_8h_source}\index{build/\_deps/googletest-\/src/googlemock/test/gmock\_link\_test.h@{build/\_deps/googletest-\/src/googlemock/test/gmock\_link\_test.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2009, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: vladl@google.com (Vlad Losev)}}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{comment}{// Google Mock -\/ a framework for writing C++ mock classes.}}
+\DoxyCodeLine{33 \textcolor{comment}{//}}
+\DoxyCodeLine{34 \textcolor{comment}{// This file tests that:}}
+\DoxyCodeLine{35 \textcolor{comment}{// a. A header file defining a mock class can be included in multiple}}
+\DoxyCodeLine{36 \textcolor{comment}{//    translation units without causing a link error.}}
+\DoxyCodeLine{37 \textcolor{comment}{// b. Actions and matchers can be instantiated with identical template}}
+\DoxyCodeLine{38 \textcolor{comment}{//    arguments in different translation units without causing link}}
+\DoxyCodeLine{39 \textcolor{comment}{//    errors.}}
+\DoxyCodeLine{40 \textcolor{comment}{//    The following constructs are currently tested:}}
+\DoxyCodeLine{41 \textcolor{comment}{//    Actions:}}
+\DoxyCodeLine{42 \textcolor{comment}{//      Return()}}
+\DoxyCodeLine{43 \textcolor{comment}{//      Return(value)}}
+\DoxyCodeLine{44 \textcolor{comment}{//      ReturnNull}}
+\DoxyCodeLine{45 \textcolor{comment}{//      ReturnRef}}
+\DoxyCodeLine{46 \textcolor{comment}{//      Assign}}
+\DoxyCodeLine{47 \textcolor{comment}{//      SetArgPointee}}
+\DoxyCodeLine{48 \textcolor{comment}{//      SetArrayArgument}}
+\DoxyCodeLine{49 \textcolor{comment}{//      SetErrnoAndReturn}}
+\DoxyCodeLine{50 \textcolor{comment}{//      Invoke(function)}}
+\DoxyCodeLine{51 \textcolor{comment}{//      Invoke(object, method)}}
+\DoxyCodeLine{52 \textcolor{comment}{//      InvokeWithoutArgs(function)}}
+\DoxyCodeLine{53 \textcolor{comment}{//      InvokeWithoutArgs(object, method)}}
+\DoxyCodeLine{54 \textcolor{comment}{//      InvokeArgument}}
+\DoxyCodeLine{55 \textcolor{comment}{//      WithArg}}
+\DoxyCodeLine{56 \textcolor{comment}{//      WithArgs}}
+\DoxyCodeLine{57 \textcolor{comment}{//      WithoutArgs}}
+\DoxyCodeLine{58 \textcolor{comment}{//      DoAll}}
+\DoxyCodeLine{59 \textcolor{comment}{//      DoDefault}}
+\DoxyCodeLine{60 \textcolor{comment}{//      IgnoreResult}}
+\DoxyCodeLine{61 \textcolor{comment}{//      Throw}}
+\DoxyCodeLine{62 \textcolor{comment}{//      ACTION()-\/generated}}
+\DoxyCodeLine{63 \textcolor{comment}{//      ACTION\_P()-\/generated}}
+\DoxyCodeLine{64 \textcolor{comment}{//      ACTION\_P2()-\/generated}}
+\DoxyCodeLine{65 \textcolor{comment}{//    Matchers:}}
+\DoxyCodeLine{66 \textcolor{comment}{//      \_}}
+\DoxyCodeLine{67 \textcolor{comment}{//      A}}
+\DoxyCodeLine{68 \textcolor{comment}{//      An}}
+\DoxyCodeLine{69 \textcolor{comment}{//      Eq}}
+\DoxyCodeLine{70 \textcolor{comment}{//      Gt, Lt, Ge, Le, Ne}}
+\DoxyCodeLine{71 \textcolor{comment}{//      NotNull}}
+\DoxyCodeLine{72 \textcolor{comment}{//      Ref}}
+\DoxyCodeLine{73 \textcolor{comment}{//      TypedEq}}
+\DoxyCodeLine{74 \textcolor{comment}{//      DoubleEq}}
+\DoxyCodeLine{75 \textcolor{comment}{//      FloatEq}}
+\DoxyCodeLine{76 \textcolor{comment}{//      NanSensitiveDoubleEq}}
+\DoxyCodeLine{77 \textcolor{comment}{//      NanSensitiveFloatEq}}
+\DoxyCodeLine{78 \textcolor{comment}{//      ContainsRegex}}
+\DoxyCodeLine{79 \textcolor{comment}{//      MatchesRegex}}
+\DoxyCodeLine{80 \textcolor{comment}{//      EndsWith}}
+\DoxyCodeLine{81 \textcolor{comment}{//      HasSubstr}}
+\DoxyCodeLine{82 \textcolor{comment}{//      StartsWith}}
+\DoxyCodeLine{83 \textcolor{comment}{//      StrCaseEq}}
+\DoxyCodeLine{84 \textcolor{comment}{//      StrCaseNe}}
+\DoxyCodeLine{85 \textcolor{comment}{//      StrEq}}
+\DoxyCodeLine{86 \textcolor{comment}{//      StrNe}}
+\DoxyCodeLine{87 \textcolor{comment}{//      ElementsAre}}
+\DoxyCodeLine{88 \textcolor{comment}{//      ElementsAreArray}}
+\DoxyCodeLine{89 \textcolor{comment}{//      ContainerEq}}
+\DoxyCodeLine{90 \textcolor{comment}{//      Field}}
+\DoxyCodeLine{91 \textcolor{comment}{//      Property}}
+\DoxyCodeLine{92 \textcolor{comment}{//      ResultOf(function)}}
+\DoxyCodeLine{93 \textcolor{comment}{//      Pointee}}
+\DoxyCodeLine{94 \textcolor{comment}{//      Truly(predicate)}}
+\DoxyCodeLine{95 \textcolor{comment}{//      AllOf}}
+\DoxyCodeLine{96 \textcolor{comment}{//      AnyOf}}
+\DoxyCodeLine{97 \textcolor{comment}{//      Not}}
+\DoxyCodeLine{98 \textcolor{comment}{//      MatcherCast<T>}}
+\DoxyCodeLine{99 \textcolor{comment}{//}}
+\DoxyCodeLine{100 \textcolor{comment}{//  Please note: this test does not verify the functioning of these}}
+\DoxyCodeLine{101 \textcolor{comment}{//  constructs, only that the programs using them will link successfully.}}
+\DoxyCodeLine{102 \textcolor{comment}{//}}
+\DoxyCodeLine{103 \textcolor{comment}{// Implementation note:}}
+\DoxyCodeLine{104 \textcolor{comment}{// This test requires identical definitions of Interface and Mock to be}}
+\DoxyCodeLine{105 \textcolor{comment}{// included in different translation units.  We achieve this by writing}}
+\DoxyCodeLine{106 \textcolor{comment}{// them in this header and \#including it in gmock\_link\_test.cc and}}
+\DoxyCodeLine{107 \textcolor{comment}{// gmock\_link2\_test.cc.  Because the symbols generated by the compiler for}}
+\DoxyCodeLine{108 \textcolor{comment}{// those constructs must be identical in both translation units,}}
+\DoxyCodeLine{109 \textcolor{comment}{// definitions of Interface and Mock tests MUST be kept in the SAME}}
+\DoxyCodeLine{110 \textcolor{comment}{// NON-\/ANONYMOUS namespace in this file.  The test fixture class LinkTest}}
+\DoxyCodeLine{111 \textcolor{comment}{// is defined as LinkTest1 in gmock\_link\_test.cc and as LinkTest2 in}}
+\DoxyCodeLine{112 \textcolor{comment}{// gmock\_link2\_test.cc to avoid producing linker errors.}}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{114 \textcolor{preprocessor}{\#ifndef GMOCK\_TEST\_GMOCK\_LINK\_TEST\_H\_}}
+\DoxyCodeLine{115 \textcolor{preprocessor}{\#define GMOCK\_TEST\_GMOCK\_LINK\_TEST\_H\_}}
+\DoxyCodeLine{116 }
+\DoxyCodeLine{117 \textcolor{preprocessor}{\#include "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{118 }
+\DoxyCodeLine{119 \textcolor{preprocessor}{\#if !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{120 \textcolor{preprocessor}{\# include <errno.h>}}
+\DoxyCodeLine{121 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{122 }
+\DoxyCodeLine{123 \textcolor{preprocessor}{\#include "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{124 \textcolor{preprocessor}{\#include "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{125 \textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{126 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{127 }
+\DoxyCodeLine{128 \textcolor{keyword}{using} testing::\_;}
+\DoxyCodeLine{129 \textcolor{keyword}{using} testing::A;}
+\DoxyCodeLine{130 \textcolor{keyword}{using} testing::AllOf;}
+\DoxyCodeLine{131 \textcolor{keyword}{using} testing::AnyOf;}
+\DoxyCodeLine{132 \textcolor{keyword}{using} testing::Assign;}
+\DoxyCodeLine{133 \textcolor{keyword}{using} testing::ContainerEq;}
+\DoxyCodeLine{134 \textcolor{keyword}{using} testing::DoAll;}
+\DoxyCodeLine{135 \textcolor{keyword}{using} testing::DoDefault;}
+\DoxyCodeLine{136 \textcolor{keyword}{using} testing::DoubleEq;}
+\DoxyCodeLine{137 \textcolor{keyword}{using} testing::ElementsAre;}
+\DoxyCodeLine{138 \textcolor{keyword}{using} testing::ElementsAreArray;}
+\DoxyCodeLine{139 \textcolor{keyword}{using} testing::EndsWith;}
+\DoxyCodeLine{140 \textcolor{keyword}{using} testing::Eq;}
+\DoxyCodeLine{141 \textcolor{keyword}{using} testing::Field;}
+\DoxyCodeLine{142 \textcolor{keyword}{using} testing::FloatEq;}
+\DoxyCodeLine{143 \textcolor{keyword}{using} testing::Ge;}
+\DoxyCodeLine{144 \textcolor{keyword}{using} testing::Gt;}
+\DoxyCodeLine{145 \textcolor{keyword}{using} testing::HasSubstr;}
+\DoxyCodeLine{146 \textcolor{keyword}{using} testing::IgnoreResult;}
+\DoxyCodeLine{147 \textcolor{keyword}{using} testing::Invoke;}
+\DoxyCodeLine{148 \textcolor{keyword}{using} testing::InvokeArgument;}
+\DoxyCodeLine{149 \textcolor{keyword}{using} testing::InvokeWithoutArgs;}
+\DoxyCodeLine{150 \textcolor{keyword}{using} testing::IsNull;}
+\DoxyCodeLine{151 \textcolor{keyword}{using} testing::Le;}
+\DoxyCodeLine{152 \textcolor{keyword}{using} testing::Lt;}
+\DoxyCodeLine{153 \textcolor{keyword}{using} \mbox{\hyperlink{classtesting_1_1_matcher}{testing::Matcher}};}
+\DoxyCodeLine{154 \textcolor{keyword}{using} testing::MatcherCast;}
+\DoxyCodeLine{155 \textcolor{keyword}{using} testing::NanSensitiveDoubleEq;}
+\DoxyCodeLine{156 \textcolor{keyword}{using} testing::NanSensitiveFloatEq;}
+\DoxyCodeLine{157 \textcolor{keyword}{using} testing::Ne;}
+\DoxyCodeLine{158 \textcolor{keyword}{using} testing::Not;}
+\DoxyCodeLine{159 \textcolor{keyword}{using} testing::NotNull;}
+\DoxyCodeLine{160 \textcolor{keyword}{using} testing::Pointee;}
+\DoxyCodeLine{161 \textcolor{keyword}{using} testing::Property;}
+\DoxyCodeLine{162 \textcolor{keyword}{using} testing::Ref;}
+\DoxyCodeLine{163 \textcolor{keyword}{using} testing::ResultOf;}
+\DoxyCodeLine{164 \textcolor{keyword}{using} testing::Return;}
+\DoxyCodeLine{165 \textcolor{keyword}{using} testing::ReturnNull;}
+\DoxyCodeLine{166 \textcolor{keyword}{using} testing::ReturnRef;}
+\DoxyCodeLine{167 \textcolor{keyword}{using} testing::SetArgPointee;}
+\DoxyCodeLine{168 \textcolor{keyword}{using} testing::SetArrayArgument;}
+\DoxyCodeLine{169 \textcolor{keyword}{using} testing::StartsWith;}
+\DoxyCodeLine{170 \textcolor{keyword}{using} testing::StrCaseEq;}
+\DoxyCodeLine{171 \textcolor{keyword}{using} testing::StrCaseNe;}
+\DoxyCodeLine{172 \textcolor{keyword}{using} testing::StrEq;}
+\DoxyCodeLine{173 \textcolor{keyword}{using} testing::StrNe;}
+\DoxyCodeLine{174 \textcolor{keyword}{using} testing::Truly;}
+\DoxyCodeLine{175 \textcolor{keyword}{using} testing::TypedEq;}
+\DoxyCodeLine{176 \textcolor{keyword}{using} testing::WithArg;}
+\DoxyCodeLine{177 \textcolor{keyword}{using} testing::WithArgs;}
+\DoxyCodeLine{178 \textcolor{keyword}{using} testing::WithoutArgs;}
+\DoxyCodeLine{179 }
+\DoxyCodeLine{180 \textcolor{preprocessor}{\#if !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{181 \textcolor{keyword}{using} testing::SetErrnoAndReturn;}
+\DoxyCodeLine{182 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{183 }
+\DoxyCodeLine{184 \textcolor{preprocessor}{\#if GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{185 \textcolor{keyword}{using} testing::Throw;}
+\DoxyCodeLine{186 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{187 }
+\DoxyCodeLine{188 \textcolor{keyword}{using} testing::ContainsRegex;}
+\DoxyCodeLine{189 \textcolor{keyword}{using} testing::MatchesRegex;}
+\DoxyCodeLine{190 }
+\DoxyCodeLine{191 \textcolor{keyword}{class }\mbox{\hyperlink{class_interface}{Interface}} \{}
+\DoxyCodeLine{192  \textcolor{keyword}{public}:}
+\DoxyCodeLine{193   \textcolor{keyword}{virtual} \mbox{\hyperlink{class_interface}{\string~Interface}}() \{\}}
+\DoxyCodeLine{194   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromString(\textcolor{keywordtype}{char}* str) = 0;}
+\DoxyCodeLine{195   \textcolor{keyword}{virtual} \textcolor{keywordtype}{char}* StringFromString(\textcolor{keywordtype}{char}* str) = 0;}
+\DoxyCodeLine{196   \textcolor{keyword}{virtual} \textcolor{keywordtype}{int} IntFromString(\textcolor{keywordtype}{char}* str) = 0;}
+\DoxyCodeLine{197   \textcolor{keyword}{virtual} \textcolor{keywordtype}{int}\& IntRefFromString(\textcolor{keywordtype}{char}* str) = 0;}
+\DoxyCodeLine{198   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromFunc(\textcolor{keywordtype}{void}(*func)(\textcolor{keywordtype}{char}* str)) = 0;}
+\DoxyCodeLine{199   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromIntRef(\textcolor{keywordtype}{int}\& n) = 0;  \textcolor{comment}{// NOLINT}}
+\DoxyCodeLine{200   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromFloat(\textcolor{keywordtype}{float} n) = 0;}
+\DoxyCodeLine{201   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromDouble(\textcolor{keywordtype}{double} n) = 0;}
+\DoxyCodeLine{202   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} VoidFromVector(\textcolor{keyword}{const} std::vector<int>\& v) = 0;}
+\DoxyCodeLine{203 \};}
+\DoxyCodeLine{204 }
+\DoxyCodeLine{205 \textcolor{keyword}{class }\mbox{\hyperlink{class_mock}{Mock}}: \textcolor{keyword}{public} \mbox{\hyperlink{class_interface}{Interface}} \{}
+\DoxyCodeLine{206  \textcolor{keyword}{public}:}
+\DoxyCodeLine{207   \mbox{\hyperlink{class_mock}{Mock}}() \{\}}
+\DoxyCodeLine{208 }
+\DoxyCodeLine{209   MOCK\_METHOD1(VoidFromString, \textcolor{keywordtype}{void}(\textcolor{keywordtype}{char}* str));}
+\DoxyCodeLine{210   MOCK\_METHOD1(StringFromString, \textcolor{keywordtype}{char}*(\textcolor{keywordtype}{char}* str));}
+\DoxyCodeLine{211   MOCK\_METHOD1(IntFromString, \textcolor{keywordtype}{int}(\textcolor{keywordtype}{char}* str));}
+\DoxyCodeLine{212   MOCK\_METHOD1(IntRefFromString, \textcolor{keywordtype}{int}\&(\textcolor{keywordtype}{char}* str));}
+\DoxyCodeLine{213   MOCK\_METHOD1(VoidFromFunc, \textcolor{keywordtype}{void}(\textcolor{keywordtype}{void}(*func)(\textcolor{keywordtype}{char}* str)));}
+\DoxyCodeLine{214   MOCK\_METHOD1(VoidFromIntRef, \textcolor{keywordtype}{void}(\textcolor{keywordtype}{int}\& n));  \textcolor{comment}{// NOLINT}}
+\DoxyCodeLine{215   MOCK\_METHOD1(VoidFromFloat, \textcolor{keywordtype}{void}(\textcolor{keywordtype}{float} n));}
+\DoxyCodeLine{216   MOCK\_METHOD1(VoidFromDouble, \textcolor{keywordtype}{void}(\textcolor{keywordtype}{double} n));}
+\DoxyCodeLine{217   MOCK\_METHOD1(VoidFromVector, \textcolor{keywordtype}{void}(\textcolor{keyword}{const} std::vector<int>\& v));}
+\DoxyCodeLine{218 }
+\DoxyCodeLine{219  \textcolor{keyword}{private}:}
+\DoxyCodeLine{220   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{class_mock}{Mock}});}
+\DoxyCodeLine{221 \};}
+\DoxyCodeLine{222 }
+\DoxyCodeLine{223 \textcolor{keyword}{class }\mbox{\hyperlink{class_invoke_helper}{InvokeHelper}} \{}
+\DoxyCodeLine{224  \textcolor{keyword}{public}:}
+\DoxyCodeLine{225   \textcolor{keyword}{static} \textcolor{keywordtype}{void} StaticVoidFromVoid() \{\}}
+\DoxyCodeLine{226   \textcolor{keywordtype}{void} VoidFromVoid() \{\}}
+\DoxyCodeLine{227   \textcolor{keyword}{static} \textcolor{keywordtype}{void} StaticVoidFromString(\textcolor{keywordtype}{char}* \textcolor{comment}{/* str */}) \{\}}
+\DoxyCodeLine{228   \textcolor{keywordtype}{void} VoidFromString(\textcolor{keywordtype}{char}* \textcolor{comment}{/* str */}) \{\}}
+\DoxyCodeLine{229   \textcolor{keyword}{static} \textcolor{keywordtype}{int} StaticIntFromString(\textcolor{keywordtype}{char}* \textcolor{comment}{/* str */}) \{ \textcolor{keywordflow}{return} 1; \}}
+\DoxyCodeLine{230   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} StaticBoolFromString(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* \textcolor{comment}{/* str */}) \{ \textcolor{keywordflow}{return} \textcolor{keyword}{true}; \}}
+\DoxyCodeLine{231 \};}
+\DoxyCodeLine{232 }
+\DoxyCodeLine{233 \textcolor{keyword}{class }\mbox{\hyperlink{class_field_helper}{FieldHelper}} \{}
+\DoxyCodeLine{234  \textcolor{keyword}{public}:}
+\DoxyCodeLine{235   \textcolor{keyword}{explicit} \mbox{\hyperlink{class_field_helper}{FieldHelper}}(\textcolor{keywordtype}{int} a\_field) : field\_(a\_field) \{\}}
+\DoxyCodeLine{236   \textcolor{keywordtype}{int} field()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} field\_; \}}
+\DoxyCodeLine{237   \textcolor{keywordtype}{int} field\_;  \textcolor{comment}{// NOLINT -\/-\/ need external access to field\_ to test}}
+\DoxyCodeLine{238                \textcolor{comment}{//           the Field matcher.}}
+\DoxyCodeLine{239 \};}
+\DoxyCodeLine{240 }
+\DoxyCodeLine{241 \textcolor{comment}{// Tests the linkage of the ReturnVoid action.}}
+\DoxyCodeLine{242 TEST(LinkTest, TestReturnVoid) \{}
+\DoxyCodeLine{243   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{244 }
+\DoxyCodeLine{245   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(Return());}
+\DoxyCodeLine{246   mock.VoidFromString(NULL);}
+\DoxyCodeLine{247 \}}
+\DoxyCodeLine{248 }
+\DoxyCodeLine{249 \textcolor{comment}{// Tests the linkage of the Return action.}}
+\DoxyCodeLine{250 TEST(LinkTest, TestReturn) \{}
+\DoxyCodeLine{251   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{252   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{253 }
+\DoxyCodeLine{254   EXPECT\_CALL(mock, StringFromString(\_)).WillOnce(Return(\&ch));}
+\DoxyCodeLine{255   mock.StringFromString(NULL);}
+\DoxyCodeLine{256 \}}
+\DoxyCodeLine{257 }
+\DoxyCodeLine{258 \textcolor{comment}{// Tests the linkage of the ReturnNull action.}}
+\DoxyCodeLine{259 TEST(LinkTest, TestReturnNull) \{}
+\DoxyCodeLine{260   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{261 }
+\DoxyCodeLine{262   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(Return());}
+\DoxyCodeLine{263   mock.VoidFromString(NULL);}
+\DoxyCodeLine{264 \}}
+\DoxyCodeLine{265 }
+\DoxyCodeLine{266 \textcolor{comment}{// Tests the linkage of the ReturnRef action.}}
+\DoxyCodeLine{267 TEST(LinkTest, TestReturnRef) \{}
+\DoxyCodeLine{268   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{269   \textcolor{keywordtype}{int} n = 42;}
+\DoxyCodeLine{270 }
+\DoxyCodeLine{271   EXPECT\_CALL(mock, IntRefFromString(\_)).WillOnce(ReturnRef(n));}
+\DoxyCodeLine{272   mock.IntRefFromString(NULL);}
+\DoxyCodeLine{273 \}}
+\DoxyCodeLine{274 }
+\DoxyCodeLine{275 \textcolor{comment}{// Tests the linkage of the Assign action.}}
+\DoxyCodeLine{276 TEST(LinkTest, TestAssign) \{}
+\DoxyCodeLine{277   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{278   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{279 }
+\DoxyCodeLine{280   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(Assign(\&ch, \textcolor{charliteral}{'y'}));}
+\DoxyCodeLine{281   mock.VoidFromString(NULL);}
+\DoxyCodeLine{282 \}}
+\DoxyCodeLine{283 }
+\DoxyCodeLine{284 \textcolor{comment}{// Tests the linkage of the SetArgPointee action.}}
+\DoxyCodeLine{285 TEST(LinkTest, TestSetArgPointee) \{}
+\DoxyCodeLine{286   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{287   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{288 }
+\DoxyCodeLine{289   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(SetArgPointee<0>(\textcolor{charliteral}{'y'}));}
+\DoxyCodeLine{290   mock.VoidFromString(\&ch);}
+\DoxyCodeLine{291 \}}
+\DoxyCodeLine{292 }
+\DoxyCodeLine{293 \textcolor{comment}{// Tests the linkage of the SetArrayArgument action.}}
+\DoxyCodeLine{294 TEST(LinkTest, TestSetArrayArgument) \{}
+\DoxyCodeLine{295   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{296   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{297   \textcolor{keywordtype}{char} ch2 = \textcolor{charliteral}{'y'};}
+\DoxyCodeLine{298 }
+\DoxyCodeLine{299   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(SetArrayArgument<0>(\&ch2,}
+\DoxyCodeLine{300                                                                     \&ch2 + 1));}
+\DoxyCodeLine{301   mock.VoidFromString(\&ch);}
+\DoxyCodeLine{302 \}}
+\DoxyCodeLine{303 }
+\DoxyCodeLine{304 \textcolor{preprocessor}{\#if !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{305 }
+\DoxyCodeLine{306 \textcolor{comment}{// Tests the linkage of the SetErrnoAndReturn action.}}
+\DoxyCodeLine{307 TEST(LinkTest, TestSetErrnoAndReturn) \{}
+\DoxyCodeLine{308   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{309 }
+\DoxyCodeLine{310   \textcolor{keywordtype}{int} saved\_errno = errno;}
+\DoxyCodeLine{311   EXPECT\_CALL(mock, IntFromString(\_)).WillOnce(SetErrnoAndReturn(1, -\/1));}
+\DoxyCodeLine{312   mock.IntFromString(NULL);}
+\DoxyCodeLine{313   errno = saved\_errno;}
+\DoxyCodeLine{314 \}}
+\DoxyCodeLine{315 }
+\DoxyCodeLine{316 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{317 }
+\DoxyCodeLine{318 \textcolor{comment}{// Tests the linkage of the Invoke(function) and Invoke(object, method) actions.}}
+\DoxyCodeLine{319 TEST(LinkTest, TestInvoke) \{}
+\DoxyCodeLine{320   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{321   \mbox{\hyperlink{class_invoke_helper}{InvokeHelper}} test\_invoke\_helper;}
+\DoxyCodeLine{322 }
+\DoxyCodeLine{323   EXPECT\_CALL(mock, VoidFromString(\_))}
+\DoxyCodeLine{324       .WillOnce(Invoke(\&InvokeHelper::StaticVoidFromString))}
+\DoxyCodeLine{325       .WillOnce(Invoke(\&test\_invoke\_helper, \&InvokeHelper::VoidFromString));}
+\DoxyCodeLine{326   mock.VoidFromString(NULL);}
+\DoxyCodeLine{327   mock.VoidFromString(NULL);}
+\DoxyCodeLine{328 \}}
+\DoxyCodeLine{329 }
+\DoxyCodeLine{330 \textcolor{comment}{// Tests the linkage of the InvokeWithoutArgs action.}}
+\DoxyCodeLine{331 TEST(LinkTest, TestInvokeWithoutArgs) \{}
+\DoxyCodeLine{332   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{333   \mbox{\hyperlink{class_invoke_helper}{InvokeHelper}} test\_invoke\_helper;}
+\DoxyCodeLine{334 }
+\DoxyCodeLine{335   EXPECT\_CALL(mock, VoidFromString(\_))}
+\DoxyCodeLine{336       .WillOnce(InvokeWithoutArgs(\&InvokeHelper::StaticVoidFromVoid))}
+\DoxyCodeLine{337       .WillOnce(InvokeWithoutArgs(\&test\_invoke\_helper,}
+\DoxyCodeLine{338                                   \&InvokeHelper::VoidFromVoid));}
+\DoxyCodeLine{339   mock.VoidFromString(NULL);}
+\DoxyCodeLine{340   mock.VoidFromString(NULL);}
+\DoxyCodeLine{341 \}}
+\DoxyCodeLine{342 }
+\DoxyCodeLine{343 \textcolor{comment}{// Tests the linkage of the InvokeArgument action.}}
+\DoxyCodeLine{344 TEST(LinkTest, TestInvokeArgument) \{}
+\DoxyCodeLine{345   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{346   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{347 }
+\DoxyCodeLine{348   EXPECT\_CALL(mock, VoidFromFunc(\_)).WillOnce(InvokeArgument<0>(\&ch));}
+\DoxyCodeLine{349   mock.VoidFromFunc(InvokeHelper::StaticVoidFromString);}
+\DoxyCodeLine{350 \}}
+\DoxyCodeLine{351 }
+\DoxyCodeLine{352 \textcolor{comment}{// Tests the linkage of the WithArg action.}}
+\DoxyCodeLine{353 TEST(LinkTest, TestWithArg) \{}
+\DoxyCodeLine{354   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{355 }
+\DoxyCodeLine{356   EXPECT\_CALL(mock, VoidFromString(\_))}
+\DoxyCodeLine{357       .WillOnce(WithArg<0>(Invoke(\&InvokeHelper::StaticVoidFromString)));}
+\DoxyCodeLine{358   mock.VoidFromString(NULL);}
+\DoxyCodeLine{359 \}}
+\DoxyCodeLine{360 }
+\DoxyCodeLine{361 \textcolor{comment}{// Tests the linkage of the WithArgs action.}}
+\DoxyCodeLine{362 TEST(LinkTest, TestWithArgs) \{}
+\DoxyCodeLine{363   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{364 }
+\DoxyCodeLine{365   EXPECT\_CALL(mock, VoidFromString(\_))}
+\DoxyCodeLine{366       .WillOnce(WithArgs<0>(Invoke(\&InvokeHelper::StaticVoidFromString)));}
+\DoxyCodeLine{367   mock.VoidFromString(NULL);}
+\DoxyCodeLine{368 \}}
+\DoxyCodeLine{369 }
+\DoxyCodeLine{370 \textcolor{comment}{// Tests the linkage of the WithoutArgs action.}}
+\DoxyCodeLine{371 TEST(LinkTest, TestWithoutArgs) \{}
+\DoxyCodeLine{372   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{373 }
+\DoxyCodeLine{374   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(WithoutArgs(Return()));}
+\DoxyCodeLine{375   mock.VoidFromString(NULL);}
+\DoxyCodeLine{376 \}}
+\DoxyCodeLine{377 }
+\DoxyCodeLine{378 \textcolor{comment}{// Tests the linkage of the DoAll action.}}
+\DoxyCodeLine{379 TEST(LinkTest, TestDoAll) \{}
+\DoxyCodeLine{380   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{381   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{382 }
+\DoxyCodeLine{383   EXPECT\_CALL(mock, VoidFromString(\_))}
+\DoxyCodeLine{384       .WillOnce(DoAll(SetArgPointee<0>(\textcolor{charliteral}{'y'}), Return()));}
+\DoxyCodeLine{385   mock.VoidFromString(\&ch);}
+\DoxyCodeLine{386 \}}
+\DoxyCodeLine{387 }
+\DoxyCodeLine{388 \textcolor{comment}{// Tests the linkage of the DoDefault action.}}
+\DoxyCodeLine{389 TEST(LinkTest, TestDoDefault) \{}
+\DoxyCodeLine{390   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{391   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{392 }
+\DoxyCodeLine{393   ON\_CALL(mock, VoidFromString(\_)).WillByDefault(Return());}
+\DoxyCodeLine{394   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(DoDefault());}
+\DoxyCodeLine{395   mock.VoidFromString(\&ch);}
+\DoxyCodeLine{396 \}}
+\DoxyCodeLine{397 }
+\DoxyCodeLine{398 \textcolor{comment}{// Tests the linkage of the IgnoreResult action.}}
+\DoxyCodeLine{399 TEST(LinkTest, TestIgnoreResult) \{}
+\DoxyCodeLine{400   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{401 }
+\DoxyCodeLine{402   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(IgnoreResult(Return(42)));}
+\DoxyCodeLine{403   mock.VoidFromString(NULL);}
+\DoxyCodeLine{404 \}}
+\DoxyCodeLine{405 }
+\DoxyCodeLine{406 \textcolor{preprocessor}{\#if GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{407 \textcolor{comment}{// Tests the linkage of the Throw action.}}
+\DoxyCodeLine{408 TEST(LinkTest, TestThrow) \{}
+\DoxyCodeLine{409   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{410 }
+\DoxyCodeLine{411   EXPECT\_CALL(mock, VoidFromString(\_)).WillOnce(Throw(42));}
+\DoxyCodeLine{412   EXPECT\_THROW(mock.VoidFromString(NULL), \textcolor{keywordtype}{int});}
+\DoxyCodeLine{413 \}}
+\DoxyCodeLine{414 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{415 }
+\DoxyCodeLine{416 \textcolor{comment}{// The ACTION*() macros trigger warning C4100 (unreferenced formal}}
+\DoxyCodeLine{417 \textcolor{comment}{// parameter) in MSVC with -\/W4.  Unfortunately they cannot be fixed in}}
+\DoxyCodeLine{418 \textcolor{comment}{// the macro definition, as the warnings are generated when the macro}}
+\DoxyCodeLine{419 \textcolor{comment}{// is expanded and macro expansion cannot contain \#pragma.  Therefore}}
+\DoxyCodeLine{420 \textcolor{comment}{// we suppress them here.}}
+\DoxyCodeLine{421 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{422 \textcolor{preprocessor}{\# pragma warning(push)}}
+\DoxyCodeLine{423 \textcolor{preprocessor}{\# pragma warning(disable:4100)}}
+\DoxyCodeLine{424 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{425 }
+\DoxyCodeLine{426 \textcolor{comment}{// Tests the linkage of actions created using ACTION macro.}}
+\DoxyCodeLine{427 \textcolor{keyword}{namespace }\{}
+\DoxyCodeLine{428 ACTION(Return1) \{ \textcolor{keywordflow}{return} 1; \}}
+\DoxyCodeLine{429 \}}
+\DoxyCodeLine{430 }
+\DoxyCodeLine{431 TEST(LinkTest, TestActionMacro) \{}
+\DoxyCodeLine{432   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{433 }
+\DoxyCodeLine{434   EXPECT\_CALL(mock, IntFromString(\_)).WillOnce(Return1());}
+\DoxyCodeLine{435   mock.IntFromString(NULL);}
+\DoxyCodeLine{436 \}}
+\DoxyCodeLine{437 }
+\DoxyCodeLine{438 \textcolor{comment}{// Tests the linkage of actions created using ACTION\_P macro.}}
+\DoxyCodeLine{439 \textcolor{keyword}{namespace }\{}
+\DoxyCodeLine{440 ACTION\_P(ReturnArgument, ret\_value) \{ \textcolor{keywordflow}{return} ret\_value; \}}
+\DoxyCodeLine{441 \}}
+\DoxyCodeLine{442 }
+\DoxyCodeLine{443 TEST(LinkTest, TestActionPMacro) \{}
+\DoxyCodeLine{444   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{445 }
+\DoxyCodeLine{446   EXPECT\_CALL(mock, IntFromString(\_)).WillOnce(ReturnArgument(42));}
+\DoxyCodeLine{447   mock.IntFromString(NULL);}
+\DoxyCodeLine{448 \}}
+\DoxyCodeLine{449 }
+\DoxyCodeLine{450 \textcolor{comment}{// Tests the linkage of actions created using ACTION\_P2 macro.}}
+\DoxyCodeLine{451 \textcolor{keyword}{namespace }\{}
+\DoxyCodeLine{452 ACTION\_P2(ReturnEqualsEitherOf, first, second) \{}
+\DoxyCodeLine{453   \textcolor{keywordflow}{return} arg0 == first || arg0 == second;}
+\DoxyCodeLine{454 \}}
+\DoxyCodeLine{455 \}}
+\DoxyCodeLine{456 }
+\DoxyCodeLine{457 \textcolor{preprocessor}{\#ifdef \_MSC\_VER}}
+\DoxyCodeLine{458 \textcolor{preprocessor}{\# pragma warning(pop)}}
+\DoxyCodeLine{459 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{460 }
+\DoxyCodeLine{461 TEST(LinkTest, TestActionP2Macro) \{}
+\DoxyCodeLine{462   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{463   \textcolor{keywordtype}{char} ch = \textcolor{charliteral}{'x'};}
+\DoxyCodeLine{464 }
+\DoxyCodeLine{465   EXPECT\_CALL(mock, IntFromString(\_))}
+\DoxyCodeLine{466       .WillOnce(ReturnEqualsEitherOf(\textcolor{stringliteral}{"{}one"{}}, \textcolor{stringliteral}{"{}two"{}}));}
+\DoxyCodeLine{467   mock.IntFromString(\&ch);}
+\DoxyCodeLine{468 \}}
+\DoxyCodeLine{469 }
+\DoxyCodeLine{470 \textcolor{comment}{// Tests the linkage of the "{}\_"{} matcher.}}
+\DoxyCodeLine{471 TEST(LinkTest, TestMatcherAnything) \{}
+\DoxyCodeLine{472   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{473 }
+\DoxyCodeLine{474   ON\_CALL(mock, VoidFromString(\_)).WillByDefault(Return());}
+\DoxyCodeLine{475 \}}
+\DoxyCodeLine{476 }
+\DoxyCodeLine{477 \textcolor{comment}{// Tests the linkage of the A matcher.}}
+\DoxyCodeLine{478 TEST(LinkTest, TestMatcherA) \{}
+\DoxyCodeLine{479   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{480 }
+\DoxyCodeLine{481   ON\_CALL(mock, VoidFromString(A<char*>())).WillByDefault(Return());}
+\DoxyCodeLine{482 \}}
+\DoxyCodeLine{483 }
+\DoxyCodeLine{484 \textcolor{comment}{// Tests the linkage of the Eq and the "{}bare value"{} matcher.}}
+\DoxyCodeLine{485 TEST(LinkTest, TestMatchersEq) \{}
+\DoxyCodeLine{486   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{487   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* p = \textcolor{stringliteral}{"{}x"{}};}
+\DoxyCodeLine{488 }
+\DoxyCodeLine{489   ON\_CALL(mock, VoidFromString(Eq(p))).WillByDefault(Return());}
+\DoxyCodeLine{490   ON\_CALL(mock, VoidFromString(\textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(\textcolor{stringliteral}{"{}y"{}})))}
+\DoxyCodeLine{491       .WillByDefault(Return());}
+\DoxyCodeLine{492 \}}
+\DoxyCodeLine{493 }
+\DoxyCodeLine{494 \textcolor{comment}{// Tests the linkage of the Lt, Gt, Le, Ge, and Ne matchers.}}
+\DoxyCodeLine{495 TEST(LinkTest, TestMatchersRelations) \{}
+\DoxyCodeLine{496   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{497 }
+\DoxyCodeLine{498   ON\_CALL(mock, VoidFromFloat(Lt(1.0f))).WillByDefault(Return());}
+\DoxyCodeLine{499   ON\_CALL(mock, VoidFromFloat(Gt(1.0f))).WillByDefault(Return());}
+\DoxyCodeLine{500   ON\_CALL(mock, VoidFromFloat(Le(1.0f))).WillByDefault(Return());}
+\DoxyCodeLine{501   ON\_CALL(mock, VoidFromFloat(Ge(1.0f))).WillByDefault(Return());}
+\DoxyCodeLine{502   ON\_CALL(mock, VoidFromFloat(Ne(1.0f))).WillByDefault(Return());}
+\DoxyCodeLine{503 \}}
+\DoxyCodeLine{504 }
+\DoxyCodeLine{505 \textcolor{comment}{// Tests the linkage of the NotNull matcher.}}
+\DoxyCodeLine{506 TEST(LinkTest, TestMatcherNotNull) \{}
+\DoxyCodeLine{507   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{508 }
+\DoxyCodeLine{509   ON\_CALL(mock, VoidFromString(NotNull())).WillByDefault(Return());}
+\DoxyCodeLine{510 \}}
+\DoxyCodeLine{511 }
+\DoxyCodeLine{512 \textcolor{comment}{// Tests the linkage of the IsNull matcher.}}
+\DoxyCodeLine{513 TEST(LinkTest, TestMatcherIsNull) \{}
+\DoxyCodeLine{514   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{515 }
+\DoxyCodeLine{516   ON\_CALL(mock, VoidFromString(IsNull())).WillByDefault(Return());}
+\DoxyCodeLine{517 \}}
+\DoxyCodeLine{518 }
+\DoxyCodeLine{519 \textcolor{comment}{// Tests the linkage of the Ref matcher.}}
+\DoxyCodeLine{520 TEST(LinkTest, TestMatcherRef) \{}
+\DoxyCodeLine{521   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{522   \textcolor{keywordtype}{int} a = 0;}
+\DoxyCodeLine{523 }
+\DoxyCodeLine{524   ON\_CALL(mock, VoidFromIntRef(Ref(a))).WillByDefault(Return());}
+\DoxyCodeLine{525 \}}
+\DoxyCodeLine{526 }
+\DoxyCodeLine{527 \textcolor{comment}{// Tests the linkage of the TypedEq matcher.}}
+\DoxyCodeLine{528 TEST(LinkTest, TestMatcherTypedEq) \{}
+\DoxyCodeLine{529   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{530   \textcolor{keywordtype}{long} a = 0;}
+\DoxyCodeLine{531 }
+\DoxyCodeLine{532   ON\_CALL(mock, VoidFromIntRef(TypedEq<int\&>(a))).WillByDefault(Return());}
+\DoxyCodeLine{533 \}}
+\DoxyCodeLine{534 }
+\DoxyCodeLine{535 \textcolor{comment}{// Tests the linkage of the FloatEq, DoubleEq, NanSensitiveFloatEq and}}
+\DoxyCodeLine{536 \textcolor{comment}{// NanSensitiveDoubleEq matchers.}}
+\DoxyCodeLine{537 TEST(LinkTest, TestMatchersFloatingPoint) \{}
+\DoxyCodeLine{538   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{539   \textcolor{keywordtype}{float} a = 0;}
+\DoxyCodeLine{540 }
+\DoxyCodeLine{541   ON\_CALL(mock, VoidFromFloat(FloatEq(a))).WillByDefault(Return());}
+\DoxyCodeLine{542   ON\_CALL(mock, VoidFromDouble(DoubleEq(a))).WillByDefault(Return());}
+\DoxyCodeLine{543   ON\_CALL(mock, VoidFromFloat(NanSensitiveFloatEq(a))).WillByDefault(Return());}
+\DoxyCodeLine{544   ON\_CALL(mock, VoidFromDouble(NanSensitiveDoubleEq(a)))}
+\DoxyCodeLine{545       .WillByDefault(Return());}
+\DoxyCodeLine{546 \}}
+\DoxyCodeLine{547 }
+\DoxyCodeLine{548 \textcolor{comment}{// Tests the linkage of the ContainsRegex matcher.}}
+\DoxyCodeLine{549 TEST(LinkTest, TestMatcherContainsRegex) \{}
+\DoxyCodeLine{550   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{551 }
+\DoxyCodeLine{552   ON\_CALL(mock, VoidFromString(ContainsRegex(\textcolor{stringliteral}{"{}.*"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{553 \}}
+\DoxyCodeLine{554 }
+\DoxyCodeLine{555 \textcolor{comment}{// Tests the linkage of the MatchesRegex matcher.}}
+\DoxyCodeLine{556 TEST(LinkTest, TestMatcherMatchesRegex) \{}
+\DoxyCodeLine{557   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{558 }
+\DoxyCodeLine{559   ON\_CALL(mock, VoidFromString(MatchesRegex(\textcolor{stringliteral}{"{}.*"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{560 \}}
+\DoxyCodeLine{561 }
+\DoxyCodeLine{562 \textcolor{comment}{// Tests the linkage of the StartsWith, EndsWith, and HasSubstr matchers.}}
+\DoxyCodeLine{563 TEST(LinkTest, TestMatchersSubstrings) \{}
+\DoxyCodeLine{564   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{565 }
+\DoxyCodeLine{566   ON\_CALL(mock, VoidFromString(StartsWith(\textcolor{stringliteral}{"{}a"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{567   ON\_CALL(mock, VoidFromString(EndsWith(\textcolor{stringliteral}{"{}c"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{568   ON\_CALL(mock, VoidFromString(HasSubstr(\textcolor{stringliteral}{"{}b"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{569 \}}
+\DoxyCodeLine{570 }
+\DoxyCodeLine{571 \textcolor{comment}{// Tests the linkage of the StrEq, StrNe, StrCaseEq, and StrCaseNe matchers.}}
+\DoxyCodeLine{572 TEST(LinkTest, TestMatchersStringEquality) \{}
+\DoxyCodeLine{573   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{574   ON\_CALL(mock, VoidFromString(StrEq(\textcolor{stringliteral}{"{}a"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{575   ON\_CALL(mock, VoidFromString(StrNe(\textcolor{stringliteral}{"{}a"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{576   ON\_CALL(mock, VoidFromString(StrCaseEq(\textcolor{stringliteral}{"{}a"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{577   ON\_CALL(mock, VoidFromString(StrCaseNe(\textcolor{stringliteral}{"{}a"{}}))).WillByDefault(Return());}
+\DoxyCodeLine{578 \}}
+\DoxyCodeLine{579 }
+\DoxyCodeLine{580 \textcolor{comment}{// Tests the linkage of the ElementsAre matcher.}}
+\DoxyCodeLine{581 TEST(LinkTest, TestMatcherElementsAre) \{}
+\DoxyCodeLine{582   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{583 }
+\DoxyCodeLine{584   ON\_CALL(mock, VoidFromVector(ElementsAre(\textcolor{charliteral}{'a'}, \_))).WillByDefault(Return());}
+\DoxyCodeLine{585 \}}
+\DoxyCodeLine{586 }
+\DoxyCodeLine{587 \textcolor{comment}{// Tests the linkage of the ElementsAreArray matcher.}}
+\DoxyCodeLine{588 TEST(LinkTest, TestMatcherElementsAreArray) \{}
+\DoxyCodeLine{589   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{590   \textcolor{keywordtype}{char} arr[] = \{ \textcolor{charliteral}{'a'}, \textcolor{charliteral}{'b'} \};}
+\DoxyCodeLine{591 }
+\DoxyCodeLine{592   ON\_CALL(mock, VoidFromVector(ElementsAreArray(arr))).WillByDefault(Return());}
+\DoxyCodeLine{593 \}}
+\DoxyCodeLine{594 }
+\DoxyCodeLine{595 \textcolor{comment}{// Tests the linkage of the ContainerEq matcher.}}
+\DoxyCodeLine{596 TEST(LinkTest, TestMatcherContainerEq) \{}
+\DoxyCodeLine{597   \mbox{\hyperlink{class_mock}{Mock}} mock;}
+\DoxyCodeLine{598   std::vector<int> v;}
+\DoxyCodeLine{599 }
+\DoxyCodeLine{600   ON\_CALL(mock, VoidFromVector(ContainerEq(v))).WillByDefault(Return());}
+\DoxyCodeLine{601 \}}
+\DoxyCodeLine{602 }
+\DoxyCodeLine{603 \textcolor{comment}{// Tests the linkage of the Field matcher.}}
+\DoxyCodeLine{604 TEST(LinkTest, TestMatcherField) \{}
+\DoxyCodeLine{605   \mbox{\hyperlink{class_field_helper}{FieldHelper}} helper(0);}
+\DoxyCodeLine{606 }
+\DoxyCodeLine{607   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const FieldHelper\&>}} m = Field(\&FieldHelper::field\_, Eq(0));}
+\DoxyCodeLine{608   EXPECT\_TRUE(m.Matches(helper));}
+\DoxyCodeLine{609 }
+\DoxyCodeLine{610   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const FieldHelper*>}} m2 = Field(\&FieldHelper::field\_, Eq(0));}
+\DoxyCodeLine{611   EXPECT\_TRUE(m2.Matches(\&helper));}
+\DoxyCodeLine{612 \}}
+\DoxyCodeLine{613 }
+\DoxyCodeLine{614 \textcolor{comment}{// Tests the linkage of the Property matcher.}}
+\DoxyCodeLine{615 TEST(LinkTest, TestMatcherProperty) \{}
+\DoxyCodeLine{616   \mbox{\hyperlink{class_field_helper}{FieldHelper}} helper(0);}
+\DoxyCodeLine{617 }
+\DoxyCodeLine{618   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const FieldHelper\&>}} m = Property(\&FieldHelper::field, Eq(0));}
+\DoxyCodeLine{619   EXPECT\_TRUE(m.Matches(helper));}
+\DoxyCodeLine{620 }
+\DoxyCodeLine{621   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const FieldHelper*>}} m2 = Property(\&FieldHelper::field, Eq(0));}
+\DoxyCodeLine{622   EXPECT\_TRUE(m2.Matches(\&helper));}
+\DoxyCodeLine{623 \}}
+\DoxyCodeLine{624 }
+\DoxyCodeLine{625 \textcolor{comment}{// Tests the linkage of the ResultOf matcher.}}
+\DoxyCodeLine{626 TEST(LinkTest, TestMatcherResultOf) \{}
+\DoxyCodeLine{627   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<char*>}} m = ResultOf(\&InvokeHelper::StaticIntFromString, Eq(1));}
+\DoxyCodeLine{628   EXPECT\_TRUE(m.Matches(NULL));}
+\DoxyCodeLine{629 \}}
+\DoxyCodeLine{630 }
+\DoxyCodeLine{631 \textcolor{comment}{// Tests the linkage of the ResultOf matcher.}}
+\DoxyCodeLine{632 TEST(LinkTest, TestMatcherPointee) \{}
+\DoxyCodeLine{633   \textcolor{keywordtype}{int} n = 1;}
+\DoxyCodeLine{634 }
+\DoxyCodeLine{635   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<int*>}} m = Pointee(Eq(1));}
+\DoxyCodeLine{636   EXPECT\_TRUE(m.Matches(\&n));}
+\DoxyCodeLine{637 \}}
+\DoxyCodeLine{638 }
+\DoxyCodeLine{639 \textcolor{comment}{// Tests the linkage of the Truly matcher.}}
+\DoxyCodeLine{640 TEST(LinkTest, TestMatcherTruly) \{}
+\DoxyCodeLine{641   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const char*>}} m = Truly(\&InvokeHelper::StaticBoolFromString);}
+\DoxyCodeLine{642   EXPECT\_TRUE(m.Matches(NULL));}
+\DoxyCodeLine{643 \}}
+\DoxyCodeLine{644 }
+\DoxyCodeLine{645 \textcolor{comment}{// Tests the linkage of the AllOf matcher.}}
+\DoxyCodeLine{646 TEST(LinkTest, TestMatcherAllOf) \{}
+\DoxyCodeLine{647   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<int>}} m = AllOf(\_, Eq(1));}
+\DoxyCodeLine{648   EXPECT\_TRUE(m.Matches(1));}
+\DoxyCodeLine{649 \}}
+\DoxyCodeLine{650 }
+\DoxyCodeLine{651 \textcolor{comment}{// Tests the linkage of the AnyOf matcher.}}
+\DoxyCodeLine{652 TEST(LinkTest, TestMatcherAnyOf) \{}
+\DoxyCodeLine{653   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<int>}} m = AnyOf(\_, Eq(1));}
+\DoxyCodeLine{654   EXPECT\_TRUE(m.Matches(1));}
+\DoxyCodeLine{655 \}}
+\DoxyCodeLine{656 }
+\DoxyCodeLine{657 \textcolor{comment}{// Tests the linkage of the Not matcher.}}
+\DoxyCodeLine{658 TEST(LinkTest, TestMatcherNot) \{}
+\DoxyCodeLine{659   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<int>}} m = Not(\_);}
+\DoxyCodeLine{660   EXPECT\_FALSE(m.Matches(1));}
+\DoxyCodeLine{661 \}}
+\DoxyCodeLine{662 }
+\DoxyCodeLine{663 \textcolor{comment}{// Tests the linkage of the MatcherCast<T>() function.}}
+\DoxyCodeLine{664 TEST(LinkTest, TestMatcherCast) \{}
+\DoxyCodeLine{665   \mbox{\hyperlink{classtesting_1_1_matcher}{Matcher<const char*>}} m = MatcherCast<const char*>(\_);}
+\DoxyCodeLine{666   EXPECT\_TRUE(m.Matches(NULL));}
+\DoxyCodeLine{667 \}}
+\DoxyCodeLine{668 }
+\DoxyCodeLine{669 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GMOCK\_TEST\_GMOCK\_LINK\_TEST\_H\_}}
+
+\end{DoxyCode}

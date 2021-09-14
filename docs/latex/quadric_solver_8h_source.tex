@@ -1,0 +1,315 @@
+\hypertarget{quadric_solver_8h_source}{}\doxysection{quadric\+Solver.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef QUADRICSOLVER\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define QUADRICSOLVER\_H}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <stdlib.h>}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <stdbool.h>}        }
+\DoxyCodeLine{11 \textcolor{preprocessor}{\#include <string.h>}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include <stdarg.h>}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#include <math.h>}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#include <ctype.h>}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include <ncurses.h>}}
+\DoxyCodeLine{23 \textcolor{keywordtype}{double} sign(\textcolor{keywordtype}{double} x) \{ }
+\DoxyCodeLine{24     \textcolor{keywordflow}{if} (x < 0) \textcolor{keywordflow}{return} -\/1; }
+\DoxyCodeLine{25     \textcolor{keywordflow}{if} (x > 0) \textcolor{keywordflow}{return} 1; }
+\DoxyCodeLine{26     \textcolor{keywordflow}{else} \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{27 \}}
+\DoxyCodeLine{28 }
+\DoxyCodeLine{29 \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{double} TOL = 1e-\/3; \textcolor{comment}{//> Tolerance for double calculations}}
+\DoxyCodeLine{30 \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{double} GRAPH\_TOL = 1; \textcolor{comment}{//> Tolerance for printing the graph}}
+\DoxyCodeLine{31  }
+\DoxyCodeLine{32 \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{size\_t} HISTORY\_LENGHT = 64;  \textcolor{comment}{//> the max number of entries in history           //TODO add Makefile; add `make install` option; add history save support}}
+\DoxyCodeLine{33 \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{size\_t} MAX\_CMD\_LENGHT = 64;  \textcolor{comment}{//> the max len of an entry}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#define ALT\_BACKSPACE 127       }\textcolor{comment}{//> macro for backspace entry recognition by NCurses}}
+\DoxyCodeLine{37 }
+\DoxyCodeLine{38 \textcolor{comment}{//==========================================}}
+\DoxyCodeLine{39 \textcolor{comment}{// Command history struct}}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{45 \textcolor{keyword}{struct }\mbox{\hyperlink{struct_history}{History}}}
+\DoxyCodeLine{46 \{}
+\DoxyCodeLine{50     WINDOW *\mbox{\hyperlink{struct_history_acdbca02d79cb9c59015aebba63176e1f}{localWin}}; }
+\DoxyCodeLine{56     char (*\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[HISTORY\_LENGHT][MAX\_CMD\_LENGHT + 1]; }
+\DoxyCodeLine{62     \textcolor{keywordtype}{size\_t} \mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}}; }
+\DoxyCodeLine{68     \textcolor{keywordtype}{bool} \mbox{\hyperlink{struct_history_a3635c7e28d016bb859fe2c30b9ef19c8}{isActive}}; }
+\DoxyCodeLine{69 \};}
+\DoxyCodeLine{70 }
+\DoxyCodeLine{78 \textcolor{keyword}{static} \textcolor{keywordtype}{void} History\_construct(\textcolor{keyword}{struct} \mbox{\hyperlink{struct_history}{History}} *h, WINDOW *historyWin)                       \textcolor{comment}{//TODO ask DED if `History\_*`is a good naming strategy}}
+\DoxyCodeLine{79 \{}
+\DoxyCodeLine{80     h-\/>\mbox{\hyperlink{struct_history_acdbca02d79cb9c59015aebba63176e1f}{localWin}} = historyWin;}
+\DoxyCodeLine{81     h-\/>\mbox{\hyperlink{struct_history_a3635c7e28d016bb859fe2c30b9ef19c8}{isActive}} = \textcolor{keyword}{true};}
+\DoxyCodeLine{82     h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}} = (char (*)[HISTORY\_LENGHT][MAX\_CMD\_LENGHT + 1])calloc(HISTORY\_LENGHT * (MAX\_CMD\_LENGHT + 1), \textcolor{keyword}{sizeof}(char));}
+\DoxyCodeLine{83 }
+\DoxyCodeLine{84     h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} = 0;}
+\DoxyCodeLine{85 \}}
+\DoxyCodeLine{86 }
+\DoxyCodeLine{92 \textcolor{keyword}{static} \textcolor{keywordtype}{void} History\_destruct(\textcolor{keyword}{struct} \mbox{\hyperlink{struct_history}{History}} *h)}
+\DoxyCodeLine{93 \{}
+\DoxyCodeLine{94     \textcolor{keywordflow}{if} (h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})}
+\DoxyCodeLine{95        free(h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}});}
+\DoxyCodeLine{96 \}}
+\DoxyCodeLine{97 }
+\DoxyCodeLine{105 \textcolor{keyword}{static} \textcolor{keywordtype}{void} History\_put(\textcolor{keyword}{struct} \mbox{\hyperlink{struct_history}{History}} *h, \textcolor{keywordtype}{char} *elem)}
+\DoxyCodeLine{106 \{}
+\DoxyCodeLine{107     strcpy((*h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}}], elem);}
+\DoxyCodeLine{108     h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} = (h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} + 1) \% HISTORY\_LENGHT;}
+\DoxyCodeLine{109 \}}
+\DoxyCodeLine{110 }
+\DoxyCodeLine{119 \textcolor{keyword}{static} \textcolor{keywordtype}{char}* History\_get(\textcolor{keyword}{struct} \mbox{\hyperlink{struct_history}{History}} *h, \textcolor{keywordtype}{size\_t} n)          \textcolor{comment}{//TODO change one letter vars}}
+\DoxyCodeLine{120 \{}
+\DoxyCodeLine{121     \textcolor{keywordflow}{if} (!h-\/>\mbox{\hyperlink{struct_history_a3635c7e28d016bb859fe2c30b9ef19c8}{isActive}} || n > HISTORY\_LENGHT)}
+\DoxyCodeLine{122         \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{123 }
+\DoxyCodeLine{124     \textcolor{keywordflow}{if} ((*h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[(h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} -\/ n) \% HISTORY\_LENGHT ][0])}
+\DoxyCodeLine{125         \textcolor{keywordflow}{return} ((*h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[(h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} -\/ n) \% HISTORY\_LENGHT]);}
+\DoxyCodeLine{126     \textcolor{keywordflow}{else} }
+\DoxyCodeLine{127         \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{128 \}}
+\DoxyCodeLine{129 }
+\DoxyCodeLine{136 \textcolor{keyword}{static} \textcolor{keywordtype}{void} History\_list(\textcolor{keyword}{struct} \mbox{\hyperlink{struct_history}{History}} *h)}
+\DoxyCodeLine{137 \{}
+\DoxyCodeLine{138     \textcolor{keywordflow}{if} (!h-\/>\mbox{\hyperlink{struct_history_a3635c7e28d016bb859fe2c30b9ef19c8}{isActive}})}
+\DoxyCodeLine{139         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{140 }
+\DoxyCodeLine{141     \textcolor{keywordtype}{size\_t} i = 1;}
+\DoxyCodeLine{142     \textcolor{keywordflow}{while} ((*h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[(h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} -\/ i) \% HISTORY\_LENGHT][0] \&\& i != HISTORY\_LENGHT) \{}
+\DoxyCodeLine{143         wprintw(h-\/>\mbox{\hyperlink{struct_history_acdbca02d79cb9c59015aebba63176e1f}{localWin}}, \textcolor{stringliteral}{"{}\%d: \%s\(\backslash\)n"{}}, i, (*h-\/>\mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{log}})[(h-\/>\mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}} -\/ i) \% HISTORY\_LENGHT]);}
+\DoxyCodeLine{144         ++i;}
+\DoxyCodeLine{145     \}}
+\DoxyCodeLine{146 \}}
+\DoxyCodeLine{147 }
+\DoxyCodeLine{148 \textcolor{comment}{//==========================================}}
+\DoxyCodeLine{149 \textcolor{comment}{// WINDOW management}}
+\DoxyCodeLine{150 }
+\DoxyCodeLine{161 \textcolor{keyword}{static} WINDOW *createWin(\textcolor{keywordtype}{int} height, \textcolor{keywordtype}{int} width, \textcolor{keywordtype}{int} starty, \textcolor{keywordtype}{int} startx)}
+\DoxyCodeLine{162 \{   }
+\DoxyCodeLine{163     WINDOW *localWin;}
+\DoxyCodeLine{164 }
+\DoxyCodeLine{165     localWin = newwin(height, width, starty, startx);}
+\DoxyCodeLine{166     box(localWin, 0 , 0);       \textcolor{comment}{/* 0, 0 gives default characters }}
+\DoxyCodeLine{167 \textcolor{comment}{                                 * for the vertical and horizontal}}
+\DoxyCodeLine{168 \textcolor{comment}{                                 * lines                            */}}
+\DoxyCodeLine{169     wrefresh(localWin);         }
+\DoxyCodeLine{170 }
+\DoxyCodeLine{171     \textcolor{keywordflow}{return} localWin;}
+\DoxyCodeLine{172 \}}
+\DoxyCodeLine{173 }
+\DoxyCodeLine{179 \textcolor{keyword}{static} \textcolor{keywordtype}{void} destroyWin(WINDOW *localWin)}
+\DoxyCodeLine{180 \{   }
+\DoxyCodeLine{181     wborder(localWin, \textcolor{charliteral}{' '}, \textcolor{charliteral}{' '}, \textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '});}
+\DoxyCodeLine{182 }
+\DoxyCodeLine{183     \textcolor{comment}{/* The parameters taken are }}
+\DoxyCodeLine{184 \textcolor{comment}{     * 1. win: the window on which to operate}}
+\DoxyCodeLine{185 \textcolor{comment}{     * 2. ls: character to be used for the left side of the window }}
+\DoxyCodeLine{186 \textcolor{comment}{     * 3. rs: character to be used for the right side of the window }}
+\DoxyCodeLine{187 \textcolor{comment}{     * 4. ts: character to be used for the top side of the window }}
+\DoxyCodeLine{188 \textcolor{comment}{     * 5. bs: character to be used for the bottom side of the window }}
+\DoxyCodeLine{189 \textcolor{comment}{     * 6. tl: character to be used for the top left corner of the window }}
+\DoxyCodeLine{190 \textcolor{comment}{     * 7. tr: character to be used for the top right corner of the window }}
+\DoxyCodeLine{191 \textcolor{comment}{     * 8. bl: character to be used for the bottom left corner of the window }}
+\DoxyCodeLine{192 \textcolor{comment}{     * 9. br: character to be used for the bottom right corner of the window}}
+\DoxyCodeLine{193 \textcolor{comment}{     */}}
+\DoxyCodeLine{194     wclear(localWin);}
+\DoxyCodeLine{195     wrefresh(localWin);}
+\DoxyCodeLine{196     delwin(localWin);}
+\DoxyCodeLine{197 \}}
+\DoxyCodeLine{198 }
+\DoxyCodeLine{211 \textcolor{keyword}{static} \textcolor{keywordtype}{void} mvwreadline(WINDOW *localWin, \mbox{\hyperlink{struct_history}{History}} *h, \textcolor{keywordtype}{size\_t} starty, \textcolor{keywordtype}{size\_t} startx, \textcolor{keywordtype}{char} *buffer, \textcolor{keywordtype}{size\_t} buflen)          \textcolor{comment}{//TODO refactor}}
+\DoxyCodeLine{212 \{                                                                                                                         \textcolor{comment}{//TODO emplement saving unentered command     //TODO clean up the screen after each setting new command from history}}
+\DoxyCodeLine{213     keypad(localWin, TRUE);}
+\DoxyCodeLine{214     ++buflen;       }
+\DoxyCodeLine{215     \textcolor{keywordtype}{size\_t} old\_curs = curs\_set(1);}
+\DoxyCodeLine{216     \textcolor{keywordtype}{size\_t} pos = 0;}
+\DoxyCodeLine{217     \textcolor{keywordtype}{size\_t} len = 0;}
+\DoxyCodeLine{218     \textcolor{keywordtype}{size\_t} historyPos = 0;}
+\DoxyCodeLine{219 }
+\DoxyCodeLine{220     \textcolor{keywordflow}{while} (\textcolor{keyword}{true}) \{}
+\DoxyCodeLine{221         \textcolor{keywordtype}{int} c;}
+\DoxyCodeLine{222 }
+\DoxyCodeLine{223         buffer[len] = \textcolor{charliteral}{' '};}
+\DoxyCodeLine{224         mvwaddnstr(localWin, starty, startx, buffer, len + 1);}
+\DoxyCodeLine{225         wmove(localWin, starty, startx + pos);}
+\DoxyCodeLine{226         c = wgetch(localWin);}
+\DoxyCodeLine{227 }
+\DoxyCodeLine{228         \textcolor{keywordflow}{if} (c == KEY\_ENTER || c == \textcolor{charliteral}{'\(\backslash\)n'} || c == \textcolor{charliteral}{'\(\backslash\)r'}) \{}
+\DoxyCodeLine{229             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{230         \} }
+\DoxyCodeLine{231         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (isprint(c)) \{}
+\DoxyCodeLine{232             \textcolor{keywordflow}{if} (pos < buflen -\/ 1) \{}
+\DoxyCodeLine{233                 memmove(buffer + pos + 1, buffer + pos, len -\/ pos);}
+\DoxyCodeLine{234                 buffer[pos++] = c;}
+\DoxyCodeLine{235                 len += 1;}
+\DoxyCodeLine{236             \} }
+\DoxyCodeLine{237             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{238                 beep();}
+\DoxyCodeLine{239         \}}
+\DoxyCodeLine{240         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == KEY\_LEFT) \{}
+\DoxyCodeLine{241             \textcolor{keywordflow}{if} (pos > 0) \{}
+\DoxyCodeLine{242                 pos -\/= 1;}
+\DoxyCodeLine{243             \}}
+\DoxyCodeLine{244             \textcolor{keywordflow}{else} }
+\DoxyCodeLine{245                 beep();}
+\DoxyCodeLine{246         \} }
+\DoxyCodeLine{247         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == KEY\_UP) \{}
+\DoxyCodeLine{248             \textcolor{keywordtype}{char} *command;}
+\DoxyCodeLine{249             \textcolor{keywordflow}{if} (command = History\_get(h, historyPos + 1)) \{}
+\DoxyCodeLine{250                 memset(buffer, \textcolor{charliteral}{' '}, buflen);}
+\DoxyCodeLine{251 }
+\DoxyCodeLine{252                 strncpy(buffer, command, MAX\_CMD\_LENGHT);}
+\DoxyCodeLine{253                 len = strlen(command);}
+\DoxyCodeLine{254                 pos = strlen(command);}
+\DoxyCodeLine{255                 ++historyPos;}
+\DoxyCodeLine{256             \}}
+\DoxyCodeLine{257         \}}
+\DoxyCodeLine{258         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == KEY\_DOWN) \{}
+\DoxyCodeLine{259             \textcolor{keywordtype}{char} *command;}
+\DoxyCodeLine{260             \textcolor{keywordflow}{if} (historyPos -\/ 1 != -\/1 \&\& (command = History\_get(h, historyPos -\/ 1))) \{}
+\DoxyCodeLine{261                 memset(buffer, \textcolor{charliteral}{' '}, buflen);}
+\DoxyCodeLine{262                 strncpy(buffer, command, MAX\_CMD\_LENGHT);}
+\DoxyCodeLine{263                 len = strlen(command);}
+\DoxyCodeLine{264                 pos = strlen(command);}
+\DoxyCodeLine{265                 -\/-\/historyPos;}
+\DoxyCodeLine{266             \}}
+\DoxyCodeLine{267         \}}
+\DoxyCodeLine{268         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == KEY\_RIGHT) \{}
+\DoxyCodeLine{269             \textcolor{keywordflow}{if} (pos < len)}
+\DoxyCodeLine{270                 pos += 1;}
+\DoxyCodeLine{271             \textcolor{keywordflow}{else} }
+\DoxyCodeLine{272                 beep();}
+\DoxyCodeLine{273         \}}
+\DoxyCodeLine{274         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == ALT\_BACKSPACE) \{}
+\DoxyCodeLine{275             \textcolor{keywordflow}{if} (pos > 0) \{}
+\DoxyCodeLine{276                 memmove(buffer+pos-\/1, buffer+pos, len-\/pos);}
+\DoxyCodeLine{277                 pos -\/= 1;}
+\DoxyCodeLine{278                 len -\/= 1;}
+\DoxyCodeLine{279             \} }
+\DoxyCodeLine{280             \textcolor{keywordflow}{else} }
+\DoxyCodeLine{281                 beep();}
+\DoxyCodeLine{282         \}     }
+\DoxyCodeLine{283         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (c == KEY\_DC) \{}
+\DoxyCodeLine{284             \textcolor{keywordflow}{if} (pos < len) \{}
+\DoxyCodeLine{285                 memmove(buffer+pos, buffer+pos+1, len-\/pos-\/1);}
+\DoxyCodeLine{286                 len -\/= 1;}
+\DoxyCodeLine{287             \}}
+\DoxyCodeLine{288             \textcolor{keywordflow}{else} }
+\DoxyCodeLine{289                 beep();}
+\DoxyCodeLine{290         \}}
+\DoxyCodeLine{291         \textcolor{keywordflow}{else} }
+\DoxyCodeLine{292             beep();}
+\DoxyCodeLine{293 }
+\DoxyCodeLine{294     \}}
+\DoxyCodeLine{295     buffer[len] = \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{296     \textcolor{keywordflow}{if} (old\_curs != ERR)}
+\DoxyCodeLine{297         curs\_set(old\_curs);}
+\DoxyCodeLine{298 \}}
+\DoxyCodeLine{299 }
+\DoxyCodeLine{300 \textcolor{comment}{//==========================================}}
+\DoxyCodeLine{301 \textcolor{comment}{// Main }}
+\DoxyCodeLine{302 }
+\DoxyCodeLine{311 \textcolor{keywordtype}{bool} doubleValidate(\textcolor{keywordtype}{size\_t} num, ...)            \textcolor{comment}{//TODO ask DED if it is reasonable to use abstrat func}}
+\DoxyCodeLine{312 \{}
+\DoxyCodeLine{313     va\_list args;}
+\DoxyCodeLine{314     va\_start(args, num);}
+\DoxyCodeLine{315     }
+\DoxyCodeLine{316 }
+\DoxyCodeLine{317     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < num; ++i) \{}
+\DoxyCodeLine{318         \textcolor{keywordflow}{if} (isnan(va\_arg(args, \textcolor{keywordtype}{double})))\{       \textcolor{comment}{//TODO maybe add something else?}}
+\DoxyCodeLine{319             va\_end(args);}
+\DoxyCodeLine{320             \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{321         \}}
+\DoxyCodeLine{322     \}}
+\DoxyCodeLine{323 }
+\DoxyCodeLine{324     va\_end(args);}
+\DoxyCodeLine{325     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{326 \}}
+\DoxyCodeLine{327 }
+\DoxyCodeLine{337 \textcolor{keywordtype}{void} printGraph(\textcolor{keywordtype}{double} a, \textcolor{keywordtype}{double} b, \textcolor{keywordtype}{double} c)}
+\DoxyCodeLine{338 \{}
+\DoxyCodeLine{339     WINDOW* sideWin = createWin(LINES -\/ 5, COLS / 2 + 1,  0, COLS / 2);}
+\DoxyCodeLine{340     WINDOW* plotWin = createWin(LINES -\/ 15, COLS / 2 -\/ 8, 5, COLS / 2 + 5);}
+\DoxyCodeLine{341     wborder(plotWin, \textcolor{charliteral}{' '}, \textcolor{charliteral}{' '}, \textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '},\textcolor{charliteral}{' '});}
+\DoxyCodeLine{342 }
+\DoxyCodeLine{343     \textcolor{keywordtype}{double} dimentionsDiff = 2.3;}
+\DoxyCodeLine{344     \textcolor{keywordtype}{long} \textcolor{keywordtype}{long} windowHight = LINES -\/ 15;}
+\DoxyCodeLine{345     \textcolor{keywordtype}{long} \textcolor{keywordtype}{long} windowWidth = COLS / 2 -\/ 10;}
+\DoxyCodeLine{346 }
+\DoxyCodeLine{347     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < windowHight; ++i) \{             \textcolor{comment}{// Printing the graph}}
+\DoxyCodeLine{348         \textcolor{keywordtype}{double} y = -\/(i -\/ windowHight / 2);}
+\DoxyCodeLine{349         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < windowWidth; ++j) \{}
+\DoxyCodeLine{350             \textcolor{keywordtype}{double} x = j -\/ windowWidth / 2;}
+\DoxyCodeLine{351             x /= dimentionsDiff;}
+\DoxyCodeLine{352             \textcolor{keywordflow}{if} (i == 0 \&\& j == windowWidth / 2 -\/ 1) \{}
+\DoxyCodeLine{353                 wprintw(plotWin, \textcolor{stringliteral}{"{}Y"{}});}
+\DoxyCodeLine{354             \}}
+\DoxyCodeLine{355             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (i == windowHight / 2 + 1 \&\& j == windowWidth -\/ 1) \{}
+\DoxyCodeLine{356                 wprintw(plotWin, \textcolor{stringliteral}{"{}X"{}});}
+\DoxyCodeLine{357             \}}
+\DoxyCodeLine{358             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (fabs(x*x*a + x*b + c -\/ y) < GRAPH\_TOL) \{}
+\DoxyCodeLine{359                 wprintw(plotWin, \textcolor{stringliteral}{"{}."{}});}
+\DoxyCodeLine{360             \}}
+\DoxyCodeLine{361             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (i != windowHight / 2 \&\& j != windowWidth / 2) \{}
+\DoxyCodeLine{362                 waddch(plotWin, \textcolor{charliteral}{' '});}
+\DoxyCodeLine{363             \}}
+\DoxyCodeLine{364             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (i == windowHight / 2 \&\& j != windowWidth / 2) \{}
+\DoxyCodeLine{365                 \textcolor{keywordflow}{if} (j == windowWidth -\/ 1)}
+\DoxyCodeLine{366                     waddch(plotWin, ACS\_RARROW);}
+\DoxyCodeLine{367                 \textcolor{keywordflow}{else}}
+\DoxyCodeLine{368                     waddch(plotWin, ACS\_HLINE);}
+\DoxyCodeLine{369             \}}
+\DoxyCodeLine{370             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (i != windowHight / 2 \&\& j == windowWidth / 2) \{}
+\DoxyCodeLine{371                 \textcolor{keywordflow}{if} (i == 0)}
+\DoxyCodeLine{372                     waddch(plotWin, ACS\_UARROW);}
+\DoxyCodeLine{373                 \textcolor{keywordflow}{else}}
+\DoxyCodeLine{374                     waddch(plotWin, ACS\_VLINE);}
+\DoxyCodeLine{375                 }
+\DoxyCodeLine{376             \}}
+\DoxyCodeLine{377             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (i == windowHight / 2 \&\& j == windowWidth / 2) \{}
+\DoxyCodeLine{378                 waddch(plotWin, ACS\_PLUS);}
+\DoxyCodeLine{379             \}}
+\DoxyCodeLine{380             \textcolor{keywordflow}{if} (j == windowWidth -\/ 1)}
+\DoxyCodeLine{381                 waddch(plotWin, \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{382         \}}
+\DoxyCodeLine{383     \}}
+\DoxyCodeLine{384 }
+\DoxyCodeLine{385     wrefresh(plotWin);}
+\DoxyCodeLine{386     delwin(plotWin);}
+\DoxyCodeLine{387     delwin(sideWin);}
+\DoxyCodeLine{388 \}}
+\DoxyCodeLine{389 }
+\DoxyCodeLine{401 \textcolor{keywordtype}{void} quadricSolver(\textcolor{keywordtype}{double} a, \textcolor{keywordtype}{double} b, \textcolor{keywordtype}{double} c, \textcolor{keywordtype}{double} *result\_1, \textcolor{keywordtype}{double} *result\_2, \textcolor{keywordtype}{bool} *result\_eq\_inf)}
+\DoxyCodeLine{402 \{}
+\DoxyCodeLine{403     \textcolor{keywordflow}{if} (fabs(a) < TOL) \{}
+\DoxyCodeLine{404         \textcolor{keywordflow}{if} (fabs(b) < TOL) \{}
+\DoxyCodeLine{405             \textcolor{keywordflow}{if} (fabs(c) < TOL)}
+\DoxyCodeLine{406                 *result\_eq\_inf = \textcolor{keyword}{true};              }
+\DoxyCodeLine{407             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{408                 \textcolor{keywordflow}{return};}
+\DoxyCodeLine{409         \}}
+\DoxyCodeLine{410         \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{411             *result\_1 = -\/c / b;}
+\DoxyCodeLine{412             *result\_2 = *result\_1;}
+\DoxyCodeLine{413         \}}
+\DoxyCodeLine{414     \}}
+\DoxyCodeLine{415 }
+\DoxyCodeLine{416    \textcolor{keywordflow}{else} \{                                                       \textcolor{comment}{// Quadric case}}
+\DoxyCodeLine{417         \textcolor{keywordtype}{double} det = b * b -\/ 4 * a * c;}
+\DoxyCodeLine{418         \textcolor{keywordflow}{if} (fabs(det) < TOL) \{}
+\DoxyCodeLine{419             *result\_1 = -\/0.5 * b / a;}
+\DoxyCodeLine{420             *result\_2 = *result\_1;}
+\DoxyCodeLine{421         \}}
+\DoxyCodeLine{422         \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (det > 0) \{ }
+\DoxyCodeLine{423             \textcolor{keywordtype}{double} interim = -\/0.5 * (b + sign(b) * sqrt(det));}
+\DoxyCodeLine{424             *result\_1 = c / interim;}
+\DoxyCodeLine{425             *result\_2 = interim / a;}
+\DoxyCodeLine{426         \}}
+\DoxyCodeLine{427     \}}
+\DoxyCodeLine{428 \}}
+\DoxyCodeLine{429 }
+\DoxyCodeLine{430 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,75 @@
+\hypertarget{custom_2gtest-port_8h_source}{}\doxysection{gtest-\/port.h}
+\label{custom_2gtest-port_8h_source}\index{build/\_deps/googletest-\/src/googletest/include/gtest/internal/custom/gtest-\/port.h@{build/\_deps/googletest-\/src/googletest/include/gtest/internal/custom/gtest-\/port.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2015, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Injection point for custom user configurations.}}
+\DoxyCodeLine{31 \textcolor{comment}{// The following macros can be defined:}}
+\DoxyCodeLine{32 \textcolor{comment}{//}}
+\DoxyCodeLine{33 \textcolor{comment}{//   Flag related macros:}}
+\DoxyCodeLine{34 \textcolor{comment}{//     GTEST\_FLAG(flag\_name)}}
+\DoxyCodeLine{35 \textcolor{comment}{//     GTEST\_USE\_OWN\_FLAGFILE\_FLAG\_  -\/ Define to 0 when the system provides its}}
+\DoxyCodeLine{36 \textcolor{comment}{//                                     own flagfile flag parsing.}}
+\DoxyCodeLine{37 \textcolor{comment}{//     GTEST\_DECLARE\_bool\_(name)}}
+\DoxyCodeLine{38 \textcolor{comment}{//     GTEST\_DECLARE\_int32\_(name)}}
+\DoxyCodeLine{39 \textcolor{comment}{//     GTEST\_DECLARE\_string\_(name)}}
+\DoxyCodeLine{40 \textcolor{comment}{//     GTEST\_DEFINE\_bool\_(name, default\_val, doc)}}
+\DoxyCodeLine{41 \textcolor{comment}{//     GTEST\_DEFINE\_int32\_(name, default\_val, doc)}}
+\DoxyCodeLine{42 \textcolor{comment}{//     GTEST\_DEFINE\_string\_(name, default\_val, doc)}}
+\DoxyCodeLine{43 \textcolor{comment}{//}}
+\DoxyCodeLine{44 \textcolor{comment}{//   Test filtering:}}
+\DoxyCodeLine{45 \textcolor{comment}{//     GTEST\_TEST\_FILTER\_ENV\_VAR\_ -\/ The name of an environment variable that}}
+\DoxyCodeLine{46 \textcolor{comment}{//                                  will be used if -\/-\/GTEST\_FLAG(test\_filter)}}
+\DoxyCodeLine{47 \textcolor{comment}{//                                  is not provided.}}
+\DoxyCodeLine{48 \textcolor{comment}{//}}
+\DoxyCodeLine{49 \textcolor{comment}{//   Logging:}}
+\DoxyCodeLine{50 \textcolor{comment}{//     GTEST\_LOG\_(severity)}}
+\DoxyCodeLine{51 \textcolor{comment}{//     GTEST\_CHECK\_(condition)}}
+\DoxyCodeLine{52 \textcolor{comment}{//     Functions LogToStderr() and FlushInfoLog() have to be provided too.}}
+\DoxyCodeLine{53 \textcolor{comment}{//}}
+\DoxyCodeLine{54 \textcolor{comment}{//   Threading:}}
+\DoxyCodeLine{55 \textcolor{comment}{//     GTEST\_HAS\_NOTIFICATION\_ -\/ Enabled if Notification is already provided.}}
+\DoxyCodeLine{56 \textcolor{comment}{//     GTEST\_HAS\_MUTEX\_AND\_THREAD\_LOCAL\_ -\/ Enabled if Mutex and ThreadLocal are}}
+\DoxyCodeLine{57 \textcolor{comment}{//                                         already provided.}}
+\DoxyCodeLine{58 \textcolor{comment}{//     Must also provide GTEST\_DECLARE\_STATIC\_MUTEX\_(mutex) and}}
+\DoxyCodeLine{59 \textcolor{comment}{//     GTEST\_DEFINE\_STATIC\_MUTEX\_(mutex)}}
+\DoxyCodeLine{60 \textcolor{comment}{//}}
+\DoxyCodeLine{61 \textcolor{comment}{//     GTEST\_EXCLUSIVE\_LOCK\_REQUIRED\_(locks)}}
+\DoxyCodeLine{62 \textcolor{comment}{//     GTEST\_LOCK\_EXCLUDED\_(locks)}}
+\DoxyCodeLine{63 \textcolor{comment}{//}}
+\DoxyCodeLine{64 \textcolor{comment}{// ** Custom implementation starts here **}}
+\DoxyCodeLine{65 }
+\DoxyCodeLine{66 \textcolor{preprocessor}{\#ifndef GTEST\_INCLUDE\_GTEST\_INTERNAL\_CUSTOM\_GTEST\_PORT\_H\_}}
+\DoxyCodeLine{67 \textcolor{preprocessor}{\#define GTEST\_INCLUDE\_GTEST\_INTERNAL\_CUSTOM\_GTEST\_PORT\_H\_}}
+\DoxyCodeLine{68 }
+\DoxyCodeLine{69 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_INCLUDE\_GTEST\_INTERNAL\_CUSTOM\_GTEST\_PORT\_H\_}}
+
+\end{DoxyCode}

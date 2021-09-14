@@ -1,0 +1,2242 @@
+\hypertarget{gtest_8h_source}{}\doxysection{gtest.\+h}
+\label{gtest_8h_source}\index{build/\_deps/googletest-\/src/googletest/include/gtest/gtest.h@{build/\_deps/googletest-\/src/googletest/include/gtest/gtest.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2005, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: wan@google.com (Zhanyong Wan)}}
+\DoxyCodeLine{31 \textcolor{comment}{//}}
+\DoxyCodeLine{32 \textcolor{comment}{// The Google C++ Testing Framework (Google Test)}}
+\DoxyCodeLine{33 \textcolor{comment}{//}}
+\DoxyCodeLine{34 \textcolor{comment}{// This header file defines the public API for Google Test.  It should be}}
+\DoxyCodeLine{35 \textcolor{comment}{// included by any test program that uses Google Test.}}
+\DoxyCodeLine{36 \textcolor{comment}{//}}
+\DoxyCodeLine{37 \textcolor{comment}{// IMPORTANT NOTE: Due to limitation of the C++ language, we have to}}
+\DoxyCodeLine{38 \textcolor{comment}{// leave some internal implementation details in this header file.}}
+\DoxyCodeLine{39 \textcolor{comment}{// They are clearly marked by comments like this:}}
+\DoxyCodeLine{40 \textcolor{comment}{//}}
+\DoxyCodeLine{41 \textcolor{comment}{//   // INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{42 \textcolor{comment}{//}}
+\DoxyCodeLine{43 \textcolor{comment}{// Such code is NOT meant to be used by a user directly, and is subject}}
+\DoxyCodeLine{44 \textcolor{comment}{// to CHANGE WITHOUT NOTICE.  Therefore DO NOT DEPEND ON IT in a user}}
+\DoxyCodeLine{45 \textcolor{comment}{// program!}}
+\DoxyCodeLine{46 \textcolor{comment}{//}}
+\DoxyCodeLine{47 \textcolor{comment}{// Acknowledgment: Google Test borrowed the idea of automatic test}}
+\DoxyCodeLine{48 \textcolor{comment}{// registration from Barthelemy Dagenais' (barthelemy@prologique.com)}}
+\DoxyCodeLine{49 \textcolor{comment}{// easyUnit framework.}}
+\DoxyCodeLine{50 }
+\DoxyCodeLine{51 \textcolor{preprocessor}{\#ifndef GTEST\_INCLUDE\_GTEST\_GTEST\_H\_}}
+\DoxyCodeLine{52 \textcolor{preprocessor}{\#define GTEST\_INCLUDE\_GTEST\_GTEST\_H\_}}
+\DoxyCodeLine{53 }
+\DoxyCodeLine{54 \textcolor{preprocessor}{\#include <limits>}}
+\DoxyCodeLine{55 \textcolor{preprocessor}{\#include <ostream>}}
+\DoxyCodeLine{56 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{57 }
+\DoxyCodeLine{58 \textcolor{preprocessor}{\#include "{}gtest/internal/gtest-\/internal.h"{}}}
+\DoxyCodeLine{59 \textcolor{preprocessor}{\#include "{}gtest/internal/gtest-\/string.h"{}}}
+\DoxyCodeLine{60 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/death-\/test.h"{}}}
+\DoxyCodeLine{61 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/message.h"{}}}
+\DoxyCodeLine{62 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/param-\/test.h"{}}}
+\DoxyCodeLine{63 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/printers.h"{}}}
+\DoxyCodeLine{64 \textcolor{preprocessor}{\#include "{}gtest/gtest\_prod.h"{}}}
+\DoxyCodeLine{65 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/test-\/part.h"{}}}
+\DoxyCodeLine{66 \textcolor{preprocessor}{\#include "{}gtest/gtest-\/typed-\/test.h"{}}}
+\DoxyCodeLine{67 }
+\DoxyCodeLine{68 \textcolor{comment}{// Depending on the platform, different string classes are available.}}
+\DoxyCodeLine{69 \textcolor{comment}{// On Linux, in addition to ::std::string, Google also makes use of}}
+\DoxyCodeLine{70 \textcolor{comment}{// class ::string, which has the same interface as ::std::string, but}}
+\DoxyCodeLine{71 \textcolor{comment}{// has a different implementation.}}
+\DoxyCodeLine{72 \textcolor{comment}{//}}
+\DoxyCodeLine{73 \textcolor{comment}{// You can define GTEST\_HAS\_GLOBAL\_STRING to 1 to indicate that}}
+\DoxyCodeLine{74 \textcolor{comment}{// ::string is available AND is a distinct type to ::std::string, or}}
+\DoxyCodeLine{75 \textcolor{comment}{// define it to 0 to indicate otherwise.}}
+\DoxyCodeLine{76 \textcolor{comment}{//}}
+\DoxyCodeLine{77 \textcolor{comment}{// If ::std::string and ::string are the same class on your platform}}
+\DoxyCodeLine{78 \textcolor{comment}{// due to aliasing, you should define GTEST\_HAS\_GLOBAL\_STRING to 0.}}
+\DoxyCodeLine{79 \textcolor{comment}{//}}
+\DoxyCodeLine{80 \textcolor{comment}{// If you do not define GTEST\_HAS\_GLOBAL\_STRING, it is defined}}
+\DoxyCodeLine{81 \textcolor{comment}{// heuristically.}}
+\DoxyCodeLine{82 }
+\DoxyCodeLine{83 \textcolor{keyword}{namespace }testing \{}
+\DoxyCodeLine{84 }
+\DoxyCodeLine{85 \textcolor{comment}{// Declares the flags.}}
+\DoxyCodeLine{86 }
+\DoxyCodeLine{87 \textcolor{comment}{// This flag temporary enables the disabled tests.}}
+\DoxyCodeLine{88 GTEST\_DECLARE\_bool\_(also\_run\_disabled\_tests);}
+\DoxyCodeLine{89 }
+\DoxyCodeLine{90 \textcolor{comment}{// This flag brings the debugger on an assertion failure.}}
+\DoxyCodeLine{91 GTEST\_DECLARE\_bool\_(break\_on\_failure);}
+\DoxyCodeLine{92 }
+\DoxyCodeLine{93 \textcolor{comment}{// This flag controls whether Google Test catches all test-\/thrown exceptions}}
+\DoxyCodeLine{94 \textcolor{comment}{// and logs them as failures.}}
+\DoxyCodeLine{95 GTEST\_DECLARE\_bool\_(catch\_exceptions);}
+\DoxyCodeLine{96 }
+\DoxyCodeLine{97 \textcolor{comment}{// This flag enables using colors in terminal output. Available values are}}
+\DoxyCodeLine{98 \textcolor{comment}{// "{}yes"{} to enable colors, "{}no"{} (disable colors), or "{}auto"{} (the default)}}
+\DoxyCodeLine{99 \textcolor{comment}{// to let Google Test decide.}}
+\DoxyCodeLine{100 GTEST\_DECLARE\_string\_(color);}
+\DoxyCodeLine{101 }
+\DoxyCodeLine{102 \textcolor{comment}{// This flag sets up the filter to select by name using a glob pattern}}
+\DoxyCodeLine{103 \textcolor{comment}{// the tests to run. If the filter is not given all tests are executed.}}
+\DoxyCodeLine{104 GTEST\_DECLARE\_string\_(filter);}
+\DoxyCodeLine{105 }
+\DoxyCodeLine{106 \textcolor{comment}{// This flag causes the Google Test to list tests. None of the tests listed}}
+\DoxyCodeLine{107 \textcolor{comment}{// are actually run if the flag is provided.}}
+\DoxyCodeLine{108 GTEST\_DECLARE\_bool\_(list\_tests);}
+\DoxyCodeLine{109 }
+\DoxyCodeLine{110 \textcolor{comment}{// This flag controls whether Google Test emits a detailed XML report to a file}}
+\DoxyCodeLine{111 \textcolor{comment}{// in addition to its normal textual output.}}
+\DoxyCodeLine{112 GTEST\_DECLARE\_string\_(output);}
+\DoxyCodeLine{113 }
+\DoxyCodeLine{114 \textcolor{comment}{// This flags control whether Google Test prints the elapsed time for each}}
+\DoxyCodeLine{115 \textcolor{comment}{// test.}}
+\DoxyCodeLine{116 GTEST\_DECLARE\_bool\_(print\_time);}
+\DoxyCodeLine{117 }
+\DoxyCodeLine{118 \textcolor{comment}{// This flag specifies the random number seed.}}
+\DoxyCodeLine{119 GTEST\_DECLARE\_int32\_(random\_seed);}
+\DoxyCodeLine{120 }
+\DoxyCodeLine{121 \textcolor{comment}{// This flag sets how many times the tests are repeated. The default value}}
+\DoxyCodeLine{122 \textcolor{comment}{// is 1. If the value is -\/1 the tests are repeating forever.}}
+\DoxyCodeLine{123 GTEST\_DECLARE\_int32\_(repeat);}
+\DoxyCodeLine{124 }
+\DoxyCodeLine{125 \textcolor{comment}{// This flag controls whether Google Test includes Google Test internal}}
+\DoxyCodeLine{126 \textcolor{comment}{// stack frames in failure stack traces.}}
+\DoxyCodeLine{127 GTEST\_DECLARE\_bool\_(show\_internal\_stack\_frames);}
+\DoxyCodeLine{128 }
+\DoxyCodeLine{129 \textcolor{comment}{// When this flag is specified, tests' order is randomized on every iteration.}}
+\DoxyCodeLine{130 GTEST\_DECLARE\_bool\_(shuffle);}
+\DoxyCodeLine{131 }
+\DoxyCodeLine{132 \textcolor{comment}{// This flag specifies the maximum number of stack frames to be}}
+\DoxyCodeLine{133 \textcolor{comment}{// printed in a failure message.}}
+\DoxyCodeLine{134 GTEST\_DECLARE\_int32\_(stack\_trace\_depth);}
+\DoxyCodeLine{135 }
+\DoxyCodeLine{136 \textcolor{comment}{// When this flag is specified, a failed assertion will throw an}}
+\DoxyCodeLine{137 \textcolor{comment}{// exception if exceptions are enabled, or exit the program with a}}
+\DoxyCodeLine{138 \textcolor{comment}{// non-\/zero code otherwise.}}
+\DoxyCodeLine{139 GTEST\_DECLARE\_bool\_(throw\_on\_failure);}
+\DoxyCodeLine{140 }
+\DoxyCodeLine{141 \textcolor{comment}{// When this flag is set with a "{}host:port"{} string, on supported}}
+\DoxyCodeLine{142 \textcolor{comment}{// platforms test results are streamed to the specified port on}}
+\DoxyCodeLine{143 \textcolor{comment}{// the specified host machine.}}
+\DoxyCodeLine{144 GTEST\_DECLARE\_string\_(stream\_result\_to);}
+\DoxyCodeLine{145 }
+\DoxyCodeLine{146 \textcolor{comment}{// The upper limit for valid stack trace depths.}}
+\DoxyCodeLine{147 \textcolor{keyword}{const} \textcolor{keywordtype}{int} kMaxStackTraceDepth = 100;}
+\DoxyCodeLine{148 }
+\DoxyCodeLine{149 \textcolor{keyword}{namespace }internal \{}
+\DoxyCodeLine{150 }
+\DoxyCodeLine{151 \textcolor{keyword}{class }AssertHelper;}
+\DoxyCodeLine{152 \textcolor{keyword}{class }DefaultGlobalTestPartResultReporter;}
+\DoxyCodeLine{153 \textcolor{keyword}{class }ExecDeathTest;}
+\DoxyCodeLine{154 \textcolor{keyword}{class }NoExecDeathTest;}
+\DoxyCodeLine{155 \textcolor{keyword}{class }FinalSuccessChecker;}
+\DoxyCodeLine{156 \textcolor{keyword}{class }GTestFlagSaver;}
+\DoxyCodeLine{157 \textcolor{keyword}{class }StreamingListenerTest;}
+\DoxyCodeLine{158 \textcolor{keyword}{class }TestResultAccessor;}
+\DoxyCodeLine{159 \textcolor{keyword}{class }TestEventListenersAccessor;}
+\DoxyCodeLine{160 \textcolor{keyword}{class }TestEventRepeater;}
+\DoxyCodeLine{161 \textcolor{keyword}{class }UnitTestRecordPropertyTestHelper;}
+\DoxyCodeLine{162 \textcolor{keyword}{class }WindowsDeathTest;}
+\DoxyCodeLine{163 \textcolor{keyword}{class }UnitTestImpl* GetUnitTestImpl();}
+\DoxyCodeLine{164 \textcolor{keywordtype}{void} ReportFailureInUnknownLocation(TestPartResult::Type result\_type,}
+\DoxyCodeLine{165                                     \textcolor{keyword}{const} std::string\& message);}
+\DoxyCodeLine{166 }
+\DoxyCodeLine{167 \}  \textcolor{comment}{// namespace internal}}
+\DoxyCodeLine{168 }
+\DoxyCodeLine{169 \textcolor{comment}{// The friend relationship of some of these classes is cyclic.}}
+\DoxyCodeLine{170 \textcolor{comment}{// If we don't forward declare them the compiler might confuse the classes}}
+\DoxyCodeLine{171 \textcolor{comment}{// in friendship clauses with same named classes on the scope.}}
+\DoxyCodeLine{172 \textcolor{keyword}{class }Test;}
+\DoxyCodeLine{173 \textcolor{keyword}{class }TestCase;}
+\DoxyCodeLine{174 \textcolor{keyword}{class }TestInfo;}
+\DoxyCodeLine{175 \textcolor{keyword}{class }UnitTest;}
+\DoxyCodeLine{176 }
+\DoxyCodeLine{177 \textcolor{comment}{// A class for indicating whether an assertion was successful.  When}}
+\DoxyCodeLine{178 \textcolor{comment}{// the assertion wasn't successful, the AssertionResult object}}
+\DoxyCodeLine{179 \textcolor{comment}{// remembers a non-\/empty message that describes how it failed.}}
+\DoxyCodeLine{180 \textcolor{comment}{//}}
+\DoxyCodeLine{181 \textcolor{comment}{// To create an instance of this class, use one of the factory functions}}
+\DoxyCodeLine{182 \textcolor{comment}{// (AssertionSuccess() and AssertionFailure()).}}
+\DoxyCodeLine{183 \textcolor{comment}{//}}
+\DoxyCodeLine{184 \textcolor{comment}{// This class is useful for two purposes:}}
+\DoxyCodeLine{185 \textcolor{comment}{//   1. Defining predicate functions to be used with Boolean test assertions}}
+\DoxyCodeLine{186 \textcolor{comment}{//      EXPECT\_TRUE/EXPECT\_FALSE and their ASSERT\_ counterparts}}
+\DoxyCodeLine{187 \textcolor{comment}{//   2. Defining predicate-\/format functions to be}}
+\DoxyCodeLine{188 \textcolor{comment}{//      used with predicate assertions (ASSERT\_PRED\_FORMAT*, etc).}}
+\DoxyCodeLine{189 \textcolor{comment}{//}}
+\DoxyCodeLine{190 \textcolor{comment}{// For example, if you define IsEven predicate:}}
+\DoxyCodeLine{191 \textcolor{comment}{//}}
+\DoxyCodeLine{192 \textcolor{comment}{//   testing::AssertionResult IsEven(int n) \{}}
+\DoxyCodeLine{193 \textcolor{comment}{//     if ((n \% 2) == 0)}}
+\DoxyCodeLine{194 \textcolor{comment}{//       return testing::AssertionSuccess();}}
+\DoxyCodeLine{195 \textcolor{comment}{//     else}}
+\DoxyCodeLine{196 \textcolor{comment}{//       return testing::AssertionFailure() << n << "{} is odd"{};}}
+\DoxyCodeLine{197 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{198 \textcolor{comment}{//}}
+\DoxyCodeLine{199 \textcolor{comment}{// Then the failed expectation EXPECT\_TRUE(IsEven(Fib(5)))}}
+\DoxyCodeLine{200 \textcolor{comment}{// will print the message}}
+\DoxyCodeLine{201 \textcolor{comment}{//}}
+\DoxyCodeLine{202 \textcolor{comment}{//   Value of: IsEven(Fib(5))}}
+\DoxyCodeLine{203 \textcolor{comment}{//     Actual: false (5 is odd)}}
+\DoxyCodeLine{204 \textcolor{comment}{//   Expected: true}}
+\DoxyCodeLine{205 \textcolor{comment}{//}}
+\DoxyCodeLine{206 \textcolor{comment}{// instead of a more opaque}}
+\DoxyCodeLine{207 \textcolor{comment}{//}}
+\DoxyCodeLine{208 \textcolor{comment}{//   Value of: IsEven(Fib(5))}}
+\DoxyCodeLine{209 \textcolor{comment}{//     Actual: false}}
+\DoxyCodeLine{210 \textcolor{comment}{//   Expected: true}}
+\DoxyCodeLine{211 \textcolor{comment}{//}}
+\DoxyCodeLine{212 \textcolor{comment}{// in case IsEven is a simple Boolean predicate.}}
+\DoxyCodeLine{213 \textcolor{comment}{//}}
+\DoxyCodeLine{214 \textcolor{comment}{// If you expect your predicate to be reused and want to support informative}}
+\DoxyCodeLine{215 \textcolor{comment}{// messages in EXPECT\_FALSE and ASSERT\_FALSE (negative assertions show up}}
+\DoxyCodeLine{216 \textcolor{comment}{// about half as often as positive ones in our tests), supply messages for}}
+\DoxyCodeLine{217 \textcolor{comment}{// both success and failure cases:}}
+\DoxyCodeLine{218 \textcolor{comment}{//}}
+\DoxyCodeLine{219 \textcolor{comment}{//   testing::AssertionResult IsEven(int n) \{}}
+\DoxyCodeLine{220 \textcolor{comment}{//     if ((n \% 2) == 0)}}
+\DoxyCodeLine{221 \textcolor{comment}{//       return testing::AssertionSuccess() << n << "{} is even"{};}}
+\DoxyCodeLine{222 \textcolor{comment}{//     else}}
+\DoxyCodeLine{223 \textcolor{comment}{//       return testing::AssertionFailure() << n << "{} is odd"{};}}
+\DoxyCodeLine{224 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{225 \textcolor{comment}{//}}
+\DoxyCodeLine{226 \textcolor{comment}{// Then a statement EXPECT\_FALSE(IsEven(Fib(6))) will print}}
+\DoxyCodeLine{227 \textcolor{comment}{//}}
+\DoxyCodeLine{228 \textcolor{comment}{//   Value of: IsEven(Fib(6))}}
+\DoxyCodeLine{229 \textcolor{comment}{//     Actual: true (8 is even)}}
+\DoxyCodeLine{230 \textcolor{comment}{//   Expected: false}}
+\DoxyCodeLine{231 \textcolor{comment}{//}}
+\DoxyCodeLine{232 \textcolor{comment}{// NB: Predicates that support negative Boolean assertions have reduced}}
+\DoxyCodeLine{233 \textcolor{comment}{// performance in positive ones so be careful not to use them in tests}}
+\DoxyCodeLine{234 \textcolor{comment}{// that have lots (tens of thousands) of positive Boolean assertions.}}
+\DoxyCodeLine{235 \textcolor{comment}{//}}
+\DoxyCodeLine{236 \textcolor{comment}{// To use this class with EXPECT\_PRED\_FORMAT assertions such as:}}
+\DoxyCodeLine{237 \textcolor{comment}{//}}
+\DoxyCodeLine{238 \textcolor{comment}{//   // Verifies that Foo() returns an even number.}}
+\DoxyCodeLine{239 \textcolor{comment}{//   EXPECT\_PRED\_FORMAT1(IsEven, Foo());}}
+\DoxyCodeLine{240 \textcolor{comment}{//}}
+\DoxyCodeLine{241 \textcolor{comment}{// you need to define:}}
+\DoxyCodeLine{242 \textcolor{comment}{//}}
+\DoxyCodeLine{243 \textcolor{comment}{//   testing::AssertionResult IsEven(const char* expr, int n) \{}}
+\DoxyCodeLine{244 \textcolor{comment}{//     if ((n \% 2) == 0)}}
+\DoxyCodeLine{245 \textcolor{comment}{//       return testing::AssertionSuccess();}}
+\DoxyCodeLine{246 \textcolor{comment}{//     else}}
+\DoxyCodeLine{247 \textcolor{comment}{//       return testing::AssertionFailure()}}
+\DoxyCodeLine{248 \textcolor{comment}{//         << "{}Expected: "{} << expr << "{} is even\(\backslash\)n  Actual: it's "{} << n;}}
+\DoxyCodeLine{249 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{250 \textcolor{comment}{//}}
+\DoxyCodeLine{251 \textcolor{comment}{// If Foo() returns 5, you will see the following message:}}
+\DoxyCodeLine{252 \textcolor{comment}{//}}
+\DoxyCodeLine{253 \textcolor{comment}{//   Expected: Foo() is even}}
+\DoxyCodeLine{254 \textcolor{comment}{//     Actual: it's 5}}
+\DoxyCodeLine{255 \textcolor{comment}{//}}
+\DoxyCodeLine{256 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} \{}
+\DoxyCodeLine{257  \textcolor{keyword}{public}:}
+\DoxyCodeLine{258   \textcolor{comment}{// Copy constructor.}}
+\DoxyCodeLine{259   \textcolor{comment}{// Used in EXPECT\_TRUE/FALSE(assertion\_result).}}
+\DoxyCodeLine{260   \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}\& other);}
+\DoxyCodeLine{261 }
+\DoxyCodeLine{262   GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4800 \textcolor{comment}{/* forcing value to bool */})}
+\DoxyCodeLine{263 }
+\DoxyCodeLine{264   \textcolor{comment}{// Used in the EXPECT\_TRUE/FALSE(bool\_expression).}}
+\DoxyCodeLine{265   \textcolor{comment}{//}}
+\DoxyCodeLine{266   \textcolor{comment}{// T must be contextually convertible to bool.}}
+\DoxyCodeLine{267   \textcolor{comment}{//}}
+\DoxyCodeLine{268   \textcolor{comment}{// The second parameter prevents this overload from being considered if}}
+\DoxyCodeLine{269   \textcolor{comment}{// the argument is implicitly convertible to AssertionResult. In that case}}
+\DoxyCodeLine{270   \textcolor{comment}{// we want AssertionResult's copy constructor to be used.}}
+\DoxyCodeLine{271   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{272   \textcolor{keyword}{explicit} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}(}
+\DoxyCodeLine{273       \textcolor{keyword}{const} T\& success,}
+\DoxyCodeLine{274       \textcolor{keyword}{typename} \mbox{\hyperlink{structtesting_1_1internal_1_1_enable_if}{internal::EnableIf}}<}
+\DoxyCodeLine{275           !\mbox{\hyperlink{classtesting_1_1internal_1_1_implicitly_convertible}{internal::ImplicitlyConvertible<T, AssertionResult>::value}}>::type*}
+\DoxyCodeLine{276           \textcolor{comment}{/*enabler*/} = NULL)}
+\DoxyCodeLine{277       : success\_(success) \{\}}
+\DoxyCodeLine{278 }
+\DoxyCodeLine{279   GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()}
+\DoxyCodeLine{280 }
+\DoxyCodeLine{281   \textcolor{comment}{// Assignment operator.}}
+\DoxyCodeLine{282   \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}\& operator=(\mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} other) \{}
+\DoxyCodeLine{283     swap(other);}
+\DoxyCodeLine{284     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{285   \}}
+\DoxyCodeLine{286 }
+\DoxyCodeLine{287   \textcolor{comment}{// Returns true iff the assertion succeeded.}}
+\DoxyCodeLine{288   \textcolor{keyword}{operator} bool()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} success\_; \}  \textcolor{comment}{// NOLINT}}
+\DoxyCodeLine{289 }
+\DoxyCodeLine{290   \textcolor{comment}{// Returns the assertion's negation. Used with EXPECT/ASSERT\_FALSE.}}
+\DoxyCodeLine{291   \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} operator!() \textcolor{keyword}{const};}
+\DoxyCodeLine{292 }
+\DoxyCodeLine{293   \textcolor{comment}{// Returns the text streamed into this AssertionResult. Test assertions}}
+\DoxyCodeLine{294   \textcolor{comment}{// use it when they fail (i.e., the predicate's outcome doesn't match the}}
+\DoxyCodeLine{295   \textcolor{comment}{// assertion's expectation). When nothing has been streamed into the}}
+\DoxyCodeLine{296   \textcolor{comment}{// object, returns an empty string.}}
+\DoxyCodeLine{297   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* message()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{298     \textcolor{keywordflow}{return} message\_.get() != NULL ?  message\_-\/>c\_str() : \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{299   \}}
+\DoxyCodeLine{300   \textcolor{comment}{// TODO(vladl@google.com): Remove this after making sure no clients use it.}}
+\DoxyCodeLine{301   \textcolor{comment}{// Deprecated; please use message() instead.}}
+\DoxyCodeLine{302   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* failure\_message()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} message(); \}}
+\DoxyCodeLine{303 }
+\DoxyCodeLine{304   \textcolor{comment}{// Streams a custom failure message into this object.}}
+\DoxyCodeLine{305   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T> \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}\& operator<<(\textcolor{keyword}{const} T\& value) \{}
+\DoxyCodeLine{306     AppendMessage(\mbox{\hyperlink{classtesting_1_1_message}{Message}}() << value);}
+\DoxyCodeLine{307     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{308   \}}
+\DoxyCodeLine{309 }
+\DoxyCodeLine{310   \textcolor{comment}{// Allows streaming basic output manipulators such as endl or flush into}}
+\DoxyCodeLine{311   \textcolor{comment}{// this object.}}
+\DoxyCodeLine{312   \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}\& operator<<(}
+\DoxyCodeLine{313       ::std::ostream\& (*basic\_manipulator)(::std::ostream\& stream)) \{}
+\DoxyCodeLine{314     AppendMessage(\mbox{\hyperlink{classtesting_1_1_message}{Message}}() << basic\_manipulator);}
+\DoxyCodeLine{315     \textcolor{keywordflow}{return} *\textcolor{keyword}{this};}
+\DoxyCodeLine{316   \}}
+\DoxyCodeLine{317 }
+\DoxyCodeLine{318  \textcolor{keyword}{private}:}
+\DoxyCodeLine{319   \textcolor{comment}{// Appends the contents of message to message\_.}}
+\DoxyCodeLine{320   \textcolor{keywordtype}{void} AppendMessage(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& a\_message) \{}
+\DoxyCodeLine{321     \textcolor{keywordflow}{if} (message\_.get() == NULL)}
+\DoxyCodeLine{322       message\_.reset(new ::std::string);}
+\DoxyCodeLine{323     message\_-\/>append(a\_message.GetString().c\_str());}
+\DoxyCodeLine{324   \}}
+\DoxyCodeLine{325 }
+\DoxyCodeLine{326   \textcolor{comment}{// Swap the contents of this AssertionResult with other.}}
+\DoxyCodeLine{327   \textcolor{keywordtype}{void} swap(\mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}}\& other);}
+\DoxyCodeLine{328 }
+\DoxyCodeLine{329   \textcolor{comment}{// Stores result of the assertion predicate.}}
+\DoxyCodeLine{330   \textcolor{keywordtype}{bool} success\_;}
+\DoxyCodeLine{331   \textcolor{comment}{// Stores the message describing the condition in case the expectation}}
+\DoxyCodeLine{332   \textcolor{comment}{// construct is not satisfied with the predicate's outcome.}}
+\DoxyCodeLine{333   \textcolor{comment}{// Referenced via a pointer to avoid taking too much stack frame space}}
+\DoxyCodeLine{334   \textcolor{comment}{// with test assertions.}}
+\DoxyCodeLine{335   \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr< ::std::string>}} message\_;}
+\DoxyCodeLine{336 \};}
+\DoxyCodeLine{337 }
+\DoxyCodeLine{338 \textcolor{comment}{// Makes a successful assertion result.}}
+\DoxyCodeLine{339 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} AssertionSuccess();}
+\DoxyCodeLine{340 }
+\DoxyCodeLine{341 \textcolor{comment}{// Makes a failed assertion result.}}
+\DoxyCodeLine{342 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} AssertionFailure();}
+\DoxyCodeLine{343 }
+\DoxyCodeLine{344 \textcolor{comment}{// Makes a failed assertion result with the given failure message.}}
+\DoxyCodeLine{345 \textcolor{comment}{// Deprecated; use AssertionFailure() << msg.}}
+\DoxyCodeLine{346 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} AssertionFailure(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& msg);}
+\DoxyCodeLine{347 }
+\DoxyCodeLine{348 \textcolor{comment}{// The abstract class that all tests inherit from.}}
+\DoxyCodeLine{349 \textcolor{comment}{//}}
+\DoxyCodeLine{350 \textcolor{comment}{// In Google Test, a unit test program contains one or many TestCases, and}}
+\DoxyCodeLine{351 \textcolor{comment}{// each TestCase contains one or many Tests.}}
+\DoxyCodeLine{352 \textcolor{comment}{//}}
+\DoxyCodeLine{353 \textcolor{comment}{// When you define a test using the TEST macro, you don't need to}}
+\DoxyCodeLine{354 \textcolor{comment}{// explicitly derive from Test -\/ the TEST macro automatically does}}
+\DoxyCodeLine{355 \textcolor{comment}{// this for you.}}
+\DoxyCodeLine{356 \textcolor{comment}{//}}
+\DoxyCodeLine{357 \textcolor{comment}{// The only time you derive from Test is when defining a test fixture}}
+\DoxyCodeLine{358 \textcolor{comment}{// to be used a TEST\_F.  For example:}}
+\DoxyCodeLine{359 \textcolor{comment}{//}}
+\DoxyCodeLine{360 \textcolor{comment}{//   class FooTest : public testing::Test \{}}
+\DoxyCodeLine{361 \textcolor{comment}{//    protected:}}
+\DoxyCodeLine{362 \textcolor{comment}{//     void SetUp() override \{ ... \}}}
+\DoxyCodeLine{363 \textcolor{comment}{//     void TearDown() override \{ ... \}}}
+\DoxyCodeLine{364 \textcolor{comment}{//     ...}}
+\DoxyCodeLine{365 \textcolor{comment}{//   \};}}
+\DoxyCodeLine{366 \textcolor{comment}{//}}
+\DoxyCodeLine{367 \textcolor{comment}{//   TEST\_F(FooTest, Bar) \{ ... \}}}
+\DoxyCodeLine{368 \textcolor{comment}{//   TEST\_F(FooTest, Baz) \{ ... \}}}
+\DoxyCodeLine{369 \textcolor{comment}{//}}
+\DoxyCodeLine{370 \textcolor{comment}{// Test is not copyable.}}
+\DoxyCodeLine{371 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_test}{Test}} \{}
+\DoxyCodeLine{372  \textcolor{keyword}{public}:}
+\DoxyCodeLine{373   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}};}
+\DoxyCodeLine{374 }
+\DoxyCodeLine{375   \textcolor{comment}{// Defines types for pointers to functions that set up and tear down}}
+\DoxyCodeLine{376   \textcolor{comment}{// a test case.}}
+\DoxyCodeLine{377   \textcolor{keyword}{typedef} internal::SetUpTestCaseFunc SetUpTestCaseFunc;}
+\DoxyCodeLine{378   \textcolor{keyword}{typedef} internal::TearDownTestCaseFunc TearDownTestCaseFunc;}
+\DoxyCodeLine{379 }
+\DoxyCodeLine{380   \textcolor{comment}{// The d'tor is virtual as we intend to inherit from Test.}}
+\DoxyCodeLine{381   \textcolor{keyword}{virtual} \mbox{\hyperlink{classtesting_1_1_test}{\string~Test}}();}
+\DoxyCodeLine{382 }
+\DoxyCodeLine{383   \textcolor{comment}{// Sets up the stuff shared by all tests in this test case.}}
+\DoxyCodeLine{384   \textcolor{comment}{//}}
+\DoxyCodeLine{385   \textcolor{comment}{// Google Test will call Foo::SetUpTestCase() before running the first}}
+\DoxyCodeLine{386   \textcolor{comment}{// test in test case Foo.  Hence a sub-\/class can define its own}}
+\DoxyCodeLine{387   \textcolor{comment}{// SetUpTestCase() method to shadow the one defined in the super}}
+\DoxyCodeLine{388   \textcolor{comment}{// class.}}
+\DoxyCodeLine{389   \textcolor{keyword}{static} \textcolor{keywordtype}{void} SetUpTestCase() \{\}}
+\DoxyCodeLine{390 }
+\DoxyCodeLine{391   \textcolor{comment}{// Tears down the stuff shared by all tests in this test case.}}
+\DoxyCodeLine{392   \textcolor{comment}{//}}
+\DoxyCodeLine{393   \textcolor{comment}{// Google Test will call Foo::TearDownTestCase() after running the last}}
+\DoxyCodeLine{394   \textcolor{comment}{// test in test case Foo.  Hence a sub-\/class can define its own}}
+\DoxyCodeLine{395   \textcolor{comment}{// TearDownTestCase() method to shadow the one defined in the super}}
+\DoxyCodeLine{396   \textcolor{comment}{// class.}}
+\DoxyCodeLine{397   \textcolor{keyword}{static} \textcolor{keywordtype}{void} TearDownTestCase() \{\}}
+\DoxyCodeLine{398 }
+\DoxyCodeLine{399   \textcolor{comment}{// Returns true iff the current test has a fatal failure.}}
+\DoxyCodeLine{400   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} HasFatalFailure();}
+\DoxyCodeLine{401 }
+\DoxyCodeLine{402   \textcolor{comment}{// Returns true iff the current test has a non-\/fatal failure.}}
+\DoxyCodeLine{403   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} HasNonfatalFailure();}
+\DoxyCodeLine{404 }
+\DoxyCodeLine{405   \textcolor{comment}{// Returns true iff the current test has a (either fatal or}}
+\DoxyCodeLine{406   \textcolor{comment}{// non-\/fatal) failure.}}
+\DoxyCodeLine{407   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} HasFailure() \{ \textcolor{keywordflow}{return} HasFatalFailure() || HasNonfatalFailure(); \}}
+\DoxyCodeLine{408 }
+\DoxyCodeLine{409   \textcolor{comment}{// Logs a property for the current test, test case, or for the entire}}
+\DoxyCodeLine{410   \textcolor{comment}{// invocation of the test program when used outside of the context of a}}
+\DoxyCodeLine{411   \textcolor{comment}{// test case.  Only the last value for a given key is remembered.  These}}
+\DoxyCodeLine{412   \textcolor{comment}{// are public static so they can be called from utility functions that are}}
+\DoxyCodeLine{413   \textcolor{comment}{// not members of the test fixture.  Calls to RecordProperty made during}}
+\DoxyCodeLine{414   \textcolor{comment}{// lifespan of the test (from the moment its constructor starts to the}}
+\DoxyCodeLine{415   \textcolor{comment}{// moment its destructor finishes) will be output in XML as attributes of}}
+\DoxyCodeLine{416   \textcolor{comment}{// the <testcase> element.  Properties recorded from fixture's}}
+\DoxyCodeLine{417   \textcolor{comment}{// SetUpTestCase or TearDownTestCase are logged as attributes of the}}
+\DoxyCodeLine{418   \textcolor{comment}{// corresponding <testsuite> element.  Calls to RecordProperty made in the}}
+\DoxyCodeLine{419   \textcolor{comment}{// global context (before or after invocation of RUN\_ALL\_TESTS and from}}
+\DoxyCodeLine{420   \textcolor{comment}{// SetUp/TearDown method of Environment objects registered with Google}}
+\DoxyCodeLine{421   \textcolor{comment}{// Test) will be output as attributes of the <testsuites> element.}}
+\DoxyCodeLine{422   \textcolor{keyword}{static} \textcolor{keywordtype}{void} RecordProperty(\textcolor{keyword}{const} std::string\& key, \textcolor{keyword}{const} std::string\& value);}
+\DoxyCodeLine{423   \textcolor{keyword}{static} \textcolor{keywordtype}{void} RecordProperty(\textcolor{keyword}{const} std::string\& key, \textcolor{keywordtype}{int} value);}
+\DoxyCodeLine{424 }
+\DoxyCodeLine{425  \textcolor{keyword}{protected}:}
+\DoxyCodeLine{426   \textcolor{comment}{// Creates a Test object.}}
+\DoxyCodeLine{427   \mbox{\hyperlink{classtesting_1_1_test}{Test}}();}
+\DoxyCodeLine{428 }
+\DoxyCodeLine{429   \textcolor{comment}{// Sets up the test fixture.}}
+\DoxyCodeLine{430   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} SetUp();}
+\DoxyCodeLine{431 }
+\DoxyCodeLine{432   \textcolor{comment}{// Tears down the test fixture.}}
+\DoxyCodeLine{433   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} TearDown();}
+\DoxyCodeLine{434 }
+\DoxyCodeLine{435  \textcolor{keyword}{private}:}
+\DoxyCodeLine{436   \textcolor{comment}{// Returns true iff the current test has the same fixture class as}}
+\DoxyCodeLine{437   \textcolor{comment}{// the first test in the current test case.}}
+\DoxyCodeLine{438   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} HasSameFixtureClass();}
+\DoxyCodeLine{439 }
+\DoxyCodeLine{440   \textcolor{comment}{// Runs the test after the test fixture has been set up.}}
+\DoxyCodeLine{441   \textcolor{comment}{//}}
+\DoxyCodeLine{442   \textcolor{comment}{// A sub-\/class must implement this to define the test logic.}}
+\DoxyCodeLine{443   \textcolor{comment}{//}}
+\DoxyCodeLine{444   \textcolor{comment}{// DO NOT OVERRIDE THIS FUNCTION DIRECTLY IN A USER PROGRAM.}}
+\DoxyCodeLine{445   \textcolor{comment}{// Instead, use the TEST or TEST\_F macro.}}
+\DoxyCodeLine{446   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} TestBody() = 0;}
+\DoxyCodeLine{447 }
+\DoxyCodeLine{448   \textcolor{comment}{// Sets up, executes, and tears down the test.}}
+\DoxyCodeLine{449   \textcolor{keywordtype}{void} Run();}
+\DoxyCodeLine{450 }
+\DoxyCodeLine{451   \textcolor{comment}{// Deletes self.  We deliberately pick an unusual name for this}}
+\DoxyCodeLine{452   \textcolor{comment}{// internal method to avoid clashing with names used in user TESTs.}}
+\DoxyCodeLine{453   \textcolor{keywordtype}{void} DeleteSelf\_() \{ \textcolor{keyword}{delete} \textcolor{keyword}{this}; \}}
+\DoxyCodeLine{454 }
+\DoxyCodeLine{455   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr< GTEST\_FLAG\_SAVER\_ >}} gtest\_flag\_saver\_;}
+\DoxyCodeLine{456 }
+\DoxyCodeLine{457   \textcolor{comment}{// Often a user misspells SetUp() as Setup() and spends a long time}}
+\DoxyCodeLine{458   \textcolor{comment}{// wondering why it is never called by Google Test.  The declaration of}}
+\DoxyCodeLine{459   \textcolor{comment}{// the following method is solely for catching such an error at}}
+\DoxyCodeLine{460   \textcolor{comment}{// compile time:}}
+\DoxyCodeLine{461   \textcolor{comment}{//}}
+\DoxyCodeLine{462   \textcolor{comment}{//   -\/ The return type is deliberately chosen to be not void, so it}}
+\DoxyCodeLine{463   \textcolor{comment}{//   will be a conflict if void Setup() is declared in the user's}}
+\DoxyCodeLine{464   \textcolor{comment}{//   test fixture.}}
+\DoxyCodeLine{465   \textcolor{comment}{//}}
+\DoxyCodeLine{466   \textcolor{comment}{//   -\/ This method is private, so it will be another compiler error}}
+\DoxyCodeLine{467   \textcolor{comment}{//   if the method is called from the user's test fixture.}}
+\DoxyCodeLine{468   \textcolor{comment}{//}}
+\DoxyCodeLine{469   \textcolor{comment}{// DO NOT OVERRIDE THIS FUNCTION.}}
+\DoxyCodeLine{470   \textcolor{comment}{//}}
+\DoxyCodeLine{471   \textcolor{comment}{// If you see an error about overriding the following function or}}
+\DoxyCodeLine{472   \textcolor{comment}{// about it being private, you have mis-\/spelled SetUp() as Setup().}}
+\DoxyCodeLine{473   \textcolor{keyword}{struct }Setup\_should\_be\_spelled\_SetUp \{\};}
+\DoxyCodeLine{474   \textcolor{keyword}{virtual} Setup\_should\_be\_spelled\_SetUp* Setup() \{ \textcolor{keywordflow}{return} NULL; \}}
+\DoxyCodeLine{475 }
+\DoxyCodeLine{476   \textcolor{comment}{// We disallow copying Tests.}}
+\DoxyCodeLine{477   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_test}{Test}});}
+\DoxyCodeLine{478 \};}
+\DoxyCodeLine{479 }
+\DoxyCodeLine{480 \textcolor{keyword}{typedef} internal::TimeInMillis TimeInMillis;}
+\DoxyCodeLine{481 }
+\DoxyCodeLine{482 \textcolor{comment}{// A copyable object representing a user specified test property which can be}}
+\DoxyCodeLine{483 \textcolor{comment}{// output as a key/value string pair.}}
+\DoxyCodeLine{484 \textcolor{comment}{//}}
+\DoxyCodeLine{485 \textcolor{comment}{// Don't inherit from TestProperty as its destructor is not virtual.}}
+\DoxyCodeLine{486 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_property}{TestProperty}} \{}
+\DoxyCodeLine{487  \textcolor{keyword}{public}:}
+\DoxyCodeLine{488   \textcolor{comment}{// C'tor.  TestProperty does NOT have a default constructor.}}
+\DoxyCodeLine{489   \textcolor{comment}{// Always use this constructor (with parameters) to create a}}
+\DoxyCodeLine{490   \textcolor{comment}{// TestProperty object.}}
+\DoxyCodeLine{491   \mbox{\hyperlink{classtesting_1_1_test_property}{TestProperty}}(\textcolor{keyword}{const} std::string\& a\_key, \textcolor{keyword}{const} std::string\& a\_value) :}
+\DoxyCodeLine{492     key\_(a\_key), value\_(a\_value) \{}
+\DoxyCodeLine{493   \}}
+\DoxyCodeLine{494 }
+\DoxyCodeLine{495   \textcolor{comment}{// Gets the user supplied key.}}
+\DoxyCodeLine{496   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* key()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{497     \textcolor{keywordflow}{return} key\_.c\_str();}
+\DoxyCodeLine{498   \}}
+\DoxyCodeLine{499 }
+\DoxyCodeLine{500   \textcolor{comment}{// Gets the user supplied value.}}
+\DoxyCodeLine{501   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* value()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{502     \textcolor{keywordflow}{return} value\_.c\_str();}
+\DoxyCodeLine{503   \}}
+\DoxyCodeLine{504 }
+\DoxyCodeLine{505   \textcolor{comment}{// Sets a new value, overriding the one supplied in the constructor.}}
+\DoxyCodeLine{506   \textcolor{keywordtype}{void} SetValue(\textcolor{keyword}{const} std::string\& new\_value) \{}
+\DoxyCodeLine{507     value\_ = new\_value;}
+\DoxyCodeLine{508   \}}
+\DoxyCodeLine{509 }
+\DoxyCodeLine{510  \textcolor{keyword}{private}:}
+\DoxyCodeLine{511   \textcolor{comment}{// The key supplied by the user.}}
+\DoxyCodeLine{512   std::string key\_;}
+\DoxyCodeLine{513   \textcolor{comment}{// The value supplied by the user.}}
+\DoxyCodeLine{514   std::string value\_;}
+\DoxyCodeLine{515 \};}
+\DoxyCodeLine{516 }
+\DoxyCodeLine{517 \textcolor{comment}{// The result of a single Test.  This includes a list of}}
+\DoxyCodeLine{518 \textcolor{comment}{// TestPartResults, a list of TestProperties, a count of how many}}
+\DoxyCodeLine{519 \textcolor{comment}{// death tests there are in the Test, and how much time it took to run}}
+\DoxyCodeLine{520 \textcolor{comment}{// the Test.}}
+\DoxyCodeLine{521 \textcolor{comment}{//}}
+\DoxyCodeLine{522 \textcolor{comment}{// TestResult is not copyable.}}
+\DoxyCodeLine{523 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}} \{}
+\DoxyCodeLine{524  \textcolor{keyword}{public}:}
+\DoxyCodeLine{525   \textcolor{comment}{// Creates an empty TestResult.}}
+\DoxyCodeLine{526   \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}}();}
+\DoxyCodeLine{527 }
+\DoxyCodeLine{528   \textcolor{comment}{// D'tor.  Do not inherit from TestResult.}}
+\DoxyCodeLine{529   \mbox{\hyperlink{classtesting_1_1_test_result}{\string~TestResult}}();}
+\DoxyCodeLine{530 }
+\DoxyCodeLine{531   \textcolor{comment}{// Gets the number of all test parts.  This is the sum of the number}}
+\DoxyCodeLine{532   \textcolor{comment}{// of successful test parts and the number of failed test parts.}}
+\DoxyCodeLine{533   \textcolor{keywordtype}{int} total\_part\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{534 }
+\DoxyCodeLine{535   \textcolor{comment}{// Returns the number of the test properties.}}
+\DoxyCodeLine{536   \textcolor{keywordtype}{int} test\_property\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{537 }
+\DoxyCodeLine{538   \textcolor{comment}{// Returns true iff the test passed (i.e. no test part failed).}}
+\DoxyCodeLine{539   \textcolor{keywordtype}{bool} Passed()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} !Failed(); \}}
+\DoxyCodeLine{540 }
+\DoxyCodeLine{541   \textcolor{comment}{// Returns true iff the test failed.}}
+\DoxyCodeLine{542   \textcolor{keywordtype}{bool} Failed() \textcolor{keyword}{const};}
+\DoxyCodeLine{543 }
+\DoxyCodeLine{544   \textcolor{comment}{// Returns true iff the test fatally failed.}}
+\DoxyCodeLine{545   \textcolor{keywordtype}{bool} HasFatalFailure() \textcolor{keyword}{const};}
+\DoxyCodeLine{546 }
+\DoxyCodeLine{547   \textcolor{comment}{// Returns true iff the test has a non-\/fatal failure.}}
+\DoxyCodeLine{548   \textcolor{keywordtype}{bool} HasNonfatalFailure() \textcolor{keyword}{const};}
+\DoxyCodeLine{549 }
+\DoxyCodeLine{550   \textcolor{comment}{// Returns the elapsed time, in milliseconds.}}
+\DoxyCodeLine{551   TimeInMillis elapsed\_time()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} elapsed\_time\_; \}}
+\DoxyCodeLine{552 }
+\DoxyCodeLine{553   \textcolor{comment}{// Returns the i-\/th test part result among all the results. i can range}}
+\DoxyCodeLine{554   \textcolor{comment}{// from 0 to test\_property\_count() -\/ 1. If i is not in that range, aborts}}
+\DoxyCodeLine{555   \textcolor{comment}{// the program.}}
+\DoxyCodeLine{556   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_part_result}{TestPartResult}}\& GetTestPartResult(\textcolor{keywordtype}{int} i) \textcolor{keyword}{const};}
+\DoxyCodeLine{557 }
+\DoxyCodeLine{558   \textcolor{comment}{// Returns the i-\/th test property. i can range from 0 to}}
+\DoxyCodeLine{559   \textcolor{comment}{// test\_property\_count() -\/ 1. If i is not in that range, aborts the}}
+\DoxyCodeLine{560   \textcolor{comment}{// program.}}
+\DoxyCodeLine{561   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_property}{TestProperty}}\& GetTestProperty(\textcolor{keywordtype}{int} i) \textcolor{keyword}{const};}
+\DoxyCodeLine{562 }
+\DoxyCodeLine{563  \textcolor{keyword}{private}:}
+\DoxyCodeLine{564   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}};}
+\DoxyCodeLine{565   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}};}
+\DoxyCodeLine{566   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}};}
+\DoxyCodeLine{567   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_default_global_test_part_result_reporter}{internal::DefaultGlobalTestPartResultReporter}};}
+\DoxyCodeLine{568   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::ExecDeathTest;}
+\DoxyCodeLine{569   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_test_result_accessor}{internal::TestResultAccessor}};}
+\DoxyCodeLine{570   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}};}
+\DoxyCodeLine{571   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::WindowsDeathTest;}
+\DoxyCodeLine{572 }
+\DoxyCodeLine{573   \textcolor{comment}{// Gets the vector of TestPartResults.}}
+\DoxyCodeLine{574   \textcolor{keyword}{const} std::vector<TestPartResult>\& test\_part\_results()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{575     \textcolor{keywordflow}{return} test\_part\_results\_;}
+\DoxyCodeLine{576   \}}
+\DoxyCodeLine{577 }
+\DoxyCodeLine{578   \textcolor{comment}{// Gets the vector of TestProperties.}}
+\DoxyCodeLine{579   \textcolor{keyword}{const} std::vector<TestProperty>\& test\_properties()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{580     \textcolor{keywordflow}{return} test\_properties\_;}
+\DoxyCodeLine{581   \}}
+\DoxyCodeLine{582 }
+\DoxyCodeLine{583   \textcolor{comment}{// Sets the elapsed time.}}
+\DoxyCodeLine{584   \textcolor{keywordtype}{void} set\_elapsed\_time(TimeInMillis elapsed) \{ elapsed\_time\_ = elapsed; \}}
+\DoxyCodeLine{585 }
+\DoxyCodeLine{586   \textcolor{comment}{// Adds a test property to the list. The property is validated and may add}}
+\DoxyCodeLine{587   \textcolor{comment}{// a non-\/fatal failure if invalid (e.g., if it conflicts with reserved}}
+\DoxyCodeLine{588   \textcolor{comment}{// key names). If a property is already recorded for the same key, the}}
+\DoxyCodeLine{589   \textcolor{comment}{// value will be updated, rather than storing multiple values for the same}}
+\DoxyCodeLine{590   \textcolor{comment}{// key.  xml\_element specifies the element for which the property is being}}
+\DoxyCodeLine{591   \textcolor{comment}{// recorded and is used for validation.}}
+\DoxyCodeLine{592   \textcolor{keywordtype}{void} RecordProperty(\textcolor{keyword}{const} std::string\& xml\_element,}
+\DoxyCodeLine{593                       \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_property}{TestProperty}}\& test\_property);}
+\DoxyCodeLine{594 }
+\DoxyCodeLine{595   \textcolor{comment}{// Adds a failure if the key is a reserved attribute of Google Test}}
+\DoxyCodeLine{596   \textcolor{comment}{// testcase tags.  Returns true if the property is valid.}}
+\DoxyCodeLine{597   \textcolor{comment}{// TODO(russr): Validate attribute names are legal and human readable.}}
+\DoxyCodeLine{598   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} ValidateTestProperty(\textcolor{keyword}{const} std::string\& xml\_element,}
+\DoxyCodeLine{599                                    \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_property}{TestProperty}}\& test\_property);}
+\DoxyCodeLine{600 }
+\DoxyCodeLine{601   \textcolor{comment}{// Adds a test part result to the list.}}
+\DoxyCodeLine{602   \textcolor{keywordtype}{void} AddTestPartResult(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_part_result}{TestPartResult}}\& test\_part\_result);}
+\DoxyCodeLine{603 }
+\DoxyCodeLine{604   \textcolor{comment}{// Returns the death test count.}}
+\DoxyCodeLine{605   \textcolor{keywordtype}{int} death\_test\_count()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} death\_test\_count\_; \}}
+\DoxyCodeLine{606 }
+\DoxyCodeLine{607   \textcolor{comment}{// Increments the death test count, returning the new count.}}
+\DoxyCodeLine{608   \textcolor{keywordtype}{int} increment\_death\_test\_count() \{ \textcolor{keywordflow}{return} ++death\_test\_count\_; \}}
+\DoxyCodeLine{609 }
+\DoxyCodeLine{610   \textcolor{comment}{// Clears the test part results.}}
+\DoxyCodeLine{611   \textcolor{keywordtype}{void} ClearTestPartResults();}
+\DoxyCodeLine{612 }
+\DoxyCodeLine{613   \textcolor{comment}{// Clears the object.}}
+\DoxyCodeLine{614   \textcolor{keywordtype}{void} Clear();}
+\DoxyCodeLine{615 }
+\DoxyCodeLine{616   \textcolor{comment}{// Protects mutable state of the property vector and of owned}}
+\DoxyCodeLine{617   \textcolor{comment}{// properties, whose values may be updated.}}
+\DoxyCodeLine{618   \mbox{\hyperlink{classtesting_1_1internal_1_1_mutex}{internal::Mutex}} test\_properites\_mutex\_;}
+\DoxyCodeLine{619 }
+\DoxyCodeLine{620   \textcolor{comment}{// The vector of TestPartResults}}
+\DoxyCodeLine{621   std::vector<TestPartResult> test\_part\_results\_;}
+\DoxyCodeLine{622   \textcolor{comment}{// The vector of TestProperties}}
+\DoxyCodeLine{623   std::vector<TestProperty> test\_properties\_;}
+\DoxyCodeLine{624   \textcolor{comment}{// Running count of death tests.}}
+\DoxyCodeLine{625   \textcolor{keywordtype}{int} death\_test\_count\_;}
+\DoxyCodeLine{626   \textcolor{comment}{// The elapsed time, in milliseconds.}}
+\DoxyCodeLine{627   TimeInMillis elapsed\_time\_;}
+\DoxyCodeLine{628 }
+\DoxyCodeLine{629   \textcolor{comment}{// We disallow copying TestResult.}}
+\DoxyCodeLine{630   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}});}
+\DoxyCodeLine{631 \};  \textcolor{comment}{// class TestResult}}
+\DoxyCodeLine{632 }
+\DoxyCodeLine{633 \textcolor{comment}{// A TestInfo object stores the following information about a test:}}
+\DoxyCodeLine{634 \textcolor{comment}{//}}
+\DoxyCodeLine{635 \textcolor{comment}{//   Test case name}}
+\DoxyCodeLine{636 \textcolor{comment}{//   Test name}}
+\DoxyCodeLine{637 \textcolor{comment}{//   Whether the test should be run}}
+\DoxyCodeLine{638 \textcolor{comment}{//   A function pointer that creates the test object when invoked}}
+\DoxyCodeLine{639 \textcolor{comment}{//   Test result}}
+\DoxyCodeLine{640 \textcolor{comment}{//}}
+\DoxyCodeLine{641 \textcolor{comment}{// The constructor of TestInfo registers itself with the UnitTest}}
+\DoxyCodeLine{642 \textcolor{comment}{// singleton such that the RUN\_ALL\_TESTS() macro knows which tests to}}
+\DoxyCodeLine{643 \textcolor{comment}{// run.}}
+\DoxyCodeLine{644 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}} \{}
+\DoxyCodeLine{645  \textcolor{keyword}{public}:}
+\DoxyCodeLine{646   \textcolor{comment}{// Destructs a TestInfo object.  This function is not virtual, so}}
+\DoxyCodeLine{647   \textcolor{comment}{// don't inherit from TestInfo.}}
+\DoxyCodeLine{648   \mbox{\hyperlink{classtesting_1_1_test_info}{\string~TestInfo}}();}
+\DoxyCodeLine{649 }
+\DoxyCodeLine{650   \textcolor{comment}{// Returns the test case name.}}
+\DoxyCodeLine{651   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* test\_case\_name()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} test\_case\_name\_.c\_str(); \}}
+\DoxyCodeLine{652 }
+\DoxyCodeLine{653   \textcolor{comment}{// Returns the test name.}}
+\DoxyCodeLine{654   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} name\_.c\_str(); \}}
+\DoxyCodeLine{655 }
+\DoxyCodeLine{656   \textcolor{comment}{// Returns the name of the parameter type, or NULL if this is not a typed}}
+\DoxyCodeLine{657   \textcolor{comment}{// or a type-\/parameterized test.}}
+\DoxyCodeLine{658   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* type\_param()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{659     \textcolor{keywordflow}{if} (type\_param\_.get() != NULL)}
+\DoxyCodeLine{660       \textcolor{keywordflow}{return} type\_param\_-\/>c\_str();}
+\DoxyCodeLine{661     \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{662   \}}
+\DoxyCodeLine{663 }
+\DoxyCodeLine{664   \textcolor{comment}{// Returns the text representation of the value parameter, or NULL if this}}
+\DoxyCodeLine{665   \textcolor{comment}{// is not a value-\/parameterized test.}}
+\DoxyCodeLine{666   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* value\_param()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{667     \textcolor{keywordflow}{if} (value\_param\_.get() != NULL)}
+\DoxyCodeLine{668       \textcolor{keywordflow}{return} value\_param\_-\/>c\_str();}
+\DoxyCodeLine{669     \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{670   \}}
+\DoxyCodeLine{671 }
+\DoxyCodeLine{672   \textcolor{comment}{// Returns the file name where this test is defined.}}
+\DoxyCodeLine{673   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* file()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} location\_.file.c\_str(); \}}
+\DoxyCodeLine{674 }
+\DoxyCodeLine{675   \textcolor{comment}{// Returns the line where this test is defined.}}
+\DoxyCodeLine{676   \textcolor{keywordtype}{int} line()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} location\_.line; \}}
+\DoxyCodeLine{677 }
+\DoxyCodeLine{678   \textcolor{comment}{// Returns true if this test should run, that is if the test is not}}
+\DoxyCodeLine{679   \textcolor{comment}{// disabled (or it is disabled but the also\_run\_disabled\_tests flag has}}
+\DoxyCodeLine{680   \textcolor{comment}{// been specified) and its full name matches the user-\/specified filter.}}
+\DoxyCodeLine{681   \textcolor{comment}{//}}
+\DoxyCodeLine{682   \textcolor{comment}{// Google Test allows the user to filter the tests by their full names.}}
+\DoxyCodeLine{683   \textcolor{comment}{// The full name of a test Bar in test case Foo is defined as}}
+\DoxyCodeLine{684   \textcolor{comment}{// "{}Foo.Bar"{}.  Only the tests that match the filter will run.}}
+\DoxyCodeLine{685   \textcolor{comment}{//}}
+\DoxyCodeLine{686   \textcolor{comment}{// A filter is a colon-\/separated list of glob (not regex) patterns,}}
+\DoxyCodeLine{687   \textcolor{comment}{// optionally followed by a '-\/' and a colon-\/separated list of}}
+\DoxyCodeLine{688   \textcolor{comment}{// negative patterns (tests to exclude).  A test is run if it}}
+\DoxyCodeLine{689   \textcolor{comment}{// matches one of the positive patterns and does not match any of}}
+\DoxyCodeLine{690   \textcolor{comment}{// the negative patterns.}}
+\DoxyCodeLine{691   \textcolor{comment}{//}}
+\DoxyCodeLine{692   \textcolor{comment}{// For example, *A*:Foo.* is a filter that matches any string that}}
+\DoxyCodeLine{693   \textcolor{comment}{// contains the character 'A' or starts with "{}Foo."{}.}}
+\DoxyCodeLine{694   \textcolor{keywordtype}{bool} should\_run()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} should\_run\_; \}}
+\DoxyCodeLine{695 }
+\DoxyCodeLine{696   \textcolor{comment}{// Returns true iff this test will appear in the XML report.}}
+\DoxyCodeLine{697   \textcolor{keywordtype}{bool} is\_reportable()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{698     \textcolor{comment}{// For now, the XML report includes all tests matching the filter.}}
+\DoxyCodeLine{699     \textcolor{comment}{// In the future, we may trim tests that are excluded because of}}
+\DoxyCodeLine{700     \textcolor{comment}{// sharding.}}
+\DoxyCodeLine{701     \textcolor{keywordflow}{return} matches\_filter\_;}
+\DoxyCodeLine{702   \}}
+\DoxyCodeLine{703 }
+\DoxyCodeLine{704   \textcolor{comment}{// Returns the result of the test.}}
+\DoxyCodeLine{705   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}}* result()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} \&result\_; \}}
+\DoxyCodeLine{706 }
+\DoxyCodeLine{707  \textcolor{keyword}{private}:}
+\DoxyCodeLine{708 \textcolor{preprocessor}{\#if GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{709   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::DefaultDeathTestFactory;}
+\DoxyCodeLine{710 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{711   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test}{Test}};}
+\DoxyCodeLine{712   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}};}
+\DoxyCodeLine{713   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}};}
+\DoxyCodeLine{714   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::StreamingListenerTest;}
+\DoxyCodeLine{715   \textcolor{keyword}{friend} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* internal::MakeAndRegisterTestInfo(}
+\DoxyCodeLine{716       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* test\_case\_name,}
+\DoxyCodeLine{717       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name,}
+\DoxyCodeLine{718       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* type\_param,}
+\DoxyCodeLine{719       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* value\_param,}
+\DoxyCodeLine{720       \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{internal::CodeLocation}} code\_location,}
+\DoxyCodeLine{721       internal::TypeId fixture\_class\_id,}
+\DoxyCodeLine{722       Test::SetUpTestCaseFunc set\_up\_tc,}
+\DoxyCodeLine{723       Test::TearDownTestCaseFunc tear\_down\_tc,}
+\DoxyCodeLine{724       \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{internal::TestFactoryBase}}* factory);}
+\DoxyCodeLine{725 }
+\DoxyCodeLine{726   \textcolor{comment}{// Constructs a TestInfo object. The newly constructed instance assumes}}
+\DoxyCodeLine{727   \textcolor{comment}{// ownership of the factory object.}}
+\DoxyCodeLine{728   \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}(\textcolor{keyword}{const} std::string\& test\_case\_name,}
+\DoxyCodeLine{729            \textcolor{keyword}{const} std::string\& name,}
+\DoxyCodeLine{730            \textcolor{keyword}{const} \textcolor{keywordtype}{char}* a\_type\_param,   \textcolor{comment}{// NULL if not a type-\/parameterized test}}
+\DoxyCodeLine{731            \textcolor{keyword}{const} \textcolor{keywordtype}{char}* a\_value\_param,  \textcolor{comment}{// NULL if not a value-\/parameterized test}}
+\DoxyCodeLine{732            \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{internal::CodeLocation}} a\_code\_location,}
+\DoxyCodeLine{733            internal::TypeId fixture\_class\_id,}
+\DoxyCodeLine{734            \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{internal::TestFactoryBase}}* factory);}
+\DoxyCodeLine{735 }
+\DoxyCodeLine{736   \textcolor{comment}{// Increments the number of death tests encountered in this test so}}
+\DoxyCodeLine{737   \textcolor{comment}{// far.}}
+\DoxyCodeLine{738   \textcolor{keywordtype}{int} increment\_death\_test\_count() \{}
+\DoxyCodeLine{739     \textcolor{keywordflow}{return} result\_.increment\_death\_test\_count();}
+\DoxyCodeLine{740   \}}
+\DoxyCodeLine{741 }
+\DoxyCodeLine{742   \textcolor{comment}{// Creates the test object, runs it, records its result, and then}}
+\DoxyCodeLine{743   \textcolor{comment}{// deletes it.}}
+\DoxyCodeLine{744   \textcolor{keywordtype}{void} Run();}
+\DoxyCodeLine{745 }
+\DoxyCodeLine{746   \textcolor{keyword}{static} \textcolor{keywordtype}{void} ClearTestResult(\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{747     test\_info-\/>result\_.Clear();}
+\DoxyCodeLine{748   \}}
+\DoxyCodeLine{749 }
+\DoxyCodeLine{750   \textcolor{comment}{// These fields are immutable properties of the test.}}
+\DoxyCodeLine{751   \textcolor{keyword}{const} std::string test\_case\_name\_;     \textcolor{comment}{// Test case name}}
+\DoxyCodeLine{752   \textcolor{keyword}{const} std::string name\_;               \textcolor{comment}{// Test name}}
+\DoxyCodeLine{753   \textcolor{comment}{// Name of the parameter type, or NULL if this is not a typed or a}}
+\DoxyCodeLine{754   \textcolor{comment}{// type-\/parameterized test.}}
+\DoxyCodeLine{755   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr<const ::std::string>}} type\_param\_;}
+\DoxyCodeLine{756   \textcolor{comment}{// Text representation of the value parameter, or NULL if this is not a}}
+\DoxyCodeLine{757   \textcolor{comment}{// value-\/parameterized test.}}
+\DoxyCodeLine{758   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr<const ::std::string>}} value\_param\_;}
+\DoxyCodeLine{759   \mbox{\hyperlink{structtesting_1_1internal_1_1_code_location}{internal::CodeLocation}} location\_;}
+\DoxyCodeLine{760   \textcolor{keyword}{const} internal::TypeId fixture\_class\_id\_;   \textcolor{comment}{// ID of the test fixture class}}
+\DoxyCodeLine{761   \textcolor{keywordtype}{bool} should\_run\_;                 \textcolor{comment}{// True iff this test should run}}
+\DoxyCodeLine{762   \textcolor{keywordtype}{bool} is\_disabled\_;                \textcolor{comment}{// True iff this test is disabled}}
+\DoxyCodeLine{763   \textcolor{keywordtype}{bool} matches\_filter\_;             \textcolor{comment}{// True if this test matches the}}
+\DoxyCodeLine{764                                     \textcolor{comment}{// user-\/specified filter.}}
+\DoxyCodeLine{765   \mbox{\hyperlink{classtesting_1_1internal_1_1_test_factory_base}{internal::TestFactoryBase}}* \textcolor{keyword}{const} factory\_;  \textcolor{comment}{// The factory that creates}}
+\DoxyCodeLine{766                                               \textcolor{comment}{// the test object}}
+\DoxyCodeLine{767 }
+\DoxyCodeLine{768   \textcolor{comment}{// This field is mutable and needs to be reset before running the}}
+\DoxyCodeLine{769   \textcolor{comment}{// test for the second time.}}
+\DoxyCodeLine{770   \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}} result\_;}
+\DoxyCodeLine{771 }
+\DoxyCodeLine{772   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}});}
+\DoxyCodeLine{773 \};}
+\DoxyCodeLine{774 }
+\DoxyCodeLine{775 \textcolor{comment}{// A test case, which consists of a vector of TestInfos.}}
+\DoxyCodeLine{776 \textcolor{comment}{//}}
+\DoxyCodeLine{777 \textcolor{comment}{// TestCase is not copyable.}}
+\DoxyCodeLine{778 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}} \{}
+\DoxyCodeLine{779  \textcolor{keyword}{public}:}
+\DoxyCodeLine{780   \textcolor{comment}{// Creates a TestCase with the given name.}}
+\DoxyCodeLine{781   \textcolor{comment}{//}}
+\DoxyCodeLine{782   \textcolor{comment}{// TestCase does NOT have a default constructor.  Always use this}}
+\DoxyCodeLine{783   \textcolor{comment}{// constructor to create a TestCase object.}}
+\DoxyCodeLine{784   \textcolor{comment}{//}}
+\DoxyCodeLine{785   \textcolor{comment}{// Arguments:}}
+\DoxyCodeLine{786   \textcolor{comment}{//}}
+\DoxyCodeLine{787   \textcolor{comment}{//   name:         name of the test case}}
+\DoxyCodeLine{788   \textcolor{comment}{//   a\_type\_param: the name of the test's type parameter, or NULL if}}
+\DoxyCodeLine{789   \textcolor{comment}{//                 this is not a type-\/parameterized test.}}
+\DoxyCodeLine{790   \textcolor{comment}{//   set\_up\_tc:    pointer to the function that sets up the test case}}
+\DoxyCodeLine{791   \textcolor{comment}{//   tear\_down\_tc: pointer to the function that tears down the test case}}
+\DoxyCodeLine{792   \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* name, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* a\_type\_param,}
+\DoxyCodeLine{793            Test::SetUpTestCaseFunc set\_up\_tc,}
+\DoxyCodeLine{794            Test::TearDownTestCaseFunc tear\_down\_tc);}
+\DoxyCodeLine{795 }
+\DoxyCodeLine{796   \textcolor{comment}{// Destructor of TestCase.}}
+\DoxyCodeLine{797   \textcolor{keyword}{virtual} \mbox{\hyperlink{classtesting_1_1_test_case}{\string~TestCase}}();}
+\DoxyCodeLine{798 }
+\DoxyCodeLine{799   \textcolor{comment}{// Gets the name of the TestCase.}}
+\DoxyCodeLine{800   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* name()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} name\_.c\_str(); \}}
+\DoxyCodeLine{801 }
+\DoxyCodeLine{802   \textcolor{comment}{// Returns the name of the parameter type, or NULL if this is not a}}
+\DoxyCodeLine{803   \textcolor{comment}{// type-\/parameterized test case.}}
+\DoxyCodeLine{804   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* type\_param()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{805     \textcolor{keywordflow}{if} (type\_param\_.get() != NULL)}
+\DoxyCodeLine{806       \textcolor{keywordflow}{return} type\_param\_-\/>c\_str();}
+\DoxyCodeLine{807     \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{808   \}}
+\DoxyCodeLine{809 }
+\DoxyCodeLine{810   \textcolor{comment}{// Returns true if any test in this test case should run.}}
+\DoxyCodeLine{811   \textcolor{keywordtype}{bool} should\_run()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} should\_run\_; \}}
+\DoxyCodeLine{812 }
+\DoxyCodeLine{813   \textcolor{comment}{// Gets the number of successful tests in this test case.}}
+\DoxyCodeLine{814   \textcolor{keywordtype}{int} successful\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{815 }
+\DoxyCodeLine{816   \textcolor{comment}{// Gets the number of failed tests in this test case.}}
+\DoxyCodeLine{817   \textcolor{keywordtype}{int} failed\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{818 }
+\DoxyCodeLine{819   \textcolor{comment}{// Gets the number of disabled tests that will be reported in the XML report.}}
+\DoxyCodeLine{820   \textcolor{keywordtype}{int} reportable\_disabled\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{821 }
+\DoxyCodeLine{822   \textcolor{comment}{// Gets the number of disabled tests in this test case.}}
+\DoxyCodeLine{823   \textcolor{keywordtype}{int} disabled\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{824 }
+\DoxyCodeLine{825   \textcolor{comment}{// Gets the number of tests to be printed in the XML report.}}
+\DoxyCodeLine{826   \textcolor{keywordtype}{int} reportable\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{827 }
+\DoxyCodeLine{828   \textcolor{comment}{// Get the number of tests in this test case that should run.}}
+\DoxyCodeLine{829   \textcolor{keywordtype}{int} test\_to\_run\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{830 }
+\DoxyCodeLine{831   \textcolor{comment}{// Gets the number of all tests in this test case.}}
+\DoxyCodeLine{832   \textcolor{keywordtype}{int} total\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{833 }
+\DoxyCodeLine{834   \textcolor{comment}{// Returns true iff the test case passed.}}
+\DoxyCodeLine{835   \textcolor{keywordtype}{bool} Passed()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} !Failed(); \}}
+\DoxyCodeLine{836 }
+\DoxyCodeLine{837   \textcolor{comment}{// Returns true iff the test case failed.}}
+\DoxyCodeLine{838   \textcolor{keywordtype}{bool} Failed()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} failed\_test\_count() > 0; \}}
+\DoxyCodeLine{839 }
+\DoxyCodeLine{840   \textcolor{comment}{// Returns the elapsed time, in milliseconds.}}
+\DoxyCodeLine{841   TimeInMillis elapsed\_time()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} elapsed\_time\_; \}}
+\DoxyCodeLine{842 }
+\DoxyCodeLine{843   \textcolor{comment}{// Returns the i-\/th test among all the tests. i can range from 0 to}}
+\DoxyCodeLine{844   \textcolor{comment}{// total\_test\_count() -\/ 1. If i is not in that range, returns NULL.}}
+\DoxyCodeLine{845   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* GetTestInfo(\textcolor{keywordtype}{int} i) \textcolor{keyword}{const};}
+\DoxyCodeLine{846 }
+\DoxyCodeLine{847   \textcolor{comment}{// Returns the TestResult that holds test properties recorded during}}
+\DoxyCodeLine{848   \textcolor{comment}{// execution of SetUpTestCase and TearDownTestCase.}}
+\DoxyCodeLine{849   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}}\& ad\_hoc\_test\_result()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} ad\_hoc\_test\_result\_; \}}
+\DoxyCodeLine{850 }
+\DoxyCodeLine{851  \textcolor{keyword}{private}:}
+\DoxyCodeLine{852   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test}{Test}};}
+\DoxyCodeLine{853   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}};}
+\DoxyCodeLine{854 }
+\DoxyCodeLine{855   \textcolor{comment}{// Gets the (mutable) vector of TestInfos in this TestCase.}}
+\DoxyCodeLine{856   std::vector<TestInfo*>\& test\_info\_list() \{ \textcolor{keywordflow}{return} test\_info\_list\_; \}}
+\DoxyCodeLine{857 }
+\DoxyCodeLine{858   \textcolor{comment}{// Gets the (immutable) vector of TestInfos in this TestCase.}}
+\DoxyCodeLine{859   \textcolor{keyword}{const} std::vector<TestInfo*>\& test\_info\_list()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{860     \textcolor{keywordflow}{return} test\_info\_list\_;}
+\DoxyCodeLine{861   \}}
+\DoxyCodeLine{862 }
+\DoxyCodeLine{863   \textcolor{comment}{// Returns the i-\/th test among all the tests. i can range from 0 to}}
+\DoxyCodeLine{864   \textcolor{comment}{// total\_test\_count() -\/ 1. If i is not in that range, returns NULL.}}
+\DoxyCodeLine{865   \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* GetMutableTestInfo(\textcolor{keywordtype}{int} i);}
+\DoxyCodeLine{866 }
+\DoxyCodeLine{867   \textcolor{comment}{// Sets the should\_run member.}}
+\DoxyCodeLine{868   \textcolor{keywordtype}{void} set\_should\_run(\textcolor{keywordtype}{bool} should) \{ should\_run\_ = should; \}}
+\DoxyCodeLine{869 }
+\DoxyCodeLine{870   \textcolor{comment}{// Adds a TestInfo to this test case.  Will delete the TestInfo upon}}
+\DoxyCodeLine{871   \textcolor{comment}{// destruction of the TestCase object.}}
+\DoxyCodeLine{872   \textcolor{keywordtype}{void} AddTestInfo(\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}} * test\_info);}
+\DoxyCodeLine{873 }
+\DoxyCodeLine{874   \textcolor{comment}{// Clears the results of all tests in this test case.}}
+\DoxyCodeLine{875   \textcolor{keywordtype}{void} ClearResult();}
+\DoxyCodeLine{876 }
+\DoxyCodeLine{877   \textcolor{comment}{// Clears the results of all tests in the given test case.}}
+\DoxyCodeLine{878   \textcolor{keyword}{static} \textcolor{keywordtype}{void} ClearTestCaseResult(\mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}* test\_case) \{}
+\DoxyCodeLine{879     test\_case-\/>ClearResult();}
+\DoxyCodeLine{880   \}}
+\DoxyCodeLine{881 }
+\DoxyCodeLine{882   \textcolor{comment}{// Runs every test in this TestCase.}}
+\DoxyCodeLine{883   \textcolor{keywordtype}{void} Run();}
+\DoxyCodeLine{884 }
+\DoxyCodeLine{885   \textcolor{comment}{// Runs SetUpTestCase() for this TestCase.  This wrapper is needed}}
+\DoxyCodeLine{886   \textcolor{comment}{// for catching exceptions thrown from SetUpTestCase().}}
+\DoxyCodeLine{887   \textcolor{keywordtype}{void} RunSetUpTestCase() \{ (*set\_up\_tc\_)(); \}}
+\DoxyCodeLine{888 }
+\DoxyCodeLine{889   \textcolor{comment}{// Runs TearDownTestCase() for this TestCase.  This wrapper is}}
+\DoxyCodeLine{890   \textcolor{comment}{// needed for catching exceptions thrown from TearDownTestCase().}}
+\DoxyCodeLine{891   \textcolor{keywordtype}{void} RunTearDownTestCase() \{ (*tear\_down\_tc\_)(); \}}
+\DoxyCodeLine{892 }
+\DoxyCodeLine{893   \textcolor{comment}{// Returns true iff test passed.}}
+\DoxyCodeLine{894   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} TestPassed(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{895     \textcolor{keywordflow}{return} test\_info-\/>should\_run() \&\& test\_info-\/>result()-\/>Passed();}
+\DoxyCodeLine{896   \}}
+\DoxyCodeLine{897 }
+\DoxyCodeLine{898   \textcolor{comment}{// Returns true iff test failed.}}
+\DoxyCodeLine{899   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} TestFailed(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{900     \textcolor{keywordflow}{return} test\_info-\/>should\_run() \&\& test\_info-\/>result()-\/>Failed();}
+\DoxyCodeLine{901   \}}
+\DoxyCodeLine{902 }
+\DoxyCodeLine{903   \textcolor{comment}{// Returns true iff the test is disabled and will be reported in the XML}}
+\DoxyCodeLine{904   \textcolor{comment}{// report.}}
+\DoxyCodeLine{905   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} TestReportableDisabled(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{906     \textcolor{keywordflow}{return} test\_info-\/>is\_reportable() \&\& test\_info-\/>is\_disabled\_;}
+\DoxyCodeLine{907   \}}
+\DoxyCodeLine{908 }
+\DoxyCodeLine{909   \textcolor{comment}{// Returns true iff test is disabled.}}
+\DoxyCodeLine{910   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} TestDisabled(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{911     \textcolor{keywordflow}{return} test\_info-\/>is\_disabled\_;}
+\DoxyCodeLine{912   \}}
+\DoxyCodeLine{913 }
+\DoxyCodeLine{914   \textcolor{comment}{// Returns true iff this test will appear in the XML report.}}
+\DoxyCodeLine{915   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} TestReportable(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{916     \textcolor{keywordflow}{return} test\_info-\/>is\_reportable();}
+\DoxyCodeLine{917   \}}
+\DoxyCodeLine{918 }
+\DoxyCodeLine{919   \textcolor{comment}{// Returns true if the given test should run.}}
+\DoxyCodeLine{920   \textcolor{keyword}{static} \textcolor{keywordtype}{bool} ShouldRunTest(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* test\_info) \{}
+\DoxyCodeLine{921     \textcolor{keywordflow}{return} test\_info-\/>should\_run();}
+\DoxyCodeLine{922   \}}
+\DoxyCodeLine{923 }
+\DoxyCodeLine{924   \textcolor{comment}{// Shuffles the tests in this test case.}}
+\DoxyCodeLine{925   \textcolor{keywordtype}{void} ShuffleTests(\mbox{\hyperlink{classtesting_1_1internal_1_1_random}{internal::Random}}* random);}
+\DoxyCodeLine{926 }
+\DoxyCodeLine{927   \textcolor{comment}{// Restores the test order to before the first shuffle.}}
+\DoxyCodeLine{928   \textcolor{keywordtype}{void} UnshuffleTests();}
+\DoxyCodeLine{929 }
+\DoxyCodeLine{930   \textcolor{comment}{// Name of the test case.}}
+\DoxyCodeLine{931   std::string name\_;}
+\DoxyCodeLine{932   \textcolor{comment}{// Name of the parameter type, or NULL if this is not a typed or a}}
+\DoxyCodeLine{933   \textcolor{comment}{// type-\/parameterized test.}}
+\DoxyCodeLine{934   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1scoped__ptr}{internal::scoped\_ptr<const ::std::string>}} type\_param\_;}
+\DoxyCodeLine{935   \textcolor{comment}{// The vector of TestInfos in their original order.  It owns the}}
+\DoxyCodeLine{936   \textcolor{comment}{// elements in the vector.}}
+\DoxyCodeLine{937   std::vector<TestInfo*> test\_info\_list\_;}
+\DoxyCodeLine{938   \textcolor{comment}{// Provides a level of indirection for the test list to allow easy}}
+\DoxyCodeLine{939   \textcolor{comment}{// shuffling and restoring the test order.  The i-\/th element in this}}
+\DoxyCodeLine{940   \textcolor{comment}{// vector is the index of the i-\/th test in the shuffled test list.}}
+\DoxyCodeLine{941   std::vector<int> test\_indices\_;}
+\DoxyCodeLine{942   \textcolor{comment}{// Pointer to the function that sets up the test case.}}
+\DoxyCodeLine{943   Test::SetUpTestCaseFunc set\_up\_tc\_;}
+\DoxyCodeLine{944   \textcolor{comment}{// Pointer to the function that tears down the test case.}}
+\DoxyCodeLine{945   Test::TearDownTestCaseFunc tear\_down\_tc\_;}
+\DoxyCodeLine{946   \textcolor{comment}{// True iff any test in this test case should run.}}
+\DoxyCodeLine{947   \textcolor{keywordtype}{bool} should\_run\_;}
+\DoxyCodeLine{948   \textcolor{comment}{// Elapsed time, in milliseconds.}}
+\DoxyCodeLine{949   TimeInMillis elapsed\_time\_;}
+\DoxyCodeLine{950   \textcolor{comment}{// Holds test properties recorded during execution of SetUpTestCase and}}
+\DoxyCodeLine{951   \textcolor{comment}{// TearDownTestCase.}}
+\DoxyCodeLine{952   \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}} ad\_hoc\_test\_result\_;}
+\DoxyCodeLine{953 }
+\DoxyCodeLine{954   \textcolor{comment}{// We disallow copying TestCases.}}
+\DoxyCodeLine{955   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}});}
+\DoxyCodeLine{956 \};}
+\DoxyCodeLine{957 }
+\DoxyCodeLine{958 \textcolor{comment}{// An Environment object is capable of setting up and tearing down an}}
+\DoxyCodeLine{959 \textcolor{comment}{// environment.  You should subclass this to define your own}}
+\DoxyCodeLine{960 \textcolor{comment}{// environment(s).}}
+\DoxyCodeLine{961 \textcolor{comment}{//}}
+\DoxyCodeLine{962 \textcolor{comment}{// An Environment object does the set-\/up and tear-\/down in virtual}}
+\DoxyCodeLine{963 \textcolor{comment}{// methods SetUp() and TearDown() instead of the constructor and the}}
+\DoxyCodeLine{964 \textcolor{comment}{// destructor, as:}}
+\DoxyCodeLine{965 \textcolor{comment}{//}}
+\DoxyCodeLine{966 \textcolor{comment}{//   1. You cannot safely throw from a destructor.  This is a problem}}
+\DoxyCodeLine{967 \textcolor{comment}{//      as in some cases Google Test is used where exceptions are enabled, and}}
+\DoxyCodeLine{968 \textcolor{comment}{//      we may want to implement ASSERT\_* using exceptions where they are}}
+\DoxyCodeLine{969 \textcolor{comment}{//      available.}}
+\DoxyCodeLine{970 \textcolor{comment}{//   2. You cannot use ASSERT\_* directly in a constructor or}}
+\DoxyCodeLine{971 \textcolor{comment}{//      destructor.}}
+\DoxyCodeLine{972 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_environment}{Environment}} \{}
+\DoxyCodeLine{973  \textcolor{keyword}{public}:}
+\DoxyCodeLine{974   \textcolor{comment}{// The d'tor is virtual as we need to subclass Environment.}}
+\DoxyCodeLine{975   \textcolor{keyword}{virtual} \mbox{\hyperlink{classtesting_1_1_environment}{\string~Environment}}() \{\}}
+\DoxyCodeLine{976 }
+\DoxyCodeLine{977   \textcolor{comment}{// Override this to define how to set up the environment.}}
+\DoxyCodeLine{978   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} SetUp() \{\}}
+\DoxyCodeLine{979 }
+\DoxyCodeLine{980   \textcolor{comment}{// Override this to define how to tear down the environment.}}
+\DoxyCodeLine{981   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} TearDown() \{\}}
+\DoxyCodeLine{982  \textcolor{keyword}{private}:}
+\DoxyCodeLine{983   \textcolor{comment}{// If you see an error about overriding the following function or}}
+\DoxyCodeLine{984   \textcolor{comment}{// about it being private, you have mis-\/spelled SetUp() as Setup().}}
+\DoxyCodeLine{985   \textcolor{keyword}{struct }Setup\_should\_be\_spelled\_SetUp \{\};}
+\DoxyCodeLine{986   \textcolor{keyword}{virtual} Setup\_should\_be\_spelled\_SetUp* Setup() \{ \textcolor{keywordflow}{return} NULL; \}}
+\DoxyCodeLine{987 \};}
+\DoxyCodeLine{988 }
+\DoxyCodeLine{989 \textcolor{comment}{// The interface for tracing execution of tests. The methods are organized in}}
+\DoxyCodeLine{990 \textcolor{comment}{// the order the corresponding events are fired.}}
+\DoxyCodeLine{991 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}} \{}
+\DoxyCodeLine{992  \textcolor{keyword}{public}:}
+\DoxyCodeLine{993   \textcolor{keyword}{virtual} \mbox{\hyperlink{classtesting_1_1_test_event_listener}{\string~TestEventListener}}() \{\}}
+\DoxyCodeLine{994 }
+\DoxyCodeLine{995   \textcolor{comment}{// Fired before any test activity starts.}}
+\DoxyCodeLine{996   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestProgramStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{997 }
+\DoxyCodeLine{998   \textcolor{comment}{// Fired before each iteration of tests starts.  There may be more than}}
+\DoxyCodeLine{999   \textcolor{comment}{// one iteration if GTEST\_FLAG(repeat) is set. iteration is the iteration}}
+\DoxyCodeLine{1000   \textcolor{comment}{// index, starting from 0.}}
+\DoxyCodeLine{1001   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestIterationStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test,}
+\DoxyCodeLine{1002                                     \textcolor{keywordtype}{int} iteration) = 0;}
+\DoxyCodeLine{1003 }
+\DoxyCodeLine{1004   \textcolor{comment}{// Fired before environment set-\/up for each iteration of tests starts.}}
+\DoxyCodeLine{1005   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsSetUpStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{1006 }
+\DoxyCodeLine{1007   \textcolor{comment}{// Fired after environment set-\/up for each iteration of tests ends.}}
+\DoxyCodeLine{1008   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsSetUpEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{1009 }
+\DoxyCodeLine{1010   \textcolor{comment}{// Fired before the test case starts.}}
+\DoxyCodeLine{1011   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestCaseStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}\& test\_case) = 0;}
+\DoxyCodeLine{1012 }
+\DoxyCodeLine{1013   \textcolor{comment}{// Fired before the test starts.}}
+\DoxyCodeLine{1014   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}\& test\_info) = 0;}
+\DoxyCodeLine{1015 }
+\DoxyCodeLine{1016   \textcolor{comment}{// Fired after a failed assertion or a SUCCEED() invocation.}}
+\DoxyCodeLine{1017   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestPartResult(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_part_result}{TestPartResult}}\& test\_part\_result) = 0;}
+\DoxyCodeLine{1018 }
+\DoxyCodeLine{1019   \textcolor{comment}{// Fired after the test ends.}}
+\DoxyCodeLine{1020   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}\& test\_info) = 0;}
+\DoxyCodeLine{1021 }
+\DoxyCodeLine{1022   \textcolor{comment}{// Fired after the test case ends.}}
+\DoxyCodeLine{1023   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestCaseEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}\& test\_case) = 0;}
+\DoxyCodeLine{1024 }
+\DoxyCodeLine{1025   \textcolor{comment}{// Fired before environment tear-\/down for each iteration of tests starts.}}
+\DoxyCodeLine{1026   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsTearDownStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{1027 }
+\DoxyCodeLine{1028   \textcolor{comment}{// Fired after environment tear-\/down for each iteration of tests ends.}}
+\DoxyCodeLine{1029   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsTearDownEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{1030 }
+\DoxyCodeLine{1031   \textcolor{comment}{// Fired after each iteration of tests finishes.}}
+\DoxyCodeLine{1032   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestIterationEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test,}
+\DoxyCodeLine{1033                                   \textcolor{keywordtype}{int} iteration) = 0;}
+\DoxyCodeLine{1034 }
+\DoxyCodeLine{1035   \textcolor{comment}{// Fired after all test activities have ended.}}
+\DoxyCodeLine{1036   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestProgramEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& unit\_test) = 0;}
+\DoxyCodeLine{1037 \};}
+\DoxyCodeLine{1038 }
+\DoxyCodeLine{1039 \textcolor{comment}{// The convenience class for users who need to override just one or two}}
+\DoxyCodeLine{1040 \textcolor{comment}{// methods and are not concerned that a possible change to a signature of}}
+\DoxyCodeLine{1041 \textcolor{comment}{// the methods they override will not be caught during the build.  For}}
+\DoxyCodeLine{1042 \textcolor{comment}{// comments about each method please see the definition of TestEventListener}}
+\DoxyCodeLine{1043 \textcolor{comment}{// above.}}
+\DoxyCodeLine{1044 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_empty_test_event_listener}{EmptyTestEventListener}} : \textcolor{keyword}{public} \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}} \{}
+\DoxyCodeLine{1045  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1046   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestProgramStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1047   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestIterationStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/},}
+\DoxyCodeLine{1048                                     \textcolor{keywordtype}{int} \textcolor{comment}{/*iteration*/}) \{\}}
+\DoxyCodeLine{1049   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsSetUpStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1050   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsSetUpEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1051   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestCaseStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}\& \textcolor{comment}{/*test\_case*/}) \{\}}
+\DoxyCodeLine{1052   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}\& \textcolor{comment}{/*test\_info*/}) \{\}}
+\DoxyCodeLine{1053   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestPartResult(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_part_result}{TestPartResult}}\& \textcolor{comment}{/*test\_part\_result*/}) \{\}}
+\DoxyCodeLine{1054   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}\& \textcolor{comment}{/*test\_info*/}) \{\}}
+\DoxyCodeLine{1055   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestCaseEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}\& \textcolor{comment}{/*test\_case*/}) \{\}}
+\DoxyCodeLine{1056   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsTearDownStart(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1057   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnEnvironmentsTearDownEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1058   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestIterationEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/},}
+\DoxyCodeLine{1059                                   \textcolor{keywordtype}{int} \textcolor{comment}{/*iteration*/}) \{\}}
+\DoxyCodeLine{1060   \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} OnTestProgramEnd(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}\& \textcolor{comment}{/*unit\_test*/}) \{\}}
+\DoxyCodeLine{1061 \};}
+\DoxyCodeLine{1062 }
+\DoxyCodeLine{1063 \textcolor{comment}{// TestEventListeners lets users add listeners to track events in Google Test.}}
+\DoxyCodeLine{1064 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_test_event_listeners}{TestEventListeners}} \{}
+\DoxyCodeLine{1065  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1066   \mbox{\hyperlink{classtesting_1_1_test_event_listeners}{TestEventListeners}}();}
+\DoxyCodeLine{1067   \mbox{\hyperlink{classtesting_1_1_test_event_listeners}{\string~TestEventListeners}}();}
+\DoxyCodeLine{1068 }
+\DoxyCodeLine{1069   \textcolor{comment}{// Appends an event listener to the end of the list. Google Test assumes}}
+\DoxyCodeLine{1070   \textcolor{comment}{// the ownership of the listener (i.e. it will delete the listener when}}
+\DoxyCodeLine{1071   \textcolor{comment}{// the test program finishes).}}
+\DoxyCodeLine{1072   \textcolor{keywordtype}{void} Append(\mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* listener);}
+\DoxyCodeLine{1073 }
+\DoxyCodeLine{1074   \textcolor{comment}{// Removes the given event listener from the list and returns it.  It then}}
+\DoxyCodeLine{1075   \textcolor{comment}{// becomes the caller's responsibility to delete the listener. Returns}}
+\DoxyCodeLine{1076   \textcolor{comment}{// NULL if the listener is not found in the list.}}
+\DoxyCodeLine{1077   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* Release(\mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* listener);}
+\DoxyCodeLine{1078 }
+\DoxyCodeLine{1079   \textcolor{comment}{// Returns the standard listener responsible for the default console}}
+\DoxyCodeLine{1080   \textcolor{comment}{// output.  Can be removed from the listeners list to shut down default}}
+\DoxyCodeLine{1081   \textcolor{comment}{// console output.  Note that removing this object from the listener list}}
+\DoxyCodeLine{1082   \textcolor{comment}{// with Release transfers its ownership to the caller and makes this}}
+\DoxyCodeLine{1083   \textcolor{comment}{// function return NULL the next time.}}
+\DoxyCodeLine{1084   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* default\_result\_printer()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{1085     \textcolor{keywordflow}{return} default\_result\_printer\_;}
+\DoxyCodeLine{1086   \}}
+\DoxyCodeLine{1087 }
+\DoxyCodeLine{1088   \textcolor{comment}{// Returns the standard listener responsible for the default XML output}}
+\DoxyCodeLine{1089   \textcolor{comment}{// controlled by the -\/-\/gtest\_output=xml flag.  Can be removed from the}}
+\DoxyCodeLine{1090   \textcolor{comment}{// listeners list by users who want to shut down the default XML output}}
+\DoxyCodeLine{1091   \textcolor{comment}{// controlled by this flag and substitute it with custom one.  Note that}}
+\DoxyCodeLine{1092   \textcolor{comment}{// removing this object from the listener list with Release transfers its}}
+\DoxyCodeLine{1093   \textcolor{comment}{// ownership to the caller and makes this function return NULL the next}}
+\DoxyCodeLine{1094   \textcolor{comment}{// time.}}
+\DoxyCodeLine{1095   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* default\_xml\_generator()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{1096     \textcolor{keywordflow}{return} default\_xml\_generator\_;}
+\DoxyCodeLine{1097   \}}
+\DoxyCodeLine{1098 }
+\DoxyCodeLine{1099  \textcolor{keyword}{private}:}
+\DoxyCodeLine{1100   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}};}
+\DoxyCodeLine{1101   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}};}
+\DoxyCodeLine{1102   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_default_global_test_part_result_reporter}{internal::DefaultGlobalTestPartResultReporter}};}
+\DoxyCodeLine{1103   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::NoExecDeathTest;}
+\DoxyCodeLine{1104   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_test_event_listeners_accessor}{internal::TestEventListenersAccessor}};}
+\DoxyCodeLine{1105   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}};}
+\DoxyCodeLine{1106 }
+\DoxyCodeLine{1107   \textcolor{comment}{// Returns repeater that broadcasts the TestEventListener events to all}}
+\DoxyCodeLine{1108   \textcolor{comment}{// subscribers.}}
+\DoxyCodeLine{1109   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* repeater();}
+\DoxyCodeLine{1110 }
+\DoxyCodeLine{1111   \textcolor{comment}{// Sets the default\_result\_printer attribute to the provided listener.}}
+\DoxyCodeLine{1112   \textcolor{comment}{// The listener is also added to the listener list and previous}}
+\DoxyCodeLine{1113   \textcolor{comment}{// default\_result\_printer is removed from it and deleted. The listener can}}
+\DoxyCodeLine{1114   \textcolor{comment}{// also be NULL in which case it will not be added to the list. Does}}
+\DoxyCodeLine{1115   \textcolor{comment}{// nothing if the previous and the current listener objects are the same.}}
+\DoxyCodeLine{1116   \textcolor{keywordtype}{void} SetDefaultResultPrinter(\mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* listener);}
+\DoxyCodeLine{1117 }
+\DoxyCodeLine{1118   \textcolor{comment}{// Sets the default\_xml\_generator attribute to the provided listener.  The}}
+\DoxyCodeLine{1119   \textcolor{comment}{// listener is also added to the listener list and previous}}
+\DoxyCodeLine{1120   \textcolor{comment}{// default\_xml\_generator is removed from it and deleted. The listener can}}
+\DoxyCodeLine{1121   \textcolor{comment}{// also be NULL in which case it will not be added to the list. Does}}
+\DoxyCodeLine{1122   \textcolor{comment}{// nothing if the previous and the current listener objects are the same.}}
+\DoxyCodeLine{1123   \textcolor{keywordtype}{void} SetDefaultXmlGenerator(\mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* listener);}
+\DoxyCodeLine{1124 }
+\DoxyCodeLine{1125   \textcolor{comment}{// Controls whether events will be forwarded by the repeater to the}}
+\DoxyCodeLine{1126   \textcolor{comment}{// listeners in the list.}}
+\DoxyCodeLine{1127   \textcolor{keywordtype}{bool} EventForwardingEnabled() \textcolor{keyword}{const};}
+\DoxyCodeLine{1128   \textcolor{keywordtype}{void} SuppressEventForwarding();}
+\DoxyCodeLine{1129 }
+\DoxyCodeLine{1130   \textcolor{comment}{// The actual list of listeners.}}
+\DoxyCodeLine{1131   \mbox{\hyperlink{classtesting_1_1internal_1_1_test_event_repeater}{internal::TestEventRepeater}}* repeater\_;}
+\DoxyCodeLine{1132   \textcolor{comment}{// Listener responsible for the standard result output.}}
+\DoxyCodeLine{1133   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* default\_result\_printer\_;}
+\DoxyCodeLine{1134   \textcolor{comment}{// Listener responsible for the creation of the XML output file.}}
+\DoxyCodeLine{1135   \mbox{\hyperlink{classtesting_1_1_test_event_listener}{TestEventListener}}* default\_xml\_generator\_;}
+\DoxyCodeLine{1136 }
+\DoxyCodeLine{1137   \textcolor{comment}{// We disallow copying TestEventListeners.}}
+\DoxyCodeLine{1138   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_test_event_listeners}{TestEventListeners}});}
+\DoxyCodeLine{1139 \};}
+\DoxyCodeLine{1140 }
+\DoxyCodeLine{1141 \textcolor{comment}{// A UnitTest consists of a vector of TestCases.}}
+\DoxyCodeLine{1142 \textcolor{comment}{//}}
+\DoxyCodeLine{1143 \textcolor{comment}{// This is a singleton class.  The only instance of UnitTest is}}
+\DoxyCodeLine{1144 \textcolor{comment}{// created when UnitTest::GetInstance() is first called.  This}}
+\DoxyCodeLine{1145 \textcolor{comment}{// instance is never deleted.}}
+\DoxyCodeLine{1146 \textcolor{comment}{//}}
+\DoxyCodeLine{1147 \textcolor{comment}{// UnitTest is not copyable.}}
+\DoxyCodeLine{1148 \textcolor{comment}{//}}
+\DoxyCodeLine{1149 \textcolor{comment}{// This class is thread-\/safe as long as the methods are called}}
+\DoxyCodeLine{1150 \textcolor{comment}{// according to their specification.}}
+\DoxyCodeLine{1151 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}} \{}
+\DoxyCodeLine{1152  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1153   \textcolor{comment}{// Gets the singleton UnitTest object.  The first time this method}}
+\DoxyCodeLine{1154   \textcolor{comment}{// is called, a UnitTest object is constructed and returned.}}
+\DoxyCodeLine{1155   \textcolor{comment}{// Consecutive calls will return the same object.}}
+\DoxyCodeLine{1156   \textcolor{keyword}{static} \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}* GetInstance();}
+\DoxyCodeLine{1157 }
+\DoxyCodeLine{1158   \textcolor{comment}{// Runs all tests in this UnitTest object and prints the result.}}
+\DoxyCodeLine{1159   \textcolor{comment}{// Returns 0 if successful, or 1 otherwise.}}
+\DoxyCodeLine{1160   \textcolor{comment}{//}}
+\DoxyCodeLine{1161   \textcolor{comment}{// This method can only be called from the main thread.}}
+\DoxyCodeLine{1162   \textcolor{comment}{//}}
+\DoxyCodeLine{1163   \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1164   \textcolor{keywordtype}{int} Run() GTEST\_MUST\_USE\_RESULT\_;}
+\DoxyCodeLine{1165 }
+\DoxyCodeLine{1166   \textcolor{comment}{// Returns the working directory when the first TEST() or TEST\_F()}}
+\DoxyCodeLine{1167   \textcolor{comment}{// was executed.  The UnitTest object owns the string.}}
+\DoxyCodeLine{1168   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* original\_working\_dir() \textcolor{keyword}{const};}
+\DoxyCodeLine{1169 }
+\DoxyCodeLine{1170   \textcolor{comment}{// Returns the TestCase object for the test that's currently running,}}
+\DoxyCodeLine{1171   \textcolor{comment}{// or NULL if no test is running.}}
+\DoxyCodeLine{1172   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}* current\_test\_case() \textcolor{keyword}{const}}
+\DoxyCodeLine{1173       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1174 }
+\DoxyCodeLine{1175   \textcolor{comment}{// Returns the TestInfo object for the test that's currently running,}}
+\DoxyCodeLine{1176   \textcolor{comment}{// or NULL if no test is running.}}
+\DoxyCodeLine{1177   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_info}{TestInfo}}* current\_test\_info() \textcolor{keyword}{const}}
+\DoxyCodeLine{1178       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1179 }
+\DoxyCodeLine{1180   \textcolor{comment}{// Returns the random seed used at the start of the current test run.}}
+\DoxyCodeLine{1181   \textcolor{keywordtype}{int} random\_seed() \textcolor{keyword}{const};}
+\DoxyCodeLine{1182 }
+\DoxyCodeLine{1183 \textcolor{preprocessor}{\#if GTEST\_HAS\_PARAM\_TEST}}
+\DoxyCodeLine{1184   \textcolor{comment}{// Returns the ParameterizedTestCaseRegistry object used to keep track of}}
+\DoxyCodeLine{1185   \textcolor{comment}{// value-\/parameterized tests and instantiate and register them.}}
+\DoxyCodeLine{1186   \textcolor{comment}{//}}
+\DoxyCodeLine{1187   \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1188   internal::ParameterizedTestCaseRegistry\& parameterized\_test\_registry()}
+\DoxyCodeLine{1189       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1190 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_PARAM\_TEST}}
+\DoxyCodeLine{1191 }
+\DoxyCodeLine{1192   \textcolor{comment}{// Gets the number of successful test cases.}}
+\DoxyCodeLine{1193   \textcolor{keywordtype}{int} successful\_test\_case\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1194 }
+\DoxyCodeLine{1195   \textcolor{comment}{// Gets the number of failed test cases.}}
+\DoxyCodeLine{1196   \textcolor{keywordtype}{int} failed\_test\_case\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1197 }
+\DoxyCodeLine{1198   \textcolor{comment}{// Gets the number of all test cases.}}
+\DoxyCodeLine{1199   \textcolor{keywordtype}{int} total\_test\_case\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1200 }
+\DoxyCodeLine{1201   \textcolor{comment}{// Gets the number of all test cases that contain at least one test}}
+\DoxyCodeLine{1202   \textcolor{comment}{// that should run.}}
+\DoxyCodeLine{1203   \textcolor{keywordtype}{int} test\_case\_to\_run\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1204 }
+\DoxyCodeLine{1205   \textcolor{comment}{// Gets the number of successful tests.}}
+\DoxyCodeLine{1206   \textcolor{keywordtype}{int} successful\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1207 }
+\DoxyCodeLine{1208   \textcolor{comment}{// Gets the number of failed tests.}}
+\DoxyCodeLine{1209   \textcolor{keywordtype}{int} failed\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1210 }
+\DoxyCodeLine{1211   \textcolor{comment}{// Gets the number of disabled tests that will be reported in the XML report.}}
+\DoxyCodeLine{1212   \textcolor{keywordtype}{int} reportable\_disabled\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1213 }
+\DoxyCodeLine{1214   \textcolor{comment}{// Gets the number of disabled tests.}}
+\DoxyCodeLine{1215   \textcolor{keywordtype}{int} disabled\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1216 }
+\DoxyCodeLine{1217   \textcolor{comment}{// Gets the number of tests to be printed in the XML report.}}
+\DoxyCodeLine{1218   \textcolor{keywordtype}{int} reportable\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1219 }
+\DoxyCodeLine{1220   \textcolor{comment}{// Gets the number of all tests.}}
+\DoxyCodeLine{1221   \textcolor{keywordtype}{int} total\_test\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1222 }
+\DoxyCodeLine{1223   \textcolor{comment}{// Gets the number of tests that should run.}}
+\DoxyCodeLine{1224   \textcolor{keywordtype}{int} test\_to\_run\_count() \textcolor{keyword}{const};}
+\DoxyCodeLine{1225 }
+\DoxyCodeLine{1226   \textcolor{comment}{// Gets the time of the test program start, in ms from the start of the}}
+\DoxyCodeLine{1227   \textcolor{comment}{// UNIX epoch.}}
+\DoxyCodeLine{1228   TimeInMillis start\_timestamp() \textcolor{keyword}{const};}
+\DoxyCodeLine{1229 }
+\DoxyCodeLine{1230   \textcolor{comment}{// Gets the elapsed time, in milliseconds.}}
+\DoxyCodeLine{1231   TimeInMillis elapsed\_time() \textcolor{keyword}{const};}
+\DoxyCodeLine{1232 }
+\DoxyCodeLine{1233   \textcolor{comment}{// Returns true iff the unit test passed (i.e. all test cases passed).}}
+\DoxyCodeLine{1234   \textcolor{keywordtype}{bool} Passed() \textcolor{keyword}{const};}
+\DoxyCodeLine{1235 }
+\DoxyCodeLine{1236   \textcolor{comment}{// Returns true iff the unit test failed (i.e. some test case failed}}
+\DoxyCodeLine{1237   \textcolor{comment}{// or something outside of all tests failed).}}
+\DoxyCodeLine{1238   \textcolor{keywordtype}{bool} Failed() \textcolor{keyword}{const};}
+\DoxyCodeLine{1239 }
+\DoxyCodeLine{1240   \textcolor{comment}{// Gets the i-\/th test case among all the test cases. i can range from 0 to}}
+\DoxyCodeLine{1241   \textcolor{comment}{// total\_test\_case\_count() -\/ 1. If i is not in that range, returns NULL.}}
+\DoxyCodeLine{1242   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}* GetTestCase(\textcolor{keywordtype}{int} i) \textcolor{keyword}{const};}
+\DoxyCodeLine{1243 }
+\DoxyCodeLine{1244   \textcolor{comment}{// Returns the TestResult containing information on test failures and}}
+\DoxyCodeLine{1245   \textcolor{comment}{// properties logged outside of individual test cases.}}
+\DoxyCodeLine{1246   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_test_result}{TestResult}}\& ad\_hoc\_test\_result() \textcolor{keyword}{const};}
+\DoxyCodeLine{1247 }
+\DoxyCodeLine{1248   \textcolor{comment}{// Returns the list of event listeners that can be used to track events}}
+\DoxyCodeLine{1249   \textcolor{comment}{// inside Google Test.}}
+\DoxyCodeLine{1250   \mbox{\hyperlink{classtesting_1_1_test_event_listeners}{TestEventListeners}}\& listeners();}
+\DoxyCodeLine{1251 }
+\DoxyCodeLine{1252  \textcolor{keyword}{private}:}
+\DoxyCodeLine{1253   \textcolor{comment}{// Registers and returns a global test environment.  When a test}}
+\DoxyCodeLine{1254   \textcolor{comment}{// program is run, all global test environments will be set-\/up in}}
+\DoxyCodeLine{1255   \textcolor{comment}{// the order they were registered.  After all tests in the program}}
+\DoxyCodeLine{1256   \textcolor{comment}{// have finished, all global test environments will be torn-\/down in}}
+\DoxyCodeLine{1257   \textcolor{comment}{// the *reverse* order they were registered.}}
+\DoxyCodeLine{1258   \textcolor{comment}{//}}
+\DoxyCodeLine{1259   \textcolor{comment}{// The UnitTest object takes ownership of the given environment.}}
+\DoxyCodeLine{1260   \textcolor{comment}{//}}
+\DoxyCodeLine{1261   \textcolor{comment}{// This method can only be called from the main thread.}}
+\DoxyCodeLine{1262   \mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* AddEnvironment(\mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* env);}
+\DoxyCodeLine{1263 }
+\DoxyCodeLine{1264   \textcolor{comment}{// Adds a TestPartResult to the current TestResult object.  All}}
+\DoxyCodeLine{1265   \textcolor{comment}{// Google Test assertion macros (e.g. ASSERT\_TRUE, EXPECT\_EQ, etc)}}
+\DoxyCodeLine{1266   \textcolor{comment}{// eventually call this to report their results.  The user code}}
+\DoxyCodeLine{1267   \textcolor{comment}{// should use the assertion macros instead of calling this directly.}}
+\DoxyCodeLine{1268   \textcolor{keywordtype}{void} AddTestPartResult(TestPartResult::Type result\_type,}
+\DoxyCodeLine{1269                          \textcolor{keyword}{const} \textcolor{keywordtype}{char}* file\_name,}
+\DoxyCodeLine{1270                          \textcolor{keywordtype}{int} line\_number,}
+\DoxyCodeLine{1271                          \textcolor{keyword}{const} std::string\& message,}
+\DoxyCodeLine{1272                          \textcolor{keyword}{const} std::string\& os\_stack\_trace)}
+\DoxyCodeLine{1273       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1274 }
+\DoxyCodeLine{1275   \textcolor{comment}{// Adds a TestProperty to the current TestResult object when invoked from}}
+\DoxyCodeLine{1276   \textcolor{comment}{// inside a test, to current TestCase's ad\_hoc\_test\_result\_ when invoked}}
+\DoxyCodeLine{1277   \textcolor{comment}{// from SetUpTestCase or TearDownTestCase, or to the global property set}}
+\DoxyCodeLine{1278   \textcolor{comment}{// when invoked elsewhere.  If the result already contains a property with}}
+\DoxyCodeLine{1279   \textcolor{comment}{// the same key, the value will be updated.}}
+\DoxyCodeLine{1280   \textcolor{keywordtype}{void} RecordProperty(\textcolor{keyword}{const} std::string\& key, \textcolor{keyword}{const} std::string\& value);}
+\DoxyCodeLine{1281 }
+\DoxyCodeLine{1282   \textcolor{comment}{// Gets the i-\/th test case among all the test cases. i can range from 0 to}}
+\DoxyCodeLine{1283   \textcolor{comment}{// total\_test\_case\_count() -\/ 1. If i is not in that range, returns NULL.}}
+\DoxyCodeLine{1284   \mbox{\hyperlink{classtesting_1_1_test_case}{TestCase}}* GetMutableTestCase(\textcolor{keywordtype}{int} i);}
+\DoxyCodeLine{1285 }
+\DoxyCodeLine{1286   \textcolor{comment}{// Accessors for the implementation object.}}
+\DoxyCodeLine{1287   \mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}}* impl() \{ \textcolor{keywordflow}{return} impl\_; \}}
+\DoxyCodeLine{1288   \textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}}* impl()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} impl\_; \}}
+\DoxyCodeLine{1289 }
+\DoxyCodeLine{1290   \textcolor{comment}{// These classes and funcions are friends as they need to access private}}
+\DoxyCodeLine{1291   \textcolor{comment}{// members of UnitTest.}}
+\DoxyCodeLine{1292   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1_test}{Test}};}
+\DoxyCodeLine{1293   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{internal::AssertHelper}};}
+\DoxyCodeLine{1294   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_scoped_trace}{internal::ScopedTrace}};}
+\DoxyCodeLine{1295   \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::StreamingListenerTest;}
+\DoxyCodeLine{1296   \textcolor{keyword}{friend} \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_record_property_test_helper}{internal::UnitTestRecordPropertyTestHelper}};}
+\DoxyCodeLine{1297   \textcolor{keyword}{friend} \mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* AddGlobalTestEnvironment(\mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* env);}
+\DoxyCodeLine{1298   \textcolor{keyword}{friend} \mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}}* internal::GetUnitTestImpl();}
+\DoxyCodeLine{1299   \textcolor{keyword}{friend} \textcolor{keywordtype}{void} internal::ReportFailureInUnknownLocation(}
+\DoxyCodeLine{1300       TestPartResult::Type result\_type,}
+\DoxyCodeLine{1301       \textcolor{keyword}{const} std::string\& message);}
+\DoxyCodeLine{1302 }
+\DoxyCodeLine{1303   \textcolor{comment}{// Creates an empty UnitTest.}}
+\DoxyCodeLine{1304   \mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}}();}
+\DoxyCodeLine{1305 }
+\DoxyCodeLine{1306   \textcolor{comment}{// D'tor}}
+\DoxyCodeLine{1307   \textcolor{keyword}{virtual} \mbox{\hyperlink{classtesting_1_1_unit_test}{\string~UnitTest}}();}
+\DoxyCodeLine{1308 }
+\DoxyCodeLine{1309   \textcolor{comment}{// Pushes a trace defined by SCOPED\_TRACE() on to the per-\/thread}}
+\DoxyCodeLine{1310   \textcolor{comment}{// Google Test trace stack.}}
+\DoxyCodeLine{1311   \textcolor{keywordtype}{void} PushGTestTrace(\textcolor{keyword}{const} \mbox{\hyperlink{structtesting_1_1internal_1_1_trace_info}{internal::TraceInfo}}\& trace)}
+\DoxyCodeLine{1312       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1313 }
+\DoxyCodeLine{1314   \textcolor{comment}{// Pops a trace from the per-\/thread Google Test trace stack.}}
+\DoxyCodeLine{1315   \textcolor{keywordtype}{void} PopGTestTrace()}
+\DoxyCodeLine{1316       GTEST\_LOCK\_EXCLUDED\_(mutex\_);}
+\DoxyCodeLine{1317 }
+\DoxyCodeLine{1318   \textcolor{comment}{// Protects mutable state in *impl\_.  This is mutable as some const}}
+\DoxyCodeLine{1319   \textcolor{comment}{// methods need to lock it too.}}
+\DoxyCodeLine{1320   \textcolor{keyword}{mutable} \mbox{\hyperlink{classtesting_1_1internal_1_1_mutex}{internal::Mutex}} mutex\_;}
+\DoxyCodeLine{1321 }
+\DoxyCodeLine{1322   \textcolor{comment}{// Opaque implementation object.  This field is never changed once}}
+\DoxyCodeLine{1323   \textcolor{comment}{// the object is constructed.  We don't mark it as const here, as}}
+\DoxyCodeLine{1324   \textcolor{comment}{// doing so will cause a warning in the constructor of UnitTest.}}
+\DoxyCodeLine{1325   \textcolor{comment}{// Mutable state in *impl\_ is protected by mutex\_.}}
+\DoxyCodeLine{1326   \mbox{\hyperlink{classtesting_1_1internal_1_1_unit_test_impl}{internal::UnitTestImpl}}* impl\_;}
+\DoxyCodeLine{1327 }
+\DoxyCodeLine{1328   \textcolor{comment}{// We disallow copying UnitTest.}}
+\DoxyCodeLine{1329   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1_unit_test}{UnitTest}});}
+\DoxyCodeLine{1330 \};}
+\DoxyCodeLine{1331 }
+\DoxyCodeLine{1332 \textcolor{comment}{// A convenient wrapper for adding an environment for the test}}
+\DoxyCodeLine{1333 \textcolor{comment}{// program.}}
+\DoxyCodeLine{1334 \textcolor{comment}{//}}
+\DoxyCodeLine{1335 \textcolor{comment}{// You should call this before RUN\_ALL\_TESTS() is called, probably in}}
+\DoxyCodeLine{1336 \textcolor{comment}{// main().  If you use gtest\_main, you need to call this before main()}}
+\DoxyCodeLine{1337 \textcolor{comment}{// starts for it to take effect.  For example, you can define a global}}
+\DoxyCodeLine{1338 \textcolor{comment}{// variable like this:}}
+\DoxyCodeLine{1339 \textcolor{comment}{//}}
+\DoxyCodeLine{1340 \textcolor{comment}{//   testing::Environment* const foo\_env =}}
+\DoxyCodeLine{1341 \textcolor{comment}{//       testing::AddGlobalTestEnvironment(new FooEnvironment);}}
+\DoxyCodeLine{1342 \textcolor{comment}{//}}
+\DoxyCodeLine{1343 \textcolor{comment}{// However, we strongly recommend you to write your own main() and}}
+\DoxyCodeLine{1344 \textcolor{comment}{// call AddGlobalTestEnvironment() there, as relying on initialization}}
+\DoxyCodeLine{1345 \textcolor{comment}{// of global variables makes the code harder to read and may cause}}
+\DoxyCodeLine{1346 \textcolor{comment}{// problems when you register multiple environments from different}}
+\DoxyCodeLine{1347 \textcolor{comment}{// translation units and the environments have dependencies among them}}
+\DoxyCodeLine{1348 \textcolor{comment}{// (remember that the compiler doesn't guarantee the order in which}}
+\DoxyCodeLine{1349 \textcolor{comment}{// global variables from different translation units are initialized).}}
+\DoxyCodeLine{1350 \textcolor{keyword}{inline} \mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* AddGlobalTestEnvironment(\mbox{\hyperlink{classtesting_1_1_environment}{Environment}}* env) \{}
+\DoxyCodeLine{1351   \textcolor{keywordflow}{return} UnitTest::GetInstance()-\/>AddEnvironment(env);}
+\DoxyCodeLine{1352 \}}
+\DoxyCodeLine{1353 }
+\DoxyCodeLine{1354 \textcolor{comment}{// Initializes Google Test.  This must be called before calling}}
+\DoxyCodeLine{1355 \textcolor{comment}{// RUN\_ALL\_TESTS().  In particular, it parses a command line for the}}
+\DoxyCodeLine{1356 \textcolor{comment}{// flags that Google Test recognizes.  Whenever a Google Test flag is}}
+\DoxyCodeLine{1357 \textcolor{comment}{// seen, it is removed from argv, and *argc is decremented.}}
+\DoxyCodeLine{1358 \textcolor{comment}{//}}
+\DoxyCodeLine{1359 \textcolor{comment}{// No value is returned.  Instead, the Google Test flag variables are}}
+\DoxyCodeLine{1360 \textcolor{comment}{// updated.}}
+\DoxyCodeLine{1361 \textcolor{comment}{//}}
+\DoxyCodeLine{1362 \textcolor{comment}{// Calling the function for the second time has no user-\/visible effect.}}
+\DoxyCodeLine{1363 GTEST\_API\_ \textcolor{keywordtype}{void} InitGoogleTest(\textcolor{keywordtype}{int}* argc, \textcolor{keywordtype}{char}** argv);}
+\DoxyCodeLine{1364 }
+\DoxyCodeLine{1365 \textcolor{comment}{// This overloaded version can be used in Windows programs compiled in}}
+\DoxyCodeLine{1366 \textcolor{comment}{// UNICODE mode.}}
+\DoxyCodeLine{1367 GTEST\_API\_ \textcolor{keywordtype}{void} InitGoogleTest(\textcolor{keywordtype}{int}* argc, \textcolor{keywordtype}{wchar\_t}** argv);}
+\DoxyCodeLine{1368 }
+\DoxyCodeLine{1369 \textcolor{keyword}{namespace }internal \{}
+\DoxyCodeLine{1370 }
+\DoxyCodeLine{1371 \textcolor{comment}{// Separate the error generating code from the code path to reduce the stack}}
+\DoxyCodeLine{1372 \textcolor{comment}{// frame size of CmpHelperEQ. This helps reduce the overhead of some sanitizers}}
+\DoxyCodeLine{1373 \textcolor{comment}{// when calling EXPECT\_* in a tight loop.}}
+\DoxyCodeLine{1374 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{1375 AssertionResult CmpHelperEQFailure(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1376                                    \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1377                                    \textcolor{keyword}{const} T1\& lhs, \textcolor{keyword}{const} T2\& rhs) \{}
+\DoxyCodeLine{1378   \textcolor{keywordflow}{return} EqFailure(lhs\_expression,}
+\DoxyCodeLine{1379                    rhs\_expression,}
+\DoxyCodeLine{1380                    FormatForComparisonFailureMessage(lhs, rhs),}
+\DoxyCodeLine{1381                    FormatForComparisonFailureMessage(rhs, lhs),}
+\DoxyCodeLine{1382                    \textcolor{keyword}{false});}
+\DoxyCodeLine{1383 \}}
+\DoxyCodeLine{1384 }
+\DoxyCodeLine{1385 \textcolor{comment}{// The helper function for \{ASSERT|EXPECT\}\_EQ.}}
+\DoxyCodeLine{1386 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{1387 AssertionResult CmpHelperEQ(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1388                             \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1389                             \textcolor{keyword}{const} T1\& lhs,}
+\DoxyCodeLine{1390                             \textcolor{keyword}{const} T2\& rhs) \{}
+\DoxyCodeLine{1391 GTEST\_DISABLE\_MSC\_WARNINGS\_PUSH\_(4389 \textcolor{comment}{/* signed/unsigned mismatch */})}
+\DoxyCodeLine{1392   if (lhs == rhs) \{}
+\DoxyCodeLine{1393     \textcolor{keywordflow}{return} AssertionSuccess();}
+\DoxyCodeLine{1394   \}}
+\DoxyCodeLine{1395 GTEST\_DISABLE\_MSC\_WARNINGS\_POP\_()}
+\DoxyCodeLine{1396 }
+\DoxyCodeLine{1397   return CmpHelperEQFailure(lhs\_expression, rhs\_expression, lhs, rhs);}
+\DoxyCodeLine{1398 \}}
+\DoxyCodeLine{1399 }
+\DoxyCodeLine{1400 \textcolor{comment}{// With this overloaded version, we allow anonymous enums to be used}}
+\DoxyCodeLine{1401 \textcolor{comment}{// in \{ASSERT|EXPECT\}\_EQ when compiled with gcc 4, as anonymous enums}}
+\DoxyCodeLine{1402 \textcolor{comment}{// can be implicitly cast to BiggestInt.}}
+\DoxyCodeLine{1403 GTEST\_API\_ AssertionResult CmpHelperEQ(const \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1404                                        const \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1405                                        BiggestInt lhs,}
+\DoxyCodeLine{1406                                        BiggestInt rhs);}
+\DoxyCodeLine{1407 }
+\DoxyCodeLine{1408 \textcolor{comment}{// The helper class for \{ASSERT|EXPECT\}\_EQ.  The template argument}}
+\DoxyCodeLine{1409 \textcolor{comment}{// lhs\_is\_null\_literal is true iff the first argument to ASSERT\_EQ()}}
+\DoxyCodeLine{1410 \textcolor{comment}{// is a null pointer literal.  The following default implementation is}}
+\DoxyCodeLine{1411 \textcolor{comment}{// for lhs\_is\_null\_literal being false.}}
+\DoxyCodeLine{1412 template <\textcolor{keywordtype}{bool} lhs\_is\_null\_literal>}
+\DoxyCodeLine{1413 class \mbox{\hyperlink{classtesting_1_1internal_1_1_eq_helper}{EqHelper}} \{}
+\DoxyCodeLine{1414  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1415   \textcolor{comment}{// This templatized version is for the general case.}}
+\DoxyCodeLine{1416   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{1417   \textcolor{keyword}{static} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} Compare(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1418                                  \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1419                                  \textcolor{keyword}{const} T1\& lhs,}
+\DoxyCodeLine{1420                                  \textcolor{keyword}{const} T2\& rhs) \{}
+\DoxyCodeLine{1421     \textcolor{keywordflow}{return} CmpHelperEQ(lhs\_expression, rhs\_expression, lhs, rhs);}
+\DoxyCodeLine{1422   \}}
+\DoxyCodeLine{1423 }
+\DoxyCodeLine{1424   \textcolor{comment}{// With this overloaded version, we allow anonymous enums to be used}}
+\DoxyCodeLine{1425   \textcolor{comment}{// in \{ASSERT|EXPECT\}\_EQ when compiled with gcc 4, as anonymous}}
+\DoxyCodeLine{1426   \textcolor{comment}{// enums can be implicitly cast to BiggestInt.}}
+\DoxyCodeLine{1427   \textcolor{comment}{//}}
+\DoxyCodeLine{1428   \textcolor{comment}{// Even though its body looks the same as the above version, we}}
+\DoxyCodeLine{1429   \textcolor{comment}{// cannot merge the two, as it will make anonymous enums unhappy.}}
+\DoxyCodeLine{1430   \textcolor{keyword}{static} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} Compare(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1431                                  \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1432                                  BiggestInt lhs,}
+\DoxyCodeLine{1433                                  BiggestInt rhs) \{}
+\DoxyCodeLine{1434     \textcolor{keywordflow}{return} CmpHelperEQ(lhs\_expression, rhs\_expression, lhs, rhs);}
+\DoxyCodeLine{1435   \}}
+\DoxyCodeLine{1436 \};}
+\DoxyCodeLine{1437 }
+\DoxyCodeLine{1438 \textcolor{comment}{// This specialization is used when the first argument to ASSERT\_EQ()}}
+\DoxyCodeLine{1439 \textcolor{comment}{// is a null pointer literal, like NULL, false, or 0.}}
+\DoxyCodeLine{1440 \textcolor{keyword}{template} <>}
+\DoxyCodeLine{1441 \textcolor{keyword}{class }\mbox{\hyperlink{classtesting_1_1internal_1_1_eq_helper}{EqHelper}}<true> \{}
+\DoxyCodeLine{1442  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1443   \textcolor{comment}{// We define two overloaded versions of Compare().  The first}}
+\DoxyCodeLine{1444   \textcolor{comment}{// version will be picked when the second argument to ASSERT\_EQ() is}}
+\DoxyCodeLine{1445   \textcolor{comment}{// NOT a pointer, e.g. ASSERT\_EQ(0, AnIntFunction()) or}}
+\DoxyCodeLine{1446   \textcolor{comment}{// EXPECT\_EQ(false, a\_bool).}}
+\DoxyCodeLine{1447   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{1448   \textcolor{keyword}{static} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} Compare(}
+\DoxyCodeLine{1449       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1450       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1451       \textcolor{keyword}{const} T1\& lhs,}
+\DoxyCodeLine{1452       \textcolor{keyword}{const} T2\& rhs,}
+\DoxyCodeLine{1453       \textcolor{comment}{// The following line prevents this overload from being considered if T2}}
+\DoxyCodeLine{1454       \textcolor{comment}{// is not a pointer type.  We need this because ASSERT\_EQ(NULL, my\_ptr)}}
+\DoxyCodeLine{1455       \textcolor{comment}{// expands to Compare("{}"{}, "{}"{}, NULL, my\_ptr), which requires a conversion}}
+\DoxyCodeLine{1456       \textcolor{comment}{// to match the Secret* in the other overload, which would otherwise make}}
+\DoxyCodeLine{1457       \textcolor{comment}{// this template match better.}}
+\DoxyCodeLine{1458       \textcolor{keyword}{typename} \mbox{\hyperlink{structtesting_1_1internal_1_1_enable_if}{EnableIf}}<!\mbox{\hyperlink{structtesting_1_1internal_1_1is__pointer}{is\_pointer<T2>::value}}>::type* = 0) \{}
+\DoxyCodeLine{1459     \textcolor{keywordflow}{return} CmpHelperEQ(lhs\_expression, rhs\_expression, lhs, rhs);}
+\DoxyCodeLine{1460   \}}
+\DoxyCodeLine{1461 }
+\DoxyCodeLine{1462   \textcolor{comment}{// This version will be picked when the second argument to ASSERT\_EQ() is a}}
+\DoxyCodeLine{1463   \textcolor{comment}{// pointer, e.g. ASSERT\_EQ(NULL, a\_pointer).}}
+\DoxyCodeLine{1464   \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{1465   \textcolor{keyword}{static} \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} Compare(}
+\DoxyCodeLine{1466       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1467       \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1468       \textcolor{comment}{// We used to have a second template parameter instead of Secret*.  That}}
+\DoxyCodeLine{1469       \textcolor{comment}{// template parameter would deduce to 'long', making this a better match}}
+\DoxyCodeLine{1470       \textcolor{comment}{// than the first overload even without the first overload's EnableIf.}}
+\DoxyCodeLine{1471       \textcolor{comment}{// Unfortunately, gcc with -\/Wconversion-\/null warns when "{}passing NULL to}}
+\DoxyCodeLine{1472       \textcolor{comment}{// non-\/pointer argument"{} (even a deduced integral argument), so the old}}
+\DoxyCodeLine{1473       \textcolor{comment}{// implementation caused warnings in user code.}}
+\DoxyCodeLine{1474       Secret* \textcolor{comment}{/* lhs (NULL) */},}
+\DoxyCodeLine{1475       T* rhs) \{}
+\DoxyCodeLine{1476     \textcolor{comment}{// We already know that 'lhs' is a null pointer.}}
+\DoxyCodeLine{1477     \textcolor{keywordflow}{return} CmpHelperEQ(lhs\_expression, rhs\_expression,}
+\DoxyCodeLine{1478                        \textcolor{keyword}{static\_cast<}T*\textcolor{keyword}{>}(NULL), rhs);}
+\DoxyCodeLine{1479   \}}
+\DoxyCodeLine{1480 \};}
+\DoxyCodeLine{1481 }
+\DoxyCodeLine{1482 \textcolor{comment}{// Separate the error generating code from the code path to reduce the stack}}
+\DoxyCodeLine{1483 \textcolor{comment}{// frame size of CmpHelperOP. This helps reduce the overhead of some sanitizers}}
+\DoxyCodeLine{1484 \textcolor{comment}{// when calling EXPECT\_OP in a tight loop.}}
+\DoxyCodeLine{1485 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{1486 \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperOpFailure(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr1, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr2,}
+\DoxyCodeLine{1487                                    \textcolor{keyword}{const} T1\& val1, \textcolor{keyword}{const} T2\& val2,}
+\DoxyCodeLine{1488                                    \textcolor{keyword}{const} \textcolor{keywordtype}{char}* op) \{}
+\DoxyCodeLine{1489   \textcolor{keywordflow}{return} AssertionFailure()}
+\DoxyCodeLine{1490          << \textcolor{stringliteral}{"{}Expected: ("{}} << expr1 << \textcolor{stringliteral}{"{}) "{}} << op << \textcolor{stringliteral}{"{} ("{}} << expr2}
+\DoxyCodeLine{1491          << \textcolor{stringliteral}{"{}), actual: "{}} << FormatForComparisonFailureMessage(val1, val2)}
+\DoxyCodeLine{1492          << \textcolor{stringliteral}{"{} vs "{}} << FormatForComparisonFailureMessage(val2, val1);}
+\DoxyCodeLine{1493 \}}
+\DoxyCodeLine{1494 }
+\DoxyCodeLine{1495 \textcolor{comment}{// A macro for implementing the helper functions needed to implement}}
+\DoxyCodeLine{1496 \textcolor{comment}{// ASSERT\_?? and EXPECT\_??.  It is here just to avoid copy-\/and-\/paste}}
+\DoxyCodeLine{1497 \textcolor{comment}{// of similar code.}}
+\DoxyCodeLine{1498 \textcolor{comment}{//}}
+\DoxyCodeLine{1499 \textcolor{comment}{// For each templatized helper function, we also define an overloaded}}
+\DoxyCodeLine{1500 \textcolor{comment}{// version for BiggestInt in order to reduce code bloat and allow}}
+\DoxyCodeLine{1501 \textcolor{comment}{// anonymous enums to be used with \{ASSERT|EXPECT\}\_?? when compiled}}
+\DoxyCodeLine{1502 \textcolor{comment}{// with gcc 4.}}
+\DoxyCodeLine{1503 \textcolor{comment}{//}}
+\DoxyCodeLine{1504 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1505 }
+\DoxyCodeLine{1506 \textcolor{preprocessor}{\#define GTEST\_IMPL\_CMP\_HELPER\_(op\_name, op)\(\backslash\)}}
+\DoxyCodeLine{1507 \textcolor{preprocessor}{template <typename T1, typename T2>\(\backslash\)}}
+\DoxyCodeLine{1508 \textcolor{preprocessor}{AssertionResult CmpHelper\#\#op\_name(const char* expr1, const char* expr2, \(\backslash\)}}
+\DoxyCodeLine{1509 \textcolor{preprocessor}{                                   const T1\& val1, const T2\& val2) \{\(\backslash\)}}
+\DoxyCodeLine{1510 \textcolor{preprocessor}{  if (val1 op val2) \{\(\backslash\)}}
+\DoxyCodeLine{1511 \textcolor{preprocessor}{    return AssertionSuccess();\(\backslash\)}}
+\DoxyCodeLine{1512 \textcolor{preprocessor}{  \} else \{\(\backslash\)}}
+\DoxyCodeLine{1513 \textcolor{preprocessor}{    return CmpHelperOpFailure(expr1, expr2, val1, val2, \#op);\(\backslash\)}}
+\DoxyCodeLine{1514 \textcolor{preprocessor}{  \}\(\backslash\)}}
+\DoxyCodeLine{1515 \textcolor{preprocessor}{\}\(\backslash\)}}
+\DoxyCodeLine{1516 \textcolor{preprocessor}{GTEST\_API\_ AssertionResult CmpHelper\#\#op\_name(\(\backslash\)}}
+\DoxyCodeLine{1517 \textcolor{preprocessor}{    const char* expr1, const char* expr2, BiggestInt val1, BiggestInt val2)}}
+\DoxyCodeLine{1518 }
+\DoxyCodeLine{1519 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1520 }
+\DoxyCodeLine{1521 \textcolor{comment}{// Implements the helper function for \{ASSERT|EXPECT\}\_NE}}
+\DoxyCodeLine{1522 GTEST\_IMPL\_CMP\_HELPER\_(NE, !=);}
+\DoxyCodeLine{1523 \textcolor{comment}{// Implements the helper function for \{ASSERT|EXPECT\}\_LE}}
+\DoxyCodeLine{1524 GTEST\_IMPL\_CMP\_HELPER\_(LE, <=);}
+\DoxyCodeLine{1525 \textcolor{comment}{// Implements the helper function for \{ASSERT|EXPECT\}\_LT}}
+\DoxyCodeLine{1526 GTEST\_IMPL\_CMP\_HELPER\_(LT, <);}
+\DoxyCodeLine{1527 \textcolor{comment}{// Implements the helper function for \{ASSERT|EXPECT\}\_GE}}
+\DoxyCodeLine{1528 GTEST\_IMPL\_CMP\_HELPER\_(GE, >=);}
+\DoxyCodeLine{1529 \textcolor{comment}{// Implements the helper function for \{ASSERT|EXPECT\}\_GT}}
+\DoxyCodeLine{1530 GTEST\_IMPL\_CMP\_HELPER\_(GT, >);}
+\DoxyCodeLine{1531 }
+\DoxyCodeLine{1532 \textcolor{preprocessor}{\#undef GTEST\_IMPL\_CMP\_HELPER\_}}
+\DoxyCodeLine{1533 }
+\DoxyCodeLine{1534 \textcolor{comment}{// The helper function for \{ASSERT|EXPECT\}\_STREQ.}}
+\DoxyCodeLine{1535 \textcolor{comment}{//}}
+\DoxyCodeLine{1536 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1537 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTREQ(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1538                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1539                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1,}
+\DoxyCodeLine{1540                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2);}
+\DoxyCodeLine{1541 }
+\DoxyCodeLine{1542 \textcolor{comment}{// The helper function for \{ASSERT|EXPECT\}\_STRCASEEQ.}}
+\DoxyCodeLine{1543 \textcolor{comment}{//}}
+\DoxyCodeLine{1544 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1545 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTRCASEEQ(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1546                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1547                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1,}
+\DoxyCodeLine{1548                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2);}
+\DoxyCodeLine{1549 }
+\DoxyCodeLine{1550 \textcolor{comment}{// The helper function for \{ASSERT|EXPECT\}\_STRNE.}}
+\DoxyCodeLine{1551 \textcolor{comment}{//}}
+\DoxyCodeLine{1552 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1553 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTRNE(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1554                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1555                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1,}
+\DoxyCodeLine{1556                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2);}
+\DoxyCodeLine{1557 }
+\DoxyCodeLine{1558 \textcolor{comment}{// The helper function for \{ASSERT|EXPECT\}\_STRCASENE.}}
+\DoxyCodeLine{1559 \textcolor{comment}{//}}
+\DoxyCodeLine{1560 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1561 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTRCASENE(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1562                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1563                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1,}
+\DoxyCodeLine{1564                                               \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2);}
+\DoxyCodeLine{1565 }
+\DoxyCodeLine{1566 }
+\DoxyCodeLine{1567 \textcolor{comment}{// Helper function for *\_STREQ on wide strings.}}
+\DoxyCodeLine{1568 \textcolor{comment}{//}}
+\DoxyCodeLine{1569 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1570 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTREQ(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1571                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1572                                           \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* s1,}
+\DoxyCodeLine{1573                                           \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* s2);}
+\DoxyCodeLine{1574 }
+\DoxyCodeLine{1575 \textcolor{comment}{// Helper function for *\_STRNE on wide strings.}}
+\DoxyCodeLine{1576 \textcolor{comment}{//}}
+\DoxyCodeLine{1577 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1578 GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1_assertion_result}{AssertionResult}} CmpHelperSTRNE(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* s1\_expression,}
+\DoxyCodeLine{1579                                           \textcolor{keyword}{const} \textcolor{keywordtype}{char}* s2\_expression,}
+\DoxyCodeLine{1580                                           \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* s1,}
+\DoxyCodeLine{1581                                           \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* s2);}
+\DoxyCodeLine{1582 }
+\DoxyCodeLine{1583 \}  \textcolor{comment}{// namespace internal}}
+\DoxyCodeLine{1584 }
+\DoxyCodeLine{1585 \textcolor{comment}{// IsSubstring() and IsNotSubstring() are intended to be used as the}}
+\DoxyCodeLine{1586 \textcolor{comment}{// first argument to \{EXPECT,ASSERT\}\_PRED\_FORMAT2(), not by}}
+\DoxyCodeLine{1587 \textcolor{comment}{// themselves.  They check whether needle is a substring of haystack}}
+\DoxyCodeLine{1588 \textcolor{comment}{// (NULL is considered a substring of itself only), and return an}}
+\DoxyCodeLine{1589 \textcolor{comment}{// appropriate error message when they fail.}}
+\DoxyCodeLine{1590 \textcolor{comment}{//}}
+\DoxyCodeLine{1591 \textcolor{comment}{// The \{needle,haystack\}\_expr arguments are the stringified}}
+\DoxyCodeLine{1592 \textcolor{comment}{// expressions that generated the two real arguments.}}
+\DoxyCodeLine{1593 GTEST\_API\_ AssertionResult IsSubstring(}
+\DoxyCodeLine{1594     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1595     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack);}
+\DoxyCodeLine{1596 GTEST\_API\_ AssertionResult IsSubstring(}
+\DoxyCodeLine{1597     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1598     \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* needle, \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* haystack);}
+\DoxyCodeLine{1599 GTEST\_API\_ AssertionResult IsNotSubstring(}
+\DoxyCodeLine{1600     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1601     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack);}
+\DoxyCodeLine{1602 GTEST\_API\_ AssertionResult IsNotSubstring(}
+\DoxyCodeLine{1603     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1604     \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* needle, \textcolor{keyword}{const} \textcolor{keywordtype}{wchar\_t}* haystack);}
+\DoxyCodeLine{1605 GTEST\_API\_ AssertionResult IsSubstring(}
+\DoxyCodeLine{1606     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1607     const ::std::string\& needle, const ::std::string\& haystack);}
+\DoxyCodeLine{1608 GTEST\_API\_ AssertionResult IsNotSubstring(}
+\DoxyCodeLine{1609     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1610     const ::std::string\& needle, const ::std::string\& haystack);}
+\DoxyCodeLine{1611 }
+\DoxyCodeLine{1612 \textcolor{preprocessor}{\#if GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{1613 GTEST\_API\_ AssertionResult IsSubstring(}
+\DoxyCodeLine{1614     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1615     const ::std::wstring\& needle, const ::std::wstring\& haystack);}
+\DoxyCodeLine{1616 GTEST\_API\_ AssertionResult IsNotSubstring(}
+\DoxyCodeLine{1617     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* needle\_expr, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* haystack\_expr,}
+\DoxyCodeLine{1618     const ::std::wstring\& needle, const ::std::wstring\& haystack);}
+\DoxyCodeLine{1619 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{1620 }
+\DoxyCodeLine{1621 \textcolor{keyword}{namespace }internal \{}
+\DoxyCodeLine{1622 }
+\DoxyCodeLine{1623 \textcolor{comment}{// Helper template function for comparing floating-\/points.}}
+\DoxyCodeLine{1624 \textcolor{comment}{//}}
+\DoxyCodeLine{1625 \textcolor{comment}{// Template parameter:}}
+\DoxyCodeLine{1626 \textcolor{comment}{//}}
+\DoxyCodeLine{1627 \textcolor{comment}{//   RawType: the raw floating-\/point type (either float or double)}}
+\DoxyCodeLine{1628 \textcolor{comment}{//}}
+\DoxyCodeLine{1629 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1630 \textcolor{keyword}{template} <\textcolor{keyword}{typename} RawType>}
+\DoxyCodeLine{1631 AssertionResult CmpHelperFloatingPointEQ(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* lhs\_expression,}
+\DoxyCodeLine{1632                                          \textcolor{keyword}{const} \textcolor{keywordtype}{char}* rhs\_expression,}
+\DoxyCodeLine{1633                                          RawType lhs\_value,}
+\DoxyCodeLine{1634                                          RawType rhs\_value) \{}
+\DoxyCodeLine{1635   \textcolor{keyword}{const} FloatingPoint<RawType> lhs(lhs\_value), rhs(rhs\_value);}
+\DoxyCodeLine{1636 }
+\DoxyCodeLine{1637   \textcolor{keywordflow}{if} (lhs.AlmostEquals(rhs)) \{}
+\DoxyCodeLine{1638     \textcolor{keywordflow}{return} AssertionSuccess();}
+\DoxyCodeLine{1639   \}}
+\DoxyCodeLine{1640 }
+\DoxyCodeLine{1641   ::std::stringstream lhs\_ss;}
+\DoxyCodeLine{1642   lhs\_ss << std::setprecision(std::numeric\_limits<RawType>::digits10 + 2)}
+\DoxyCodeLine{1643          << lhs\_value;}
+\DoxyCodeLine{1644 }
+\DoxyCodeLine{1645   ::std::stringstream rhs\_ss;}
+\DoxyCodeLine{1646   rhs\_ss << std::setprecision(std::numeric\_limits<RawType>::digits10 + 2)}
+\DoxyCodeLine{1647          << rhs\_value;}
+\DoxyCodeLine{1648 }
+\DoxyCodeLine{1649   \textcolor{keywordflow}{return} EqFailure(lhs\_expression,}
+\DoxyCodeLine{1650                    rhs\_expression,}
+\DoxyCodeLine{1651                    StringStreamToString(\&lhs\_ss),}
+\DoxyCodeLine{1652                    StringStreamToString(\&rhs\_ss),}
+\DoxyCodeLine{1653                    \textcolor{keyword}{false});}
+\DoxyCodeLine{1654 \}}
+\DoxyCodeLine{1655 }
+\DoxyCodeLine{1656 \textcolor{comment}{// Helper function for implementing ASSERT\_NEAR.}}
+\DoxyCodeLine{1657 \textcolor{comment}{//}}
+\DoxyCodeLine{1658 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN A USER PROGRAM.}}
+\DoxyCodeLine{1659 GTEST\_API\_ AssertionResult DoubleNearPredFormat(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr1,}
+\DoxyCodeLine{1660                                                 \textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr2,}
+\DoxyCodeLine{1661                                                 \textcolor{keyword}{const} \textcolor{keywordtype}{char}* abs\_error\_expr,}
+\DoxyCodeLine{1662                                                 \textcolor{keywordtype}{double} val1,}
+\DoxyCodeLine{1663                                                 \textcolor{keywordtype}{double} val2,}
+\DoxyCodeLine{1664                                                 \textcolor{keywordtype}{double} abs\_error);}
+\DoxyCodeLine{1665 }
+\DoxyCodeLine{1666 \textcolor{comment}{// INTERNAL IMPLEMENTATION -\/ DO NOT USE IN USER CODE.}}
+\DoxyCodeLine{1667 \textcolor{comment}{// A class that enables one to stream messages to assertion macros}}
+\DoxyCodeLine{1668 \textcolor{keyword}{class }GTEST\_API\_ \mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{AssertHelper}} \{}
+\DoxyCodeLine{1669  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1670   \textcolor{comment}{// Constructor.}}
+\DoxyCodeLine{1671   \mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{AssertHelper}}(TestPartResult::Type type,}
+\DoxyCodeLine{1672                \textcolor{keyword}{const} \textcolor{keywordtype}{char}* file,}
+\DoxyCodeLine{1673                \textcolor{keywordtype}{int} line,}
+\DoxyCodeLine{1674                \textcolor{keyword}{const} \textcolor{keywordtype}{char}* message);}
+\DoxyCodeLine{1675   \mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{\string~AssertHelper}}();}
+\DoxyCodeLine{1676 }
+\DoxyCodeLine{1677   \textcolor{comment}{// Message assignment is a semantic trick to enable assertion}}
+\DoxyCodeLine{1678   \textcolor{comment}{// streaming; see the GTEST\_MESSAGE\_ macro below.}}
+\DoxyCodeLine{1679   \textcolor{keywordtype}{void} operator=(\textcolor{keyword}{const} \mbox{\hyperlink{classtesting_1_1_message}{Message}}\& message) \textcolor{keyword}{const};}
+\DoxyCodeLine{1680 }
+\DoxyCodeLine{1681  \textcolor{keyword}{private}:}
+\DoxyCodeLine{1682   \textcolor{comment}{// We put our data in a struct so that the size of the AssertHelper class can}}
+\DoxyCodeLine{1683   \textcolor{comment}{// be as small as possible.  This is important because gcc is incapable of}}
+\DoxyCodeLine{1684   \textcolor{comment}{// re-\/using stack space even for temporary variables, so every EXPECT\_EQ}}
+\DoxyCodeLine{1685   \textcolor{comment}{// reserves stack space for another AssertHelper.}}
+\DoxyCodeLine{1686   \textcolor{keyword}{struct }AssertHelperData \{}
+\DoxyCodeLine{1687     AssertHelperData(TestPartResult::Type t,}
+\DoxyCodeLine{1688                      \textcolor{keyword}{const} \textcolor{keywordtype}{char}* srcfile,}
+\DoxyCodeLine{1689                      \textcolor{keywordtype}{int} line\_num,}
+\DoxyCodeLine{1690                      \textcolor{keyword}{const} \textcolor{keywordtype}{char}* msg)}
+\DoxyCodeLine{1691         : type(t), file(srcfile), line(line\_num), message(msg) \{ \}}
+\DoxyCodeLine{1692 }
+\DoxyCodeLine{1693     TestPartResult::Type \textcolor{keyword}{const} type;}
+\DoxyCodeLine{1694     \textcolor{keyword}{const} \textcolor{keywordtype}{char}* \textcolor{keyword}{const} file;}
+\DoxyCodeLine{1695     \textcolor{keywordtype}{int} \textcolor{keyword}{const} line;}
+\DoxyCodeLine{1696     std::string \textcolor{keyword}{const} message;}
+\DoxyCodeLine{1697 }
+\DoxyCodeLine{1698    \textcolor{keyword}{private}:}
+\DoxyCodeLine{1699     GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(AssertHelperData);}
+\DoxyCodeLine{1700   \};}
+\DoxyCodeLine{1701 }
+\DoxyCodeLine{1702   AssertHelperData* \textcolor{keyword}{const} data\_;}
+\DoxyCodeLine{1703 }
+\DoxyCodeLine{1704   GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(\mbox{\hyperlink{classtesting_1_1internal_1_1_assert_helper}{AssertHelper}});}
+\DoxyCodeLine{1705 \};}
+\DoxyCodeLine{1706 }
+\DoxyCodeLine{1707 \}  \textcolor{comment}{// namespace internal}}
+\DoxyCodeLine{1708 }
+\DoxyCodeLine{1709 \textcolor{preprocessor}{\#if GTEST\_HAS\_PARAM\_TEST}}
+\DoxyCodeLine{1710 \textcolor{comment}{// The pure interface class that all value-\/parameterized tests inherit from.}}
+\DoxyCodeLine{1711 \textcolor{comment}{// A value-\/parameterized class must inherit from both ::testing::Test and}}
+\DoxyCodeLine{1712 \textcolor{comment}{// ::testing::WithParamInterface. In most cases that just means inheriting}}
+\DoxyCodeLine{1713 \textcolor{comment}{// from ::testing::TestWithParam, but more complicated test hierarchies}}
+\DoxyCodeLine{1714 \textcolor{comment}{// may need to inherit from Test and WithParamInterface at different levels.}}
+\DoxyCodeLine{1715 \textcolor{comment}{//}}
+\DoxyCodeLine{1716 \textcolor{comment}{// This interface has support for accessing the test parameter value via}}
+\DoxyCodeLine{1717 \textcolor{comment}{// the GetParam() method.}}
+\DoxyCodeLine{1718 \textcolor{comment}{//}}
+\DoxyCodeLine{1719 \textcolor{comment}{// Use it with one of the parameter generator defining functions, like Range(),}}
+\DoxyCodeLine{1720 \textcolor{comment}{// Values(), ValuesIn(), Bool(), and Combine().}}
+\DoxyCodeLine{1721 \textcolor{comment}{//}}
+\DoxyCodeLine{1722 \textcolor{comment}{// class FooTest : public ::testing::TestWithParam<int> \{}}
+\DoxyCodeLine{1723 \textcolor{comment}{//  protected:}}
+\DoxyCodeLine{1724 \textcolor{comment}{//   FooTest() \{}}
+\DoxyCodeLine{1725 \textcolor{comment}{//     // Can use GetParam() here.}}
+\DoxyCodeLine{1726 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{1727 \textcolor{comment}{//   virtual \string~FooTest() \{}}
+\DoxyCodeLine{1728 \textcolor{comment}{//     // Can use GetParam() here.}}
+\DoxyCodeLine{1729 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{1730 \textcolor{comment}{//   virtual void SetUp() \{}}
+\DoxyCodeLine{1731 \textcolor{comment}{//     // Can use GetParam() here.}}
+\DoxyCodeLine{1732 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{1733 \textcolor{comment}{//   virtual void TearDown \{}}
+\DoxyCodeLine{1734 \textcolor{comment}{//     // Can use GetParam() here.}}
+\DoxyCodeLine{1735 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{1736 \textcolor{comment}{// \};}}
+\DoxyCodeLine{1737 \textcolor{comment}{// TEST\_P(FooTest, DoesBar) \{}}
+\DoxyCodeLine{1738 \textcolor{comment}{//   // Can use GetParam() method here.}}
+\DoxyCodeLine{1739 \textcolor{comment}{//   Foo foo;}}
+\DoxyCodeLine{1740 \textcolor{comment}{//   ASSERT\_TRUE(foo.DoesBar(GetParam()));}}
+\DoxyCodeLine{1741 \textcolor{comment}{// \}}}
+\DoxyCodeLine{1742 \textcolor{comment}{// INSTANTIATE\_TEST\_CASE\_P(OneToTenRange, FooTest, ::testing::Range(1, 10));}}
+\DoxyCodeLine{1743 }
+\DoxyCodeLine{1744 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{1745 \textcolor{keyword}{class }WithParamInterface \{}
+\DoxyCodeLine{1746  \textcolor{keyword}{public}:}
+\DoxyCodeLine{1747   \textcolor{keyword}{typedef} T ParamType;}
+\DoxyCodeLine{1748   \textcolor{keyword}{virtual} \string~WithParamInterface() \{\}}
+\DoxyCodeLine{1749 }
+\DoxyCodeLine{1750   \textcolor{comment}{// The current parameter value. Is also available in the test fixture's}}
+\DoxyCodeLine{1751   \textcolor{comment}{// constructor. This member function is non-\/static, even though it only}}
+\DoxyCodeLine{1752   \textcolor{comment}{// references static data, to reduce the opportunity for incorrect uses}}
+\DoxyCodeLine{1753   \textcolor{comment}{// like writing 'WithParamInterface<bool>::GetParam()' for a test that}}
+\DoxyCodeLine{1754   \textcolor{comment}{// uses a fixture whose parameter type is int.}}
+\DoxyCodeLine{1755   \textcolor{keyword}{const} ParamType\& GetParam()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{1756     GTEST\_CHECK\_(parameter\_ != NULL)}
+\DoxyCodeLine{1757         << \textcolor{stringliteral}{"{}GetParam() can only be called inside a value-\/parameterized test "{}}}
+\DoxyCodeLine{1758         << \textcolor{stringliteral}{"{}-\/-\/ did you intend to write TEST\_P instead of TEST\_F?"{}};}
+\DoxyCodeLine{1759     \textcolor{keywordflow}{return} *parameter\_;}
+\DoxyCodeLine{1760   \}}
+\DoxyCodeLine{1761 }
+\DoxyCodeLine{1762  \textcolor{keyword}{private}:}
+\DoxyCodeLine{1763   \textcolor{comment}{// Sets parameter value. The caller is responsible for making sure the value}}
+\DoxyCodeLine{1764   \textcolor{comment}{// remains alive and unchanged throughout the current test.}}
+\DoxyCodeLine{1765   \textcolor{keyword}{static} \textcolor{keywordtype}{void} SetParam(\textcolor{keyword}{const} ParamType* parameter) \{}
+\DoxyCodeLine{1766     parameter\_ = parameter;}
+\DoxyCodeLine{1767   \}}
+\DoxyCodeLine{1768 }
+\DoxyCodeLine{1769   \textcolor{comment}{// Static value used for accessing parameter during a test lifetime.}}
+\DoxyCodeLine{1770   \textcolor{keyword}{static} \textcolor{keyword}{const} ParamType* parameter\_;}
+\DoxyCodeLine{1771 }
+\DoxyCodeLine{1772   \textcolor{comment}{// TestClass must be a subclass of WithParamInterface<T> and Test.}}
+\DoxyCodeLine{1773   \textcolor{keyword}{template} <\textcolor{keyword}{class} TestClass> \textcolor{keyword}{friend} \textcolor{keyword}{class }internal::ParameterizedTestFactory;}
+\DoxyCodeLine{1774 \};}
+\DoxyCodeLine{1775 }
+\DoxyCodeLine{1776 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{1777 \textcolor{keyword}{const} T* WithParamInterface<T>::parameter\_ = NULL;}
+\DoxyCodeLine{1778 }
+\DoxyCodeLine{1779 \textcolor{comment}{// Most value-\/parameterized classes can ignore the existence of}}
+\DoxyCodeLine{1780 \textcolor{comment}{// WithParamInterface, and can just inherit from ::testing::TestWithParam.}}
+\DoxyCodeLine{1781 }
+\DoxyCodeLine{1782 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{1783 \textcolor{keyword}{class }TestWithParam : \textcolor{keyword}{public} Test, \textcolor{keyword}{public} WithParamInterface<T> \{}
+\DoxyCodeLine{1784 \};}
+\DoxyCodeLine{1785 }
+\DoxyCodeLine{1786 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_PARAM\_TEST}}
+\DoxyCodeLine{1787 }
+\DoxyCodeLine{1788 \textcolor{comment}{// Macros for indicating success/failure in test code.}}
+\DoxyCodeLine{1789 }
+\DoxyCodeLine{1790 \textcolor{comment}{// ADD\_FAILURE unconditionally adds a failure to the current test.}}
+\DoxyCodeLine{1791 \textcolor{comment}{// SUCCEED generates a success -\/ it doesn't automatically make the}}
+\DoxyCodeLine{1792 \textcolor{comment}{// current test successful, as a test is only successful when it has}}
+\DoxyCodeLine{1793 \textcolor{comment}{// no failure.}}
+\DoxyCodeLine{1794 \textcolor{comment}{//}}
+\DoxyCodeLine{1795 \textcolor{comment}{// EXPECT\_* verifies that a certain condition is satisfied.  If not,}}
+\DoxyCodeLine{1796 \textcolor{comment}{// it behaves like ADD\_FAILURE.  In particular:}}
+\DoxyCodeLine{1797 \textcolor{comment}{//}}
+\DoxyCodeLine{1798 \textcolor{comment}{//   EXPECT\_TRUE  verifies that a Boolean condition is true.}}
+\DoxyCodeLine{1799 \textcolor{comment}{//   EXPECT\_FALSE verifies that a Boolean condition is false.}}
+\DoxyCodeLine{1800 \textcolor{comment}{//}}
+\DoxyCodeLine{1801 \textcolor{comment}{// FAIL and ASSERT\_* are similar to ADD\_FAILURE and EXPECT\_*, except}}
+\DoxyCodeLine{1802 \textcolor{comment}{// that they will also abort the current function on failure.  People}}
+\DoxyCodeLine{1803 \textcolor{comment}{// usually want the fail-\/fast behavior of FAIL and ASSERT\_*, but those}}
+\DoxyCodeLine{1804 \textcolor{comment}{// writing data-\/driven tests often find themselves using ADD\_FAILURE}}
+\DoxyCodeLine{1805 \textcolor{comment}{// and EXPECT\_* more.}}
+\DoxyCodeLine{1806 }
+\DoxyCodeLine{1807 \textcolor{comment}{// Generates a nonfatal failure with a generic message.}}
+\DoxyCodeLine{1808 \textcolor{preprocessor}{\#define ADD\_FAILURE() GTEST\_NONFATAL\_FAILURE\_("{}Failed"{}})}
+\DoxyCodeLine{1809 }
+\DoxyCodeLine{1810 \textcolor{comment}{// Generates a nonfatal failure at the given source file location with}}
+\DoxyCodeLine{1811 \textcolor{comment}{// a generic message.}}
+\DoxyCodeLine{1812 \textcolor{preprocessor}{\#define ADD\_FAILURE\_AT(file, line) \(\backslash\)}}
+\DoxyCodeLine{1813 \textcolor{preprocessor}{  GTEST\_MESSAGE\_AT\_(file, line, "{}Failed"{}}, \(\backslash\)}
+\DoxyCodeLine{1814                     ::testing::TestPartResult::kNonFatalFailure)}
+\DoxyCodeLine{1815 }
+\DoxyCodeLine{1816 \textcolor{comment}{// Generates a fatal failure with a generic message.}}
+\DoxyCodeLine{1817 \textcolor{preprocessor}{\#define GTEST\_FAIL() GTEST\_FATAL\_FAILURE\_("{}Failed"{}})}
+\DoxyCodeLine{1818 }
+\DoxyCodeLine{1819 \textcolor{comment}{// Define this macro to 1 to omit the definition of FAIL(), which is a}}
+\DoxyCodeLine{1820 \textcolor{comment}{// generic name and clashes with some other libraries.}}
+\DoxyCodeLine{1821 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_FAIL}}
+\DoxyCodeLine{1822 \textcolor{preprocessor}{\# define FAIL() GTEST\_FAIL()}}
+\DoxyCodeLine{1823 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1824 }
+\DoxyCodeLine{1825 \textcolor{comment}{// Generates a success with a generic message.}}
+\DoxyCodeLine{1826 \textcolor{preprocessor}{\#define GTEST\_SUCCEED() GTEST\_SUCCESS\_("{}Succeeded"{}})}
+\DoxyCodeLine{1827 }
+\DoxyCodeLine{1828 \textcolor{comment}{// Define this macro to 1 to omit the definition of SUCCEED(), which}}
+\DoxyCodeLine{1829 \textcolor{comment}{// is a generic name and clashes with some other libraries.}}
+\DoxyCodeLine{1830 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_SUCCEED}}
+\DoxyCodeLine{1831 \textcolor{preprocessor}{\# define SUCCEED() GTEST\_SUCCEED()}}
+\DoxyCodeLine{1832 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1833 }
+\DoxyCodeLine{1834 \textcolor{comment}{// Macros for testing exceptions.}}
+\DoxyCodeLine{1835 \textcolor{comment}{//}}
+\DoxyCodeLine{1836 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_THROW(statement, expected\_exception):}}
+\DoxyCodeLine{1837 \textcolor{comment}{//         Tests that the statement throws the expected exception.}}
+\DoxyCodeLine{1838 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_NO\_THROW(statement):}}
+\DoxyCodeLine{1839 \textcolor{comment}{//         Tests that the statement doesn't throw any exception.}}
+\DoxyCodeLine{1840 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_ANY\_THROW(statement):}}
+\DoxyCodeLine{1841 \textcolor{comment}{//         Tests that the statement throws an exception.}}
+\DoxyCodeLine{1842 }
+\DoxyCodeLine{1843 \textcolor{preprocessor}{\#define EXPECT\_THROW(statement, expected\_exception) \(\backslash\)}}
+\DoxyCodeLine{1844 \textcolor{preprocessor}{  GTEST\_TEST\_THROW\_(statement, expected\_exception, GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{1845 \textcolor{preprocessor}{\#define EXPECT\_NO\_THROW(statement) \(\backslash\)}}
+\DoxyCodeLine{1846 \textcolor{preprocessor}{  GTEST\_TEST\_NO\_THROW\_(statement, GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{1847 \textcolor{preprocessor}{\#define EXPECT\_ANY\_THROW(statement) \(\backslash\)}}
+\DoxyCodeLine{1848 \textcolor{preprocessor}{  GTEST\_TEST\_ANY\_THROW\_(statement, GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{1849 \textcolor{preprocessor}{\#define ASSERT\_THROW(statement, expected\_exception) \(\backslash\)}}
+\DoxyCodeLine{1850 \textcolor{preprocessor}{  GTEST\_TEST\_THROW\_(statement, expected\_exception, GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{1851 \textcolor{preprocessor}{\#define ASSERT\_NO\_THROW(statement) \(\backslash\)}}
+\DoxyCodeLine{1852 \textcolor{preprocessor}{  GTEST\_TEST\_NO\_THROW\_(statement, GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{1853 \textcolor{preprocessor}{\#define ASSERT\_ANY\_THROW(statement) \(\backslash\)}}
+\DoxyCodeLine{1854 \textcolor{preprocessor}{  GTEST\_TEST\_ANY\_THROW\_(statement, GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{1855 }
+\DoxyCodeLine{1856 \textcolor{comment}{// Boolean assertions. Condition can be either a Boolean expression or an}}
+\DoxyCodeLine{1857 \textcolor{comment}{// AssertionResult. For more information on how to use AssertionResult with}}
+\DoxyCodeLine{1858 \textcolor{comment}{// these macros see comments on that class.}}
+\DoxyCodeLine{1859 \textcolor{preprocessor}{\#define EXPECT\_TRUE(condition) \(\backslash\)}}
+\DoxyCodeLine{1860 \textcolor{preprocessor}{  GTEST\_TEST\_BOOLEAN\_((condition), \#condition, false, true, \(\backslash\)}}
+\DoxyCodeLine{1861 \textcolor{preprocessor}{                      GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{1862 \textcolor{preprocessor}{\#define EXPECT\_FALSE(condition) \(\backslash\)}}
+\DoxyCodeLine{1863 \textcolor{preprocessor}{  GTEST\_TEST\_BOOLEAN\_(!(condition), \#condition, true, false, \(\backslash\)}}
+\DoxyCodeLine{1864 \textcolor{preprocessor}{                      GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{1865 \textcolor{preprocessor}{\#define ASSERT\_TRUE(condition) \(\backslash\)}}
+\DoxyCodeLine{1866 \textcolor{preprocessor}{  GTEST\_TEST\_BOOLEAN\_((condition), \#condition, false, true, \(\backslash\)}}
+\DoxyCodeLine{1867 \textcolor{preprocessor}{                      GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{1868 \textcolor{preprocessor}{\#define ASSERT\_FALSE(condition) \(\backslash\)}}
+\DoxyCodeLine{1869 \textcolor{preprocessor}{  GTEST\_TEST\_BOOLEAN\_(!(condition), \#condition, true, false, \(\backslash\)}}
+\DoxyCodeLine{1870 \textcolor{preprocessor}{                      GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{1871 }
+\DoxyCodeLine{1872 \textcolor{comment}{// Includes the auto-\/generated header that implements a family of}}
+\DoxyCodeLine{1873 \textcolor{comment}{// generic predicate assertion macros.}}
+\DoxyCodeLine{1874 \textcolor{preprocessor}{\#include "{}gtest/gtest\_pred\_impl.h"{}}}
+\DoxyCodeLine{1875 }
+\DoxyCodeLine{1876 \textcolor{comment}{// Macros for testing equalities and inequalities.}}
+\DoxyCodeLine{1877 \textcolor{comment}{//}}
+\DoxyCodeLine{1878 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_EQ(v1, v2): Tests that v1 == v2}}
+\DoxyCodeLine{1879 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_NE(v1, v2): Tests that v1 != v2}}
+\DoxyCodeLine{1880 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_LT(v1, v2): Tests that v1 < v2}}
+\DoxyCodeLine{1881 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_LE(v1, v2): Tests that v1 <= v2}}
+\DoxyCodeLine{1882 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_GT(v1, v2): Tests that v1 > v2}}
+\DoxyCodeLine{1883 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_GE(v1, v2): Tests that v1 >= v2}}
+\DoxyCodeLine{1884 \textcolor{comment}{//}}
+\DoxyCodeLine{1885 \textcolor{comment}{// When they are not, Google Test prints both the tested expressions and}}
+\DoxyCodeLine{1886 \textcolor{comment}{// their actual values.  The values must be compatible built-\/in types,}}
+\DoxyCodeLine{1887 \textcolor{comment}{// or you will get a compiler error.  By "{}compatible"{} we mean that the}}
+\DoxyCodeLine{1888 \textcolor{comment}{// values can be compared by the respective operator.}}
+\DoxyCodeLine{1889 \textcolor{comment}{//}}
+\DoxyCodeLine{1890 \textcolor{comment}{// Note:}}
+\DoxyCodeLine{1891 \textcolor{comment}{//}}
+\DoxyCodeLine{1892 \textcolor{comment}{//   1. It is possible to make a user-\/defined type work with}}
+\DoxyCodeLine{1893 \textcolor{comment}{//   \{ASSERT|EXPECT\}\_??(), but that requires overloading the}}
+\DoxyCodeLine{1894 \textcolor{comment}{//   comparison operators and is thus discouraged by the Google C++}}
+\DoxyCodeLine{1895 \textcolor{comment}{//   Usage Guide.  Therefore, you are advised to use the}}
+\DoxyCodeLine{1896 \textcolor{comment}{//   \{ASSERT|EXPECT\}\_TRUE() macro to assert that two objects are}}
+\DoxyCodeLine{1897 \textcolor{comment}{//   equal.}}
+\DoxyCodeLine{1898 \textcolor{comment}{//}}
+\DoxyCodeLine{1899 \textcolor{comment}{//   2. The \{ASSERT|EXPECT\}\_??() macros do pointer comparisons on}}
+\DoxyCodeLine{1900 \textcolor{comment}{//   pointers (in particular, C strings).  Therefore, if you use it}}
+\DoxyCodeLine{1901 \textcolor{comment}{//   with two C strings, you are testing how their locations in memory}}
+\DoxyCodeLine{1902 \textcolor{comment}{//   are related, not how their content is related.  To compare two C}}
+\DoxyCodeLine{1903 \textcolor{comment}{//   strings by content, use \{ASSERT|EXPECT\}\_STR*().}}
+\DoxyCodeLine{1904 \textcolor{comment}{//}}
+\DoxyCodeLine{1905 \textcolor{comment}{//   3. \{ASSERT|EXPECT\}\_EQ(v1, v2) is preferred to}}
+\DoxyCodeLine{1906 \textcolor{comment}{//   \{ASSERT|EXPECT\}\_TRUE(v1 == v2), as the former tells you}}
+\DoxyCodeLine{1907 \textcolor{comment}{//   what the actual value is when it fails, and similarly for the}}
+\DoxyCodeLine{1908 \textcolor{comment}{//   other comparisons.}}
+\DoxyCodeLine{1909 \textcolor{comment}{//}}
+\DoxyCodeLine{1910 \textcolor{comment}{//   4. Do not depend on the order in which \{ASSERT|EXPECT\}\_??()}}
+\DoxyCodeLine{1911 \textcolor{comment}{//   evaluate their arguments, which is undefined.}}
+\DoxyCodeLine{1912 \textcolor{comment}{//}}
+\DoxyCodeLine{1913 \textcolor{comment}{//   5. These macros evaluate their arguments exactly once.}}
+\DoxyCodeLine{1914 \textcolor{comment}{//}}
+\DoxyCodeLine{1915 \textcolor{comment}{// Examples:}}
+\DoxyCodeLine{1916 \textcolor{comment}{//}}
+\DoxyCodeLine{1917 \textcolor{comment}{//   EXPECT\_NE(5, Foo());}}
+\DoxyCodeLine{1918 \textcolor{comment}{//   EXPECT\_EQ(NULL, a\_pointer);}}
+\DoxyCodeLine{1919 \textcolor{comment}{//   ASSERT\_LT(i, array\_size);}}
+\DoxyCodeLine{1920 \textcolor{comment}{//   ASSERT\_GT(records.size(), 0) << "{}There is no record left."{};}}
+\DoxyCodeLine{1921 }
+\DoxyCodeLine{1922 \textcolor{preprocessor}{\#define EXPECT\_EQ(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1923 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal:: \(\backslash\)}}
+\DoxyCodeLine{1924 \textcolor{preprocessor}{                      EqHelper<GTEST\_IS\_NULL\_LITERAL\_(val1)>::Compare, \(\backslash\)}}
+\DoxyCodeLine{1925 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{1926 \textcolor{preprocessor}{\#define EXPECT\_NE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1927 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperNE, val1, val2)}}
+\DoxyCodeLine{1928 \textcolor{preprocessor}{\#define EXPECT\_LE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1929 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperLE, val1, val2)}}
+\DoxyCodeLine{1930 \textcolor{preprocessor}{\#define EXPECT\_LT(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1931 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperLT, val1, val2)}}
+\DoxyCodeLine{1932 \textcolor{preprocessor}{\#define EXPECT\_GE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1933 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperGE, val1, val2)}}
+\DoxyCodeLine{1934 \textcolor{preprocessor}{\#define EXPECT\_GT(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1935 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperGT, val1, val2)}}
+\DoxyCodeLine{1936 }
+\DoxyCodeLine{1937 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_EQ(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1938 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal:: \(\backslash\)}}
+\DoxyCodeLine{1939 \textcolor{preprocessor}{                      EqHelper<GTEST\_IS\_NULL\_LITERAL\_(val1)>::Compare, \(\backslash\)}}
+\DoxyCodeLine{1940 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{1941 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_NE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1942 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperNE, val1, val2)}}
+\DoxyCodeLine{1943 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_LE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1944 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperLE, val1, val2)}}
+\DoxyCodeLine{1945 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_LT(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1946 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperLT, val1, val2)}}
+\DoxyCodeLine{1947 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_GE(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1948 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperGE, val1, val2)}}
+\DoxyCodeLine{1949 \textcolor{preprocessor}{\#define GTEST\_ASSERT\_GT(val1, val2) \(\backslash\)}}
+\DoxyCodeLine{1950 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperGT, val1, val2)}}
+\DoxyCodeLine{1951 }
+\DoxyCodeLine{1952 \textcolor{comment}{// Define macro GTEST\_DONT\_DEFINE\_ASSERT\_XY to 1 to omit the definition of}}
+\DoxyCodeLine{1953 \textcolor{comment}{// ASSERT\_XY(), which clashes with some users' own code.}}
+\DoxyCodeLine{1954 }
+\DoxyCodeLine{1955 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_EQ}}
+\DoxyCodeLine{1956 \textcolor{preprocessor}{\# define ASSERT\_EQ(val1, val2) GTEST\_ASSERT\_EQ(val1, val2)}}
+\DoxyCodeLine{1957 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1958 }
+\DoxyCodeLine{1959 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_NE}}
+\DoxyCodeLine{1960 \textcolor{preprocessor}{\# define ASSERT\_NE(val1, val2) GTEST\_ASSERT\_NE(val1, val2)}}
+\DoxyCodeLine{1961 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1962 }
+\DoxyCodeLine{1963 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_LE}}
+\DoxyCodeLine{1964 \textcolor{preprocessor}{\# define ASSERT\_LE(val1, val2) GTEST\_ASSERT\_LE(val1, val2)}}
+\DoxyCodeLine{1965 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1966 }
+\DoxyCodeLine{1967 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_LT}}
+\DoxyCodeLine{1968 \textcolor{preprocessor}{\# define ASSERT\_LT(val1, val2) GTEST\_ASSERT\_LT(val1, val2)}}
+\DoxyCodeLine{1969 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1970 }
+\DoxyCodeLine{1971 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_GE}}
+\DoxyCodeLine{1972 \textcolor{preprocessor}{\# define ASSERT\_GE(val1, val2) GTEST\_ASSERT\_GE(val1, val2)}}
+\DoxyCodeLine{1973 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1974 }
+\DoxyCodeLine{1975 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_ASSERT\_GT}}
+\DoxyCodeLine{1976 \textcolor{preprocessor}{\# define ASSERT\_GT(val1, val2) GTEST\_ASSERT\_GT(val1, val2)}}
+\DoxyCodeLine{1977 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1978 }
+\DoxyCodeLine{1979 \textcolor{comment}{// C-\/string Comparisons.  All tests treat NULL and any non-\/NULL string}}
+\DoxyCodeLine{1980 \textcolor{comment}{// as different.  Two NULLs are equal.}}
+\DoxyCodeLine{1981 \textcolor{comment}{//}}
+\DoxyCodeLine{1982 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_STREQ(s1, s2):     Tests that s1 == s2}}
+\DoxyCodeLine{1983 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_STRNE(s1, s2):     Tests that s1 != s2}}
+\DoxyCodeLine{1984 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_STRCASEEQ(s1, s2): Tests that s1 == s2, ignoring case}}
+\DoxyCodeLine{1985 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_STRCASENE(s1, s2): Tests that s1 != s2, ignoring case}}
+\DoxyCodeLine{1986 \textcolor{comment}{//}}
+\DoxyCodeLine{1987 \textcolor{comment}{// For wide or narrow string objects, you can use the}}
+\DoxyCodeLine{1988 \textcolor{comment}{// \{ASSERT|EXPECT\}\_??() macros.}}
+\DoxyCodeLine{1989 \textcolor{comment}{//}}
+\DoxyCodeLine{1990 \textcolor{comment}{// Don't depend on the order in which the arguments are evaluated,}}
+\DoxyCodeLine{1991 \textcolor{comment}{// which is undefined.}}
+\DoxyCodeLine{1992 \textcolor{comment}{//}}
+\DoxyCodeLine{1993 \textcolor{comment}{// These macros evaluate their arguments exactly once.}}
+\DoxyCodeLine{1994 }
+\DoxyCodeLine{1995 \textcolor{preprocessor}{\#define EXPECT\_STREQ(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{1996 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTREQ, s1, s2)}}
+\DoxyCodeLine{1997 \textcolor{preprocessor}{\#define EXPECT\_STRNE(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{1998 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRNE, s1, s2)}}
+\DoxyCodeLine{1999 \textcolor{preprocessor}{\#define EXPECT\_STRCASEEQ(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{2000 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRCASEEQ, s1, s2)}}
+\DoxyCodeLine{2001 \textcolor{preprocessor}{\#define EXPECT\_STRCASENE(s1, s2)\(\backslash\)}}
+\DoxyCodeLine{2002 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRCASENE, s1, s2)}}
+\DoxyCodeLine{2003 }
+\DoxyCodeLine{2004 \textcolor{preprocessor}{\#define ASSERT\_STREQ(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{2005 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTREQ, s1, s2)}}
+\DoxyCodeLine{2006 \textcolor{preprocessor}{\#define ASSERT\_STRNE(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{2007 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRNE, s1, s2)}}
+\DoxyCodeLine{2008 \textcolor{preprocessor}{\#define ASSERT\_STRCASEEQ(s1, s2) \(\backslash\)}}
+\DoxyCodeLine{2009 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRCASEEQ, s1, s2)}}
+\DoxyCodeLine{2010 \textcolor{preprocessor}{\#define ASSERT\_STRCASENE(s1, s2)\(\backslash\)}}
+\DoxyCodeLine{2011 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperSTRCASENE, s1, s2)}}
+\DoxyCodeLine{2012 }
+\DoxyCodeLine{2013 \textcolor{comment}{// Macros for comparing floating-\/point numbers.}}
+\DoxyCodeLine{2014 \textcolor{comment}{//}}
+\DoxyCodeLine{2015 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_FLOAT\_EQ(val1, val2):}}
+\DoxyCodeLine{2016 \textcolor{comment}{//         Tests that two float values are almost equal.}}
+\DoxyCodeLine{2017 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_DOUBLE\_EQ(val1, val2):}}
+\DoxyCodeLine{2018 \textcolor{comment}{//         Tests that two double values are almost equal.}}
+\DoxyCodeLine{2019 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_NEAR(v1, v2, abs\_error):}}
+\DoxyCodeLine{2020 \textcolor{comment}{//         Tests that v1 and v2 are within the given distance to each other.}}
+\DoxyCodeLine{2021 \textcolor{comment}{//}}
+\DoxyCodeLine{2022 \textcolor{comment}{// Google Test uses ULP-\/based comparison to automatically pick a default}}
+\DoxyCodeLine{2023 \textcolor{comment}{// error bound that is appropriate for the operands.  See the}}
+\DoxyCodeLine{2024 \textcolor{comment}{// FloatingPoint template class in gtest-\/internal.h if you are}}
+\DoxyCodeLine{2025 \textcolor{comment}{// interested in the implementation details.}}
+\DoxyCodeLine{2026 }
+\DoxyCodeLine{2027 \textcolor{preprocessor}{\#define EXPECT\_FLOAT\_EQ(val1, val2)\(\backslash\)}}
+\DoxyCodeLine{2028 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<float>, \(\backslash\)}}
+\DoxyCodeLine{2029 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{2030 }
+\DoxyCodeLine{2031 \textcolor{preprocessor}{\#define EXPECT\_DOUBLE\_EQ(val1, val2)\(\backslash\)}}
+\DoxyCodeLine{2032 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<double>, \(\backslash\)}}
+\DoxyCodeLine{2033 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{2034 }
+\DoxyCodeLine{2035 \textcolor{preprocessor}{\#define ASSERT\_FLOAT\_EQ(val1, val2)\(\backslash\)}}
+\DoxyCodeLine{2036 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<float>, \(\backslash\)}}
+\DoxyCodeLine{2037 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{2038 }
+\DoxyCodeLine{2039 \textcolor{preprocessor}{\#define ASSERT\_DOUBLE\_EQ(val1, val2)\(\backslash\)}}
+\DoxyCodeLine{2040 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT2(::testing::internal::CmpHelperFloatingPointEQ<double>, \(\backslash\)}}
+\DoxyCodeLine{2041 \textcolor{preprocessor}{                      val1, val2)}}
+\DoxyCodeLine{2042 }
+\DoxyCodeLine{2043 \textcolor{preprocessor}{\#define EXPECT\_NEAR(val1, val2, abs\_error)\(\backslash\)}}
+\DoxyCodeLine{2044 \textcolor{preprocessor}{  EXPECT\_PRED\_FORMAT3(::testing::internal::DoubleNearPredFormat, \(\backslash\)}}
+\DoxyCodeLine{2045 \textcolor{preprocessor}{                      val1, val2, abs\_error)}}
+\DoxyCodeLine{2046 }
+\DoxyCodeLine{2047 \textcolor{preprocessor}{\#define ASSERT\_NEAR(val1, val2, abs\_error)\(\backslash\)}}
+\DoxyCodeLine{2048 \textcolor{preprocessor}{  ASSERT\_PRED\_FORMAT3(::testing::internal::DoubleNearPredFormat, \(\backslash\)}}
+\DoxyCodeLine{2049 \textcolor{preprocessor}{                      val1, val2, abs\_error)}}
+\DoxyCodeLine{2050 }
+\DoxyCodeLine{2051 \textcolor{comment}{// These predicate format functions work on floating-\/point values, and}}
+\DoxyCodeLine{2052 \textcolor{comment}{// can be used in \{ASSERT|EXPECT\}\_PRED\_FORMAT2*(), e.g.}}
+\DoxyCodeLine{2053 \textcolor{comment}{//}}
+\DoxyCodeLine{2054 \textcolor{comment}{//   EXPECT\_PRED\_FORMAT2(testing::DoubleLE, Foo(), 5.0);}}
+\DoxyCodeLine{2055 }
+\DoxyCodeLine{2056 \textcolor{comment}{// Asserts that val1 is less than, or almost equal to, val2.  Fails}}
+\DoxyCodeLine{2057 \textcolor{comment}{// otherwise.  In particular, it fails if either val1 or val2 is NaN.}}
+\DoxyCodeLine{2058 GTEST\_API\_ AssertionResult FloatLE(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr1, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr2,}
+\DoxyCodeLine{2059                                    \textcolor{keywordtype}{float} val1, \textcolor{keywordtype}{float} val2);}
+\DoxyCodeLine{2060 GTEST\_API\_ AssertionResult DoubleLE(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr1, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* expr2,}
+\DoxyCodeLine{2061                                     \textcolor{keywordtype}{double} val1, \textcolor{keywordtype}{double} val2);}
+\DoxyCodeLine{2062 }
+\DoxyCodeLine{2063 }
+\DoxyCodeLine{2064 \textcolor{preprocessor}{\#if GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{2065 }
+\DoxyCodeLine{2066 \textcolor{comment}{// Macros that test for HRESULT failure and success, these are only useful}}
+\DoxyCodeLine{2067 \textcolor{comment}{// on Windows, and rely on Windows SDK macros and APIs to compile.}}
+\DoxyCodeLine{2068 \textcolor{comment}{//}}
+\DoxyCodeLine{2069 \textcolor{comment}{//    * \{ASSERT|EXPECT\}\_HRESULT\_\{SUCCEEDED|FAILED\}(expr)}}
+\DoxyCodeLine{2070 \textcolor{comment}{//}}
+\DoxyCodeLine{2071 \textcolor{comment}{// When expr unexpectedly fails or succeeds, Google Test prints the}}
+\DoxyCodeLine{2072 \textcolor{comment}{// expected result and the actual result with both a human-\/readable}}
+\DoxyCodeLine{2073 \textcolor{comment}{// string representation of the error, if available, as well as the}}
+\DoxyCodeLine{2074 \textcolor{comment}{// hex result code.}}
+\DoxyCodeLine{2075 \textcolor{preprocessor}{\# define EXPECT\_HRESULT\_SUCCEEDED(expr) \(\backslash\)}}
+\DoxyCodeLine{2076 \textcolor{preprocessor}{    EXPECT\_PRED\_FORMAT1(::testing::internal::IsHRESULTSuccess, (expr))}}
+\DoxyCodeLine{2077 }
+\DoxyCodeLine{2078 \textcolor{preprocessor}{\# define ASSERT\_HRESULT\_SUCCEEDED(expr) \(\backslash\)}}
+\DoxyCodeLine{2079 \textcolor{preprocessor}{    ASSERT\_PRED\_FORMAT1(::testing::internal::IsHRESULTSuccess, (expr))}}
+\DoxyCodeLine{2080 }
+\DoxyCodeLine{2081 \textcolor{preprocessor}{\# define EXPECT\_HRESULT\_FAILED(expr) \(\backslash\)}}
+\DoxyCodeLine{2082 \textcolor{preprocessor}{    EXPECT\_PRED\_FORMAT1(::testing::internal::IsHRESULTFailure, (expr))}}
+\DoxyCodeLine{2083 }
+\DoxyCodeLine{2084 \textcolor{preprocessor}{\# define ASSERT\_HRESULT\_FAILED(expr) \(\backslash\)}}
+\DoxyCodeLine{2085 \textcolor{preprocessor}{    ASSERT\_PRED\_FORMAT1(::testing::internal::IsHRESULTFailure, (expr))}}
+\DoxyCodeLine{2086 }
+\DoxyCodeLine{2087 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{2088 }
+\DoxyCodeLine{2089 \textcolor{comment}{// Macros that execute statement and check that it doesn't generate new fatal}}
+\DoxyCodeLine{2090 \textcolor{comment}{// failures in the current thread.}}
+\DoxyCodeLine{2091 \textcolor{comment}{//}}
+\DoxyCodeLine{2092 \textcolor{comment}{//   * \{ASSERT|EXPECT\}\_NO\_FATAL\_FAILURE(statement);}}
+\DoxyCodeLine{2093 \textcolor{comment}{//}}
+\DoxyCodeLine{2094 \textcolor{comment}{// Examples:}}
+\DoxyCodeLine{2095 \textcolor{comment}{//}}
+\DoxyCodeLine{2096 \textcolor{comment}{//   EXPECT\_NO\_FATAL\_FAILURE(Process());}}
+\DoxyCodeLine{2097 \textcolor{comment}{//   ASSERT\_NO\_FATAL\_FAILURE(Process()) << "{}Process() failed"{};}}
+\DoxyCodeLine{2098 \textcolor{comment}{//}}
+\DoxyCodeLine{2099 \textcolor{preprocessor}{\#define ASSERT\_NO\_FATAL\_FAILURE(statement) \(\backslash\)}}
+\DoxyCodeLine{2100 \textcolor{preprocessor}{    GTEST\_TEST\_NO\_FATAL\_FAILURE\_(statement, GTEST\_FATAL\_FAILURE\_)}}
+\DoxyCodeLine{2101 \textcolor{preprocessor}{\#define EXPECT\_NO\_FATAL\_FAILURE(statement) \(\backslash\)}}
+\DoxyCodeLine{2102 \textcolor{preprocessor}{    GTEST\_TEST\_NO\_FATAL\_FAILURE\_(statement, GTEST\_NONFATAL\_FAILURE\_)}}
+\DoxyCodeLine{2103 }
+\DoxyCodeLine{2104 \textcolor{comment}{// Causes a trace (including the source file path, the current line}}
+\DoxyCodeLine{2105 \textcolor{comment}{// number, and the given message) to be included in every test failure}}
+\DoxyCodeLine{2106 \textcolor{comment}{// message generated by code in the current scope.  The effect is}}
+\DoxyCodeLine{2107 \textcolor{comment}{// undone when the control leaves the current scope.}}
+\DoxyCodeLine{2108 \textcolor{comment}{//}}
+\DoxyCodeLine{2109 \textcolor{comment}{// The message argument can be anything streamable to std::ostream.}}
+\DoxyCodeLine{2110 \textcolor{comment}{//}}
+\DoxyCodeLine{2111 \textcolor{comment}{// In the implementation, we include the current line number as part}}
+\DoxyCodeLine{2112 \textcolor{comment}{// of the dummy variable name, thus allowing multiple SCOPED\_TRACE()s}}
+\DoxyCodeLine{2113 \textcolor{comment}{// to appear in the same block -\/ as long as they are on different}}
+\DoxyCodeLine{2114 \textcolor{comment}{// lines.}}
+\DoxyCodeLine{2115 \textcolor{preprocessor}{\#define SCOPED\_TRACE(message) \(\backslash\)}}
+\DoxyCodeLine{2116 \textcolor{preprocessor}{  ::testing::internal::ScopedTrace GTEST\_CONCAT\_TOKEN\_(gtest\_trace\_, \_\_LINE\_\_)(\(\backslash\)}}
+\DoxyCodeLine{2117 \textcolor{preprocessor}{    \_\_FILE\_\_, \_\_LINE\_\_, ::testing::Message() << (message))}}
+\DoxyCodeLine{2118 }
+\DoxyCodeLine{2119 \textcolor{comment}{// Compile-\/time assertion for type equality.}}
+\DoxyCodeLine{2120 \textcolor{comment}{// StaticAssertTypeEq<type1, type2>() compiles iff type1 and type2 are}}
+\DoxyCodeLine{2121 \textcolor{comment}{// the same type.  The value it returns is not interesting.}}
+\DoxyCodeLine{2122 \textcolor{comment}{//}}
+\DoxyCodeLine{2123 \textcolor{comment}{// Instead of making StaticAssertTypeEq a class template, we make it a}}
+\DoxyCodeLine{2124 \textcolor{comment}{// function template that invokes a helper class template.  This}}
+\DoxyCodeLine{2125 \textcolor{comment}{// prevents a user from misusing StaticAssertTypeEq<T1, T2> by}}
+\DoxyCodeLine{2126 \textcolor{comment}{// defining objects of that type.}}
+\DoxyCodeLine{2127 \textcolor{comment}{//}}
+\DoxyCodeLine{2128 \textcolor{comment}{// CAVEAT:}}
+\DoxyCodeLine{2129 \textcolor{comment}{//}}
+\DoxyCodeLine{2130 \textcolor{comment}{// When used inside a method of a class template,}}
+\DoxyCodeLine{2131 \textcolor{comment}{// StaticAssertTypeEq<T1, T2>() is effective ONLY IF the method is}}
+\DoxyCodeLine{2132 \textcolor{comment}{// instantiated.  For example, given:}}
+\DoxyCodeLine{2133 \textcolor{comment}{//}}
+\DoxyCodeLine{2134 \textcolor{comment}{//   template <typename T> class Foo \{}}
+\DoxyCodeLine{2135 \textcolor{comment}{//    public:}}
+\DoxyCodeLine{2136 \textcolor{comment}{//     void Bar() \{ testing::StaticAssertTypeEq<int, T>(); \}}}
+\DoxyCodeLine{2137 \textcolor{comment}{//   \};}}
+\DoxyCodeLine{2138 \textcolor{comment}{//}}
+\DoxyCodeLine{2139 \textcolor{comment}{// the code:}}
+\DoxyCodeLine{2140 \textcolor{comment}{//}}
+\DoxyCodeLine{2141 \textcolor{comment}{//   void Test1() \{ Foo<bool> foo; \}}}
+\DoxyCodeLine{2142 \textcolor{comment}{//}}
+\DoxyCodeLine{2143 \textcolor{comment}{// will NOT generate a compiler error, as Foo<bool>::Bar() is never}}
+\DoxyCodeLine{2144 \textcolor{comment}{// actually instantiated.  Instead, you need:}}
+\DoxyCodeLine{2145 \textcolor{comment}{//}}
+\DoxyCodeLine{2146 \textcolor{comment}{//   void Test2() \{ Foo<bool> foo; foo.Bar(); \}}}
+\DoxyCodeLine{2147 \textcolor{comment}{//}}
+\DoxyCodeLine{2148 \textcolor{comment}{// to cause a compiler error.}}
+\DoxyCodeLine{2149 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T1, \textcolor{keyword}{typename} T2>}
+\DoxyCodeLine{2150 \textcolor{keywordtype}{bool} StaticAssertTypeEq() \{}
+\DoxyCodeLine{2151   (void)internal::StaticAssertTypeEqHelper<T1, T2>();}
+\DoxyCodeLine{2152   \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{2153 \}}
+\DoxyCodeLine{2154 }
+\DoxyCodeLine{2155 \textcolor{comment}{// Defines a test.}}
+\DoxyCodeLine{2156 \textcolor{comment}{//}}
+\DoxyCodeLine{2157 \textcolor{comment}{// The first parameter is the name of the test case, and the second}}
+\DoxyCodeLine{2158 \textcolor{comment}{// parameter is the name of the test within the test case.}}
+\DoxyCodeLine{2159 \textcolor{comment}{//}}
+\DoxyCodeLine{2160 \textcolor{comment}{// The convention is to end the test case name with "{}Test"{}.  For}}
+\DoxyCodeLine{2161 \textcolor{comment}{// example, a test case for the Foo class can be named FooTest.}}
+\DoxyCodeLine{2162 \textcolor{comment}{//}}
+\DoxyCodeLine{2163 \textcolor{comment}{// Test code should appear between braces after an invocation of}}
+\DoxyCodeLine{2164 \textcolor{comment}{// this macro.  Example:}}
+\DoxyCodeLine{2165 \textcolor{comment}{//}}
+\DoxyCodeLine{2166 \textcolor{comment}{//   TEST(FooTest, InitializesCorrectly) \{}}
+\DoxyCodeLine{2167 \textcolor{comment}{//     Foo foo;}}
+\DoxyCodeLine{2168 \textcolor{comment}{//     EXPECT\_TRUE(foo.StatusIsOK());}}
+\DoxyCodeLine{2169 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{2170 }
+\DoxyCodeLine{2171 \textcolor{comment}{// Note that we call GetTestTypeId() instead of GetTypeId<}}
+\DoxyCodeLine{2172 \textcolor{comment}{// ::testing::Test>() here to get the type ID of testing::Test.  This}}
+\DoxyCodeLine{2173 \textcolor{comment}{// is to work around a suspected linker bug when using Google Test as}}
+\DoxyCodeLine{2174 \textcolor{comment}{// a framework on Mac OS X.  The bug causes GetTypeId<}}
+\DoxyCodeLine{2175 \textcolor{comment}{// ::testing::Test>() to return different values depending on whether}}
+\DoxyCodeLine{2176 \textcolor{comment}{// the call is from the Google Test framework itself or from user test}}
+\DoxyCodeLine{2177 \textcolor{comment}{// code.  GetTestTypeId() is guaranteed to always return the same}}
+\DoxyCodeLine{2178 \textcolor{comment}{// value, as it always calls GetTypeId<>() from the Google Test}}
+\DoxyCodeLine{2179 \textcolor{comment}{// framework.}}
+\DoxyCodeLine{2180 \textcolor{preprocessor}{\#define GTEST\_TEST(test\_case\_name, test\_name)\(\backslash\)}}
+\DoxyCodeLine{2181 \textcolor{preprocessor}{  GTEST\_TEST\_(test\_case\_name, test\_name, \(\backslash\)}}
+\DoxyCodeLine{2182 \textcolor{preprocessor}{              ::testing::Test, ::testing::internal::GetTestTypeId())}}
+\DoxyCodeLine{2183 }
+\DoxyCodeLine{2184 \textcolor{comment}{// Define this macro to 1 to omit the definition of TEST(), which}}
+\DoxyCodeLine{2185 \textcolor{comment}{// is a generic name and clashes with some other libraries.}}
+\DoxyCodeLine{2186 \textcolor{preprocessor}{\#if !GTEST\_DONT\_DEFINE\_TEST}}
+\DoxyCodeLine{2187 \textcolor{preprocessor}{\# define TEST(test\_case\_name, test\_name) GTEST\_TEST(test\_case\_name, test\_name)}}
+\DoxyCodeLine{2188 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{2189 }
+\DoxyCodeLine{2190 \textcolor{comment}{// Defines a test that uses a test fixture.}}
+\DoxyCodeLine{2191 \textcolor{comment}{//}}
+\DoxyCodeLine{2192 \textcolor{comment}{// The first parameter is the name of the test fixture class, which}}
+\DoxyCodeLine{2193 \textcolor{comment}{// also doubles as the test case name.  The second parameter is the}}
+\DoxyCodeLine{2194 \textcolor{comment}{// name of the test within the test case.}}
+\DoxyCodeLine{2195 \textcolor{comment}{//}}
+\DoxyCodeLine{2196 \textcolor{comment}{// A test fixture class must be declared earlier.  The user should put}}
+\DoxyCodeLine{2197 \textcolor{comment}{// his test code between braces after using this macro.  Example:}}
+\DoxyCodeLine{2198 \textcolor{comment}{//}}
+\DoxyCodeLine{2199 \textcolor{comment}{//   class FooTest : public testing::Test \{}}
+\DoxyCodeLine{2200 \textcolor{comment}{//    protected:}}
+\DoxyCodeLine{2201 \textcolor{comment}{//     virtual void SetUp() \{ b\_.AddElement(3); \}}}
+\DoxyCodeLine{2202 \textcolor{comment}{//}}
+\DoxyCodeLine{2203 \textcolor{comment}{//     Foo a\_;}}
+\DoxyCodeLine{2204 \textcolor{comment}{//     Foo b\_;}}
+\DoxyCodeLine{2205 \textcolor{comment}{//   \};}}
+\DoxyCodeLine{2206 \textcolor{comment}{//}}
+\DoxyCodeLine{2207 \textcolor{comment}{//   TEST\_F(FooTest, InitializesCorrectly) \{}}
+\DoxyCodeLine{2208 \textcolor{comment}{//     EXPECT\_TRUE(a\_.StatusIsOK());}}
+\DoxyCodeLine{2209 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{2210 \textcolor{comment}{//}}
+\DoxyCodeLine{2211 \textcolor{comment}{//   TEST\_F(FooTest, ReturnsElementCountCorrectly) \{}}
+\DoxyCodeLine{2212 \textcolor{comment}{//     EXPECT\_EQ(0, a\_.size());}}
+\DoxyCodeLine{2213 \textcolor{comment}{//     EXPECT\_EQ(1, b\_.size());}}
+\DoxyCodeLine{2214 \textcolor{comment}{//   \}}}
+\DoxyCodeLine{2215 }
+\DoxyCodeLine{2216 \textcolor{preprocessor}{\#define TEST\_F(test\_fixture, test\_name)\(\backslash\)}}
+\DoxyCodeLine{2217 \textcolor{preprocessor}{  GTEST\_TEST\_(test\_fixture, test\_name, test\_fixture, \(\backslash\)}}
+\DoxyCodeLine{2218 \textcolor{preprocessor}{              ::testing::internal::GetTypeId<test\_fixture>())}}
+\DoxyCodeLine{2219 }
+\DoxyCodeLine{2220 \}  \textcolor{comment}{// namespace testing}}
+\DoxyCodeLine{2221 }
+\DoxyCodeLine{2222 \textcolor{comment}{// Use this function in main() to run all tests.  It returns 0 if all}}
+\DoxyCodeLine{2223 \textcolor{comment}{// tests are successful, or 1 otherwise.}}
+\DoxyCodeLine{2224 \textcolor{comment}{//}}
+\DoxyCodeLine{2225 \textcolor{comment}{// RUN\_ALL\_TESTS() should be invoked after the command line has been}}
+\DoxyCodeLine{2226 \textcolor{comment}{// parsed by InitGoogleTest().}}
+\DoxyCodeLine{2227 \textcolor{comment}{//}}
+\DoxyCodeLine{2228 \textcolor{comment}{// This function was formerly a macro; thus, it is in the global}}
+\DoxyCodeLine{2229 \textcolor{comment}{// namespace and has an all-\/caps name.}}
+\DoxyCodeLine{2230 \textcolor{keywordtype}{int} RUN\_ALL\_TESTS() GTEST\_MUST\_USE\_RESULT\_;}
+\DoxyCodeLine{2231 }
+\DoxyCodeLine{2232 inline \textcolor{keywordtype}{int} RUN\_ALL\_TESTS() \{}
+\DoxyCodeLine{2233   return ::testing::UnitTest::GetInstance()-\/>Run();}
+\DoxyCodeLine{2234 \}}
+\DoxyCodeLine{2235 }
+\DoxyCodeLine{2236 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_INCLUDE\_GTEST\_GTEST\_H\_}}
+
+\end{DoxyCode}

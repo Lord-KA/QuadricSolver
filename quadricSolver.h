@@ -7,15 +7,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <stdbool.h>        
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>
-#include <ncurses.h>
 #include <ctype.h>
-#include <locale.h>
 
+#include <ncurses.h>
 /**
  * @fn double sign(double x)
  * @brief return sign of double x
@@ -28,23 +26,23 @@ double sign(double x) {
     else return 0;
 }
 
-static const double TOL = 1e-3;
-static const double GRAPH_EPS = 1;
+static const double TOL = 1e-3; //> Tolerance for double calculations
+static const double GRAPH_TOL = 1; //> Tolerance for printing the graph
  
-static const size_t HISTORY_LENGHT = 64;   //TODO add Makefile; add `make install` option; add history save support
-static const size_t MAX_CMD_LENGHT = 64; 
+static const size_t HISTORY_LENGHT = 64;  //> the max number of entries in history           //TODO add Makefile; add `make install` option; add history save support
+static const size_t MAX_CMD_LENGHT = 64;  //> the max len of an entry
 
 
-#define ALT_BACKSPACE 127
+#define ALT_BACKSPACE 127       //> macro for backspace entry recognition by NCurses
 
 //==========================================
 // Command history struct
+
 /**
- * @struct history
+ * @struct History
  * @brief logs commands run in app
  */
-
-struct history
+struct History
 {
     /** 
      * @brief pointer to log window
@@ -71,13 +69,13 @@ struct history
 };
 
 /**
- * @fn void history_construct(struct history *h, WINDOW *historyWin)
+ * @fn static void History_construct(struct History *h, WINDOW *historyWin)
  * @brief creates new history struct
  * Creates new history struct, if failes to allocate memory, sets isActive to false
  * @param h pointer to history struct to write results in
  * @param historyWin pointer to NCurses WINDOW in which log is shown
  */
-void history_construct(struct history *h, WINDOW *historyWin)                       //TODO should history_* funcs be static?
+static void History_construct(struct History *h, WINDOW *historyWin)                       //TODO ask DED if `History_*`is a good naming strategy
 {
     h->localWin = historyWin;
     h->isActive = true;
@@ -87,38 +85,38 @@ void history_construct(struct history *h, WINDOW *historyWin)                   
 }
 
 /**
- * @fn void history_destruct(struct history *h)
+ * @fn static void History_destruct(struct History *h)
  * @brief destroys history struct
  * @param h pointer to history struct to destroy
  */
-void history_destruct(struct history *h)
+static void History_destruct(struct History *h)
 {
     if (h->log)
        free(h->log);
 }
 
 /**
- * @fn void history_put(struct history *h, char *elem)
+ * @fn static void History_put(struct History *h, char *elem)
  * @brief adds new entry to history 
  * Adds new entry to history log, rewrites the oldest entry if nessesary
  * @param h pointer to history struct to write results in   
  * @param elem pointer to string with command to log
  */
-void history_put(struct history *h, char *elem)
+static void History_put(struct History *h, char *elem)
 {
     strcpy((*h->log)[h->end], elem);
     h->end = (h->end + 1) % HISTORY_LENGHT;
 }
 
 /**
- * @fn char* history_get(struct history *h, size_t n)
+ * @fn static char* History_get(struct History *h, size_t n)
  * @brief gets an entry from history
  * Gets an entry from history log, returns NULL on failure
  * @param h pointer to history struct to write results in   
  * @param n serial number of needed entry in log
  * @return pointer to string if succeeds, NULL otherwise
  */
-char* history_get(struct history *h, size_t n) 
+static char* History_get(struct History *h, size_t n)          //TODO change one letter vars
 {
     if (!h->isActive || n > HISTORY_LENGHT)
         return NULL;
@@ -130,12 +128,12 @@ char* history_get(struct history *h, size_t n)
 }
 
 /**
- * @fn void history_list(struct history *h)
+ * @fn static void History_list(struct History *h)
  * @brief lists all history log
  * Lists all history log in localWin window
  * @param h pointer to history struct to write results in   
  */
-void history_list(struct history *h)
+static void History_list(struct History *h)
 {
     if (!h->isActive)
         return;
@@ -161,7 +159,8 @@ void history_list(struct history *h)
  * @return pointer to the new window
  */
 static WINDOW *createWin(int height, int width, int starty, int startx)
-{	WINDOW *localWin;
+{	
+    WINDOW *localWin;
 
 	localWin = newwin(height, width, starty, startx);
 	box(localWin, 0 , 0);		/* 0, 0 gives default characters 
@@ -197,8 +196,8 @@ static void destroyWin(WINDOW *localWin)
 	delwin(localWin);
 }
 
-/**     //TODO update this
- * @fn static void mvwreadline(WINDOW *localWin, history *h, size_t y, size_t x, char *buffer, size_t buflen) 
+/**     
+ * @fn static void mvwreadline(WINDOW *localWin, History *h, size_t starty, size_t startx, char *buffer, size_t buflen) 
  * @brief smart readline function with keybind support
  * Smart readline function with KEY_*, BACKSPACE, ENTER etc support
  * Read up to buflen characters into `buffer`.
@@ -209,8 +208,8 @@ static void destroyWin(WINDOW *localWin)
  * @param buffer pointer to store input
  * @param buflen size of the buffer
  */
-static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t startx, char *buffer, size_t buflen)          //TODO refactor
-{                               //TODO emplement saving unentered command
+static void mvwreadline(WINDOW *localWin, History *h, size_t starty, size_t startx, char *buffer, size_t buflen)          //TODO refactor
+{                                                                                                                         //TODO emplement saving unentered command     //TODO clean up the screen after each setting new command from history
     keypad(localWin, TRUE);
     ++buflen;       
     size_t old_curs = curs_set(1);
@@ -222,7 +221,7 @@ static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t star
         int c;
 
         buffer[len] = ' ';
-        mvwaddnstr(localWin, starty, startx, buffer, len+1);
+        mvwaddnstr(localWin, starty, startx, buffer, len + 1);
         wmove(localWin, starty, startx + pos);
         c = wgetch(localWin);
 
@@ -230,7 +229,7 @@ static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t star
             break;
         } 
         else if (isprint(c)) {
-            if (pos < buflen-1) {
+            if (pos < buflen - 1) {
                 memmove(buffer + pos + 1, buffer + pos, len - pos);
                 buffer[pos++] = c;
                 len += 1;
@@ -247,8 +246,9 @@ static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t star
         } 
         else if (c == KEY_UP) {
             char *command;
-            if (command = history_get(h, historyPos + 1)) {
-                memset(buffer, 0, buflen);
+            if (command = History_get(h, historyPos + 1)) {
+                memset(buffer, ' ', buflen);
+
                 strncpy(buffer, command, MAX_CMD_LENGHT);
                 len = strlen(command);
                 pos = strlen(command);
@@ -257,8 +257,8 @@ static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t star
         }
         else if (c == KEY_DOWN) {
             char *command;
-            if (historyPos - 1 != -1 && (command = history_get(h, historyPos - 1))) {
-                memset(buffer, 0, buflen);
+            if (historyPos - 1 != -1 && (command = History_get(h, historyPos - 1))) {
+                memset(buffer, ' ', buflen);
                 strncpy(buffer, command, MAX_CMD_LENGHT);
                 len = strlen(command);
                 pos = strlen(command);
@@ -301,21 +301,21 @@ static void mvwreadline(WINDOW *localWin, history *h, size_t starty, size_t star
 // Main 
 
 /**
- * @fn bool doubleCheck(size_t num, ...)
+ * @fn bool doubleValidate(size_t num, ...)
  * @brief checks correctness of all num of doubles
  * Checks correctness of all num of doubles 
  * @param num the number of entered doubles
  * @param ... va_list of doubles
  * @return true if all doubles are fine, false otherwise
  */
-bool doubleCheck(size_t num, ...)
+bool doubleValidate(size_t num, ...)            //TODO ask DED if it is reasonable to use abstrat func
 {
     va_list args;
     va_start(args, num);
     
 
     for (int i = 0; i < num; ++i) {
-        if (isnan(va_arg(args, double))){   //TODO maybe add something else
+        if (isnan(va_arg(args, double))){       //TODO maybe add something else?
             va_end(args);
             return false;
         }
@@ -355,7 +355,7 @@ void printGraph(double a, double b, double c)
             else if (i == windowHight / 2 + 1 && j == windowWidth - 1) {
                 wprintw(plotWin, "X");
             }
-            else if (fabs(x*x*a + x*b + c - y) < GRAPH_EPS) {
+            else if (fabs(x*x*a + x*b + c - y) < GRAPH_TOL) {
                 wprintw(plotWin, ".");
             }
             else if (i != windowHight / 2 && j != windowWidth / 2) {
@@ -402,14 +402,18 @@ void quadricSolver(double a, double b, double c, double *result_1, double *resul
 {
     if (fabs(a) < TOL) {
         if (fabs(b) < TOL) {
-            *result_eq_inf = true;
+            if (fabs(c) < TOL)
+                *result_eq_inf = true;              
+            else
+                return;
         }
         else {
             *result_1 = -c / b;
+            *result_2 = *result_1;
         }
     }
 
-   else {                      // Quadric case
+   else {                                                       // Quadric case
         double det = b * b - 4 * a * c;
         if (fabs(det) < TOL) {
             *result_1 = -0.5 * b / a;

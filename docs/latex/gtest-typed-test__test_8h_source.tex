@@ -1,0 +1,72 @@
+\hypertarget{gtest-typed-test__test_8h_source}{}\doxysection{gtest-\/typed-\/test\+\_\+test.h}
+\label{gtest-typed-test__test_8h_source}\index{build/\_deps/googletest-\/src/googletest/test/gtest-\/typed-\/test\_test.h@{build/\_deps/googletest-\/src/googletest/test/gtest-\/typed-\/test\_test.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2008 Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All Rights Reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 \textcolor{comment}{//}}
+\DoxyCodeLine{30 \textcolor{comment}{// Author: wan@google.com (Zhanyong Wan)}}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \textcolor{preprocessor}{\#ifndef GTEST\_TEST\_GTEST\_TYPED\_TEST\_TEST\_H\_}}
+\DoxyCodeLine{33 \textcolor{preprocessor}{\#define GTEST\_TEST\_GTEST\_TYPED\_TEST\_TEST\_H\_}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#include "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{36 }
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#if GTEST\_HAS\_TYPED\_TEST\_P}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{keyword}{using} \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}};}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{41 \textcolor{comment}{// For testing that the same type-\/parameterized test case can be}}
+\DoxyCodeLine{42 \textcolor{comment}{// instantiated in different translation units linked together.}}
+\DoxyCodeLine{43 \textcolor{comment}{// ContainerTest will be instantiated in both gtest-\/typed-\/test\_test.cc}}
+\DoxyCodeLine{44 \textcolor{comment}{// and gtest-\/typed-\/test2\_test.cc.}}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46 \textcolor{keyword}{template} <\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{47 \textcolor{keyword}{class }ContainerTest : \textcolor{keyword}{public} Test \{}
+\DoxyCodeLine{48 \};}
+\DoxyCodeLine{49 }
+\DoxyCodeLine{50 TYPED\_TEST\_CASE\_P(ContainerTest);}
+\DoxyCodeLine{51 }
+\DoxyCodeLine{52 TYPED\_TEST\_P(ContainerTest, CanBeDefaultConstructed) \{}
+\DoxyCodeLine{53   TypeParam container;}
+\DoxyCodeLine{54 \}}
+\DoxyCodeLine{55 }
+\DoxyCodeLine{56 TYPED\_TEST\_P(ContainerTest, InitialSizeIsZero) \{}
+\DoxyCodeLine{57   TypeParam container;}
+\DoxyCodeLine{58   EXPECT\_EQ(0U, container.size());}
+\DoxyCodeLine{59 \}}
+\DoxyCodeLine{60 }
+\DoxyCodeLine{61 REGISTER\_TYPED\_TEST\_CASE\_P(ContainerTest,}
+\DoxyCodeLine{62                            CanBeDefaultConstructed, InitialSizeIsZero);}
+\DoxyCodeLine{63 }
+\DoxyCodeLine{64 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_HAS\_TYPED\_TEST\_P}}
+\DoxyCodeLine{65 }
+\DoxyCodeLine{66 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_TEST\_GTEST\_TYPED\_TEST\_TEST\_H\_}}
+
+\end{DoxyCode}

@@ -1,0 +1,89 @@
+\hypertarget{sample2_8h_source}{}\doxysection{sample2.\+h}
+\label{sample2_8h_source}\index{build/\_deps/googletest-\/src/googletest/samples/sample2.h@{build/\_deps/googletest-\/src/googletest/samples/sample2.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{// Copyright 2005, Google Inc.}}
+\DoxyCodeLine{2 \textcolor{comment}{// All rights reserved.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 \textcolor{comment}{// Redistribution and use in source and binary forms, with or without}}
+\DoxyCodeLine{5 \textcolor{comment}{// modification, are permitted provided that the following conditions are}}
+\DoxyCodeLine{6 \textcolor{comment}{// met:}}
+\DoxyCodeLine{7 \textcolor{comment}{//}}
+\DoxyCodeLine{8 \textcolor{comment}{//     * Redistributions of source code must retain the above copyright}}
+\DoxyCodeLine{9 \textcolor{comment}{// notice, this list of conditions and the following disclaimer.}}
+\DoxyCodeLine{10 \textcolor{comment}{//     * Redistributions in binary form must reproduce the above}}
+\DoxyCodeLine{11 \textcolor{comment}{// copyright notice, this list of conditions and the following disclaimer}}
+\DoxyCodeLine{12 \textcolor{comment}{// in the documentation and/or other materials provided with the}}
+\DoxyCodeLine{13 \textcolor{comment}{// distribution.}}
+\DoxyCodeLine{14 \textcolor{comment}{//     * Neither the name of Google Inc. nor the names of its}}
+\DoxyCodeLine{15 \textcolor{comment}{// contributors may be used to endorse or promote products derived from}}
+\DoxyCodeLine{16 \textcolor{comment}{// this software without specific prior written permission.}}
+\DoxyCodeLine{17 \textcolor{comment}{//}}
+\DoxyCodeLine{18 \textcolor{comment}{// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS}}
+\DoxyCodeLine{19 \textcolor{comment}{// "{}AS IS"{} AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT}}
+\DoxyCodeLine{20 \textcolor{comment}{// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR}}
+\DoxyCodeLine{21 \textcolor{comment}{// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT}}
+\DoxyCodeLine{22 \textcolor{comment}{// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,}}
+\DoxyCodeLine{23 \textcolor{comment}{// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT}}
+\DoxyCodeLine{24 \textcolor{comment}{// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,}}
+\DoxyCodeLine{25 \textcolor{comment}{// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY}}
+\DoxyCodeLine{26 \textcolor{comment}{// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT}}
+\DoxyCodeLine{27 \textcolor{comment}{// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE}}
+\DoxyCodeLine{28 \textcolor{comment}{// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.}}
+\DoxyCodeLine{29 }
+\DoxyCodeLine{30 \textcolor{comment}{// A sample program demonstrating using Google C++ testing framework.}}
+\DoxyCodeLine{31 \textcolor{comment}{//}}
+\DoxyCodeLine{32 \textcolor{comment}{// Author: wan@google.com (Zhanyong Wan)}}
+\DoxyCodeLine{33 }
+\DoxyCodeLine{34 \textcolor{preprocessor}{\#ifndef GTEST\_SAMPLES\_SAMPLE2\_H\_}}
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#define GTEST\_SAMPLES\_SAMPLE2\_H\_}}
+\DoxyCodeLine{36 }
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#include <string.h>}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40 \textcolor{comment}{// A simple string class.}}
+\DoxyCodeLine{41 \textcolor{keyword}{class }\mbox{\hyperlink{class_my_string}{MyString}} \{}
+\DoxyCodeLine{42  \textcolor{keyword}{private}:}
+\DoxyCodeLine{43   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* c\_string\_;}
+\DoxyCodeLine{44   \textcolor{keyword}{const} \mbox{\hyperlink{class_my_string}{MyString}}\& operator=(\textcolor{keyword}{const} \mbox{\hyperlink{class_my_string}{MyString}}\& rhs);}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46  \textcolor{keyword}{public}:}
+\DoxyCodeLine{47   \textcolor{comment}{// Clones a 0-\/terminated C string, allocating memory using new.}}
+\DoxyCodeLine{48   \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{char}* CloneCString(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* a\_c\_string);}
+\DoxyCodeLine{49 }
+\DoxyCodeLine{51   \textcolor{comment}{//}}
+\DoxyCodeLine{52   \textcolor{comment}{// C'tors}}
+\DoxyCodeLine{53 }
+\DoxyCodeLine{54   \textcolor{comment}{// The default c'tor constructs a NULL string.}}
+\DoxyCodeLine{55   \mbox{\hyperlink{class_my_string}{MyString}}() : c\_string\_(NULL) \{\}}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{57   \textcolor{comment}{// Constructs a MyString by cloning a 0-\/terminated C string.}}
+\DoxyCodeLine{58   \textcolor{keyword}{explicit} \mbox{\hyperlink{class_my_string}{MyString}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* a\_c\_string) : c\_string\_(NULL) \{}
+\DoxyCodeLine{59     Set(a\_c\_string);}
+\DoxyCodeLine{60   \}}
+\DoxyCodeLine{61 }
+\DoxyCodeLine{62   \textcolor{comment}{// Copy c'tor}}
+\DoxyCodeLine{63   \mbox{\hyperlink{class_my_string}{MyString}}(\textcolor{keyword}{const} \mbox{\hyperlink{class_my_string}{MyString}}\& \textcolor{keywordtype}{string}) : c\_string\_(NULL) \{}
+\DoxyCodeLine{64     Set(\textcolor{keywordtype}{string}.c\_string\_);}
+\DoxyCodeLine{65   \}}
+\DoxyCodeLine{66 }
+\DoxyCodeLine{68   \textcolor{comment}{//}}
+\DoxyCodeLine{69   \textcolor{comment}{// D'tor.  MyString is intended to be a final class, so the d'tor}}
+\DoxyCodeLine{70   \textcolor{comment}{// doesn't need to be virtual.}}
+\DoxyCodeLine{71   \mbox{\hyperlink{class_my_string}{\string~MyString}}() \{ \textcolor{keyword}{delete}[] c\_string\_; \}}
+\DoxyCodeLine{72 }
+\DoxyCodeLine{73   \textcolor{comment}{// Gets the 0-\/terminated C string this MyString object represents.}}
+\DoxyCodeLine{74   \textcolor{keyword}{const} \textcolor{keywordtype}{char}* c\_string()\textcolor{keyword}{ const }\{ \textcolor{keywordflow}{return} c\_string\_; \}}
+\DoxyCodeLine{75 }
+\DoxyCodeLine{76   \textcolor{keywordtype}{size\_t} Length()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{77     \textcolor{keywordflow}{return} c\_string\_ == NULL ? 0 : strlen(c\_string\_);}
+\DoxyCodeLine{78   \}}
+\DoxyCodeLine{79 }
+\DoxyCodeLine{80   \textcolor{comment}{// Sets the 0-\/terminated C string this MyString object represents.}}
+\DoxyCodeLine{81   \textcolor{keywordtype}{void} Set(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* c\_string);}
+\DoxyCodeLine{82 \};}
+\DoxyCodeLine{83 }
+\DoxyCodeLine{84 }
+\DoxyCodeLine{85 \textcolor{preprocessor}{\#endif  }\textcolor{comment}{// GTEST\_SAMPLES\_SAMPLE2\_H\_}}
+
+\end{DoxyCode}
