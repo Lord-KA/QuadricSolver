@@ -9,9 +9,10 @@ TEST(History, Manual)
     initscr();
 
 
-    History* h;
+    History history;
+    History *h = &history;
     
-    History_construct(h, stdscr);
+    History_construct(h, nullptr);
 
     History_put(h, "first line");
     
@@ -25,17 +26,17 @@ TEST(History, Manual)
     
     History_put(h, "sixth line");
 
-    History_list(h);
+    // History_list(h);
 
     char *command = History_get(h, 2);
     if (command)
-        printw("%s\n", command);
+        printf("%s\n", command);
     else
-        printw("NULL\n");
+        printf("NULL\n");
  
     History_destruct(h);
 
-    // getch();
+    getch();
     clear();
     endwin();
 }
@@ -46,7 +47,8 @@ TEST(History, Ranges)
     initscr();
 
 
-    History* h;
+    History history;
+    History *h = &history;
     
     History_construct(h, stdscr);
 

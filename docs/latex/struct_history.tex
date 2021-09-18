@@ -1,14 +1,5 @@
 \hypertarget{struct_history}{}\doxysection{History Struct Reference}
 \label{struct_history}\index{History@{History}}
-
-
-logs commands run in app  
-
-
-
-
-{\ttfamily \#include $<$quadric\+Solver.\+h$>$}
-
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -19,12 +10,11 @@ char($\ast$ \mbox{\hyperlink{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}{l
 \begin{DoxyCompactList}\small\item\em pointer to char$\ast$ that is interpreted as char\mbox{[}HISTORY\+\_\+\+LENGHT\mbox{]}\mbox{[}MAX\+\_\+\+CMD\+\_\+\+LENGHT + 1\mbox{]} for comfy usage \end{DoxyCompactList}\item 
 size\+\_\+t \mbox{\hyperlink{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}{end}}
 \begin{DoxyCompactList}\small\item\em index of string after the last \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{struct_history_a645453fd97ae2fedb751078694cf9487}{len}}
+\begin{DoxyCompactList}\small\item\em len of history \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{struct_history_a3635c7e28d016bb859fe2c30b9ef19c8}{is\+Active}}
 \begin{DoxyCompactList}\small\item\em bool flag states that history-\/saving is active \end{DoxyCompactList}\end{DoxyCompactItemize}
 
-
-\doxysubsection{Detailed Description}
-logs commands run in app 
 
 \doxysubsection{Member Data Documentation}
 \mbox{\Hypertarget{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}\label{struct_history_ab6fc9b79374382f212962d5e6a28e0d8}} 
@@ -46,6 +36,16 @@ pointer to char$\ast$ that is interpreted as char\mbox{[}HISTORY\+\_\+\+LENGHT\m
 
 
 bool flag states that history-\/saving is active 
+
+lenght of history \mbox{\Hypertarget{struct_history_a645453fd97ae2fedb751078694cf9487}\label{struct_history_a645453fd97ae2fedb751078694cf9487}} 
+\index{History@{History}!len@{len}}
+\index{len@{len}!History@{History}}
+\doxysubsubsection{\texorpdfstring{len}{len}}
+{\footnotesize\ttfamily size\+\_\+t History\+::len}
+
+
+
+len of history 
 
 index of string after the last \mbox{\Hypertarget{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}\label{struct_history_a15f8779f6b7c4d769a49e1f5faa449c5}} 
 \index{History@{History}!log@{log}}

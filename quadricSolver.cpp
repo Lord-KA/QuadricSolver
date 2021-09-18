@@ -15,8 +15,8 @@ int main()
     wprintw(logWin, "==============================\n");
     wrefresh(logWin);
 
-    char keyword[MAX_CMD_LENGHT];
-    char input  [MAX_CMD_LENGHT];
+    char keyword[MAX_CMD_LENGHT + 1] = "";
+    char input  [MAX_CMD_LENGHT + 1] = "";
 
     struct History *h = (History*)calloc(1, sizeof(struct History));
     History_construct(h, logWin);

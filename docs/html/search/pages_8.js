@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['samples_0',['Samples',['../md_build__deps_googletest_src_googletest_docs__samples.html',1,'']]]
+  ['quadric_20solver_0',['Quadric Solver',['../md__r_e_a_d_m_e.html',1,'']]]
 ];
